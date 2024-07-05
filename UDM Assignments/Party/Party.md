@@ -205,7 +205,7 @@ validating
 <TelecomNumber areaCode="801" contactMechId="CM4003" contactNumber="7676767676"/>
 <PartyContactMech allowSolicitation="Y" contactMechId="CM4003" fromDate="2024-06-26 00:00:00.0" partyId="666666"/>
 ```
-![Step 3-1](Images/A3S7.png)
+![Step 3-1](Images/ .png)
 
 ![Step 3-1](Images/A3S7-2.png)
 

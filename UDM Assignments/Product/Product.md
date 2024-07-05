@@ -55,10 +55,13 @@
 ![Step 12](Images/step12.png)
 
 #### 13. Adding a cross sell product [10009] using productAssoc
+
 - For Variant HC_001
+
 ![Step 13](Images/step13.png)
 
 - For Virtual HC_000
+
 ![Step 13](Images/step13-2.png)
 
 - Validating 10009 is suggested when browsing HC_000.
@@ -91,13 +94,13 @@
 
 ## Adding feature to the product 
 #### First creating a product feature category
-![Step 1-1](Images/step18.png)
+![Step 1-1](Images/step19.png)
 
 #### Then creating a product feature type 
-![Step 1-2](Images/step18.png)
+![Step 1-2](Images/step20.png)
 
 #### Creating the product Feature 
-![Step 1-3](Images/step18.png)
+![Step 1-3](Images/step21.png)
 
 #### Product Feature appl to add Product + feature
-![Step 1-4](Images/step18.png)
+![Step 1-4](Images/step22.png)
