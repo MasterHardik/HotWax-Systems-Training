@@ -5,7 +5,9 @@
 ### 1. Creating a person named Hardik2 Chouhan2
 ![Step 1-1](Images/A1S1.png)
 
-![Step 1-2](Images/A3S1-2.png)
+![Step 1-2](Images/A1S1-2.png)
+
+![Step 1-2](Images/A1S1-3.png)
 
 ### 2. Assign Customer role to created person
 ![Step 2](Images/A1S2.png)
@@ -71,7 +73,10 @@
 ### 11. Delete (Expire) email address and create new
 ### 12. Delete (Expire) billing address and add new
 ### 13. Delete (Expire) shipping address and add new
+
 ![Step 13](Images/A1S13.png)
+
+![Step 13](Images/A1S13-2.png)
 
 ## Activity 2: Party Manager (Create option)
 
