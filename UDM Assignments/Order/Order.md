@@ -23,6 +23,7 @@
 ### 6. Create a custom ship group, else choose the default.
 
 ![Step 6](Images/step6.png)
+
 ![Step 6](Images/step6-2.png)
 
 ### 7. Choose a Payment Method.
@@ -60,6 +61,7 @@
 ### 15. Click on Shipment to edit & change its status to Ship(Pack).
 
 ![Step 15](Images/step15.png)
+
 ![Step 15](Images/step15-2.png)
 
 ### 16. Change its status again to Delivered(Shipped) once it’s delivered to the customer.

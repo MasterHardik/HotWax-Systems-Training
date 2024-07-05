@@ -11,6 +11,7 @@
 #### 3. Search for prodAssoc to associate a variant product to a base product. Set the ProductAssocType as VARIANT_PRODUCT.
 
 ![Step 3](Images/step3.png)
+
 ![Step 3](Images/step3-2.png)
 
 #### 4. Next creating Category HCC_000
@@ -36,6 +37,7 @@
 #### 9. To link product Store [9000] and Product Catalog we will use another assoc Entity Product Store Catalog
 
 ![Step 9](Images/step9.png)
+
 ![Step 9](Images/step9-2.png)
 
 #### 10. Adding product details
@@ -45,6 +47,7 @@
 #### 11. Creating Facility so that the product can be associated with any facility and can add its inventory to make it sellable.. (otherwise it goes to Backorder).
 
 ![Step 11](Images/step11.png)
+
 ![Step 11](Images/step11-2.png)
 
 #### 12. Added Inventory for the product at the facility.
@@ -54,9 +57,12 @@
 #### 13. Adding a cross sell product [10009] using productAssoc
 - For Variant HC_001
 ![Step 13](Images/step13.png)
+
 - For Virtual HC_000
 ![Step 13](Images/step13-2.png)
+
 - Validating 10009 is suggested when browsing HC_000.
+
 ![Step 13](Images/step13-3.png)
 
 
@@ -72,6 +78,7 @@
 #### 16. Checkout
 
 ![Step 16](Images/step16.png)
+
 ![Step 16](Images/step16-2.png)
 
 #### 17. Submitting Order
