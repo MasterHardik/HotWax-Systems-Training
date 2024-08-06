@@ -54,13 +54,17 @@ under the License.
             </actions>
             <widgets>
                 <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+<!--                    <label text="inside mian-decorator"/> : this is unreachable-->
                     <decorator-section name="body">
+<!--                        <label text="inside-body"/>-->
                         <section>
+
                             <condition>
                                 <if-has-permission permission="HOTWAX-SYSTEMS-TRAINING" action="_VIEW"/>
                             </condition>
                             <widgets>
-                                <decorator-section-include name="body"/>
+                                <label text="Speaking from the CommonScreen"/>
+                                <include-screen name="practiceFile001" location="component://HotWax-Systems-Training/widget/practiceFile001.xml"/>
                             </widgets>
                             <fail-widgets>
                                 <label style="h3">${uiLabelMap.HotWax-Systems-TrainingViewPermissionError}</label>
