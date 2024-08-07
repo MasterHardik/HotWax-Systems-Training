@@ -26,6 +26,25 @@ under the License.
     <title>Entity of HotWax-Systems-Training Component</title>
     <description>None</description>
     <copyright></copyright>
-    <version></version>
+    <version>1.0</version>
+
+    <entity entity-name="OfbizDemoType" package-name="order.apache.ofbiz.ofbizdemo">
+        <field name="ofbizDemoTypeId" type="id"><description>primary sequenced ID</description></field>
+        <field name="description" type="description"></field>
+        <prim-key field="ofbizDemoId"/>
+    </entity>
+
+
+    <entity entity-name="OfbizDemo" package-name="org.apache.ofbiz.ofbizdemo" title="OFiz Demo Entity">
+        <field name="ofbizDemoId" type="id"><description>Primary Sequenced ID</description></field>
+        <field name="ofbizDemoTypeId" type="id"></field>
+        <field name="firstName" type="name"></field>
+        <field name="lastName" type="name"></field>
+        <field name="comments" type="comment"></field>
+        <prim-key field="ofbizDemoId"/>
+        <relation type="one" fk-name="ODEM_OD_TYPE_ID" rel-entity-name="OfbizDemoType">
+            <key-map field-name="ofbizDemoTypeId"/>
+        </relation>
+    </entity>
 
 </entitymodel>
