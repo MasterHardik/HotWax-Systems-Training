@@ -19,15 +19,25 @@ under the License.
 -->
 
 <services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+          xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
     <description>HotWax-Systems-Training Services</description>
     <vendor></vendor>
     <version>1.0</version>
 
     <service name="noSyntaxError" engine="interface">
         <description>
-            Dummy service to prevent empty files and syntax error - Remove when the 1st real service will be added here 
+            Dummy service to prevent empty files and syntax error - Remove when the 1st real service will be added here
         </description>
-    </service> 
-    
+    </service>
+
+
+    <!--    Custom service practice here -->
+
+    <service name="createMasterTable" default-entity-name="masterTable" engine="entity-auto" invoke="create" auth="true" >
+        <description>This is service to create MasterTable Entity</description>
+        <auto-attributes include="pk" mode="OUT" optional="false" />
+        <auto-attributes include="nonpk" mode="IN" optional="false"/>
+        <override name="comments" optional="true" />
+    </service>
+
 </services>
