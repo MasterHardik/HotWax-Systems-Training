@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms xmlns="http://ofbiz.apache.org/Widget-Form">
+    <form name="MasterTableCreateForm" type="single" target="createMasterTable">
+        <!-- We have this utility in OFBiz to render form based on service definition.
+            Service attributes will automatically lookedup and will be shown on form
+       -->
+        <auto-fields-service service-name="createMasterTable"/>
+        <field name="masterTableTypeId" title="${uiLabelMap.CommonType}">
+            <drop-down allow-empty="false" current-description="">
+                <!--                    creating a dynamic drop down option from db-->
+                <entity-options description="${description}" key-field-name="masterTableTypeId" entity-name="masterTableType">
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.commonAdd}"><submit button-type="button"/></field>
+    </form>
+</forms>

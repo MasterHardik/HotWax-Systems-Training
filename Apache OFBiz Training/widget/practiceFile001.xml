@@ -9,7 +9,7 @@
                 <set field="headerItem" value="main"/>
             </actions>
             <widgets>
-<!--                <label text="Hii from practiceFile.xml"/>-->
+                <label text="+------ Hii from practiceFile.xml got included as include-form...  ------+ "/>
             </widgets>
         </section>
     </screen>
