@@ -19,7 +19,7 @@ under the License.
 -->
 
 <screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns="http://ofbiz.apache.org/Widget-Screen" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Screen http://ofbiz.apache.org/dtds/widget-screen.xsd">
+         xmlns="http://ofbiz.apache.org/Widget-Screen" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Screen http://ofbiz.apache.org/dtds/widget-screen.xsd">
 
     <screen name="main-decorator">
         <section>
@@ -53,22 +53,24 @@ under the License.
             <actions>
             </actions>
             <widgets>
-<!--                <label text="**** In the document screen top widget **** "/>-->
+                <!--                <label text="**** In the document screen top widget **** "/>-->
                 <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
-<!--                    <label text="inside main-decorator"/> : this is unreachable-->
+                    <!--                    <label text="inside main-decorator"/> : this is unreachable-->
                     <decorator-section name="body">
                         <label text="******* Hi from body decorator section *****    "/>
-<!--                        <label text="inside-body"/>-->
+                        <!--                        <label text="inside-body"/>-->
                         <section>
                             <condition>
                                 <if-has-permission permission="HOTWAX-SYSTEMS-TRAINING" action="_VIEW"/>
                             </condition>
                             <widgets>
                                 <label text="(: Speaking from the widget :) "/>
-<!--                                <include-screen name="practiceFile001" location="component://HotWax-Systems-Training/widget/practiceFile001.xml"/>-->
+                                <!--                                <include-screen name="practiceFile001" location="component://HotWax-Systems-Training/widget/practiceFile001.xml"/>-->
                                 <screenlet title="Add data to Master Table">
                                     <include-form name="MasterTableCreateForm" location="component://HotWax-Systems-Training/widget/FormPractice.xml"/>
+                                    <!--                                    <include-form name="FindMasterTable" location="component://HotWax-Systems-Training/widget/FormPractice.xml"/>-->
                                 </screenlet>
+
                             </widgets>
                             <fail-widgets>
                                 <label style="h3">${uiLabelMap.HotWax-Systems-TrainingViewPermissionError}</label>

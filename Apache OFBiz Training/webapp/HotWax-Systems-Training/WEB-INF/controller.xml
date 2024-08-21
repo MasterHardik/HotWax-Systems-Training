@@ -46,6 +46,11 @@ under the License.
         <event type="service" invoke="createMasterTable"/>
         <response name="sucess" type="view"></response>
     </request-map>
+    <request-map uri="FindMasterTable">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="FindMasterTable"/>
+    </request-map>
     <!-- View Mappings -->
+    <view-map name="FindMasterTable" type="screen" page="component://HotWax-Systems-Training/widget/HotWax-Systems-TrainingScreens.xml#FindMasterTable"/>
     <view-map name="main" type="screen" page="component://HotWax-Systems-Training/widget/HotWax-Systems-TrainingScreens.xml#main"/>
 </site-conf>
