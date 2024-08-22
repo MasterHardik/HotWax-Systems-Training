@@ -44,7 +44,7 @@ under the License.
     <request-map uri="createMasterTable">
         <security https="true" auth="true"/>
         <event type="service" invoke="createMasterTable"/>
-        <response name="sucess" type="view"></response>
+        <response name="success" type="view"></response>
     </request-map>
     <request-map uri="FindMasterTable">
         <security https="true" auth="true"/>

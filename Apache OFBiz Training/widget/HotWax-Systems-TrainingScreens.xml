@@ -35,11 +35,40 @@ under the License.
                             </condition>
                             <widgets>
                                 <decorator-screen name="FindScreenDecorator" location="component://common/widget/CommonScreens.xml">
+                                </decorator-screen>
+                            </widgets>
+                            <fail-widgets>
+                                <label style="h3">${uiLabelMap.OfbizDemoViewPermissionError}</label>
+                            </fail-widgets>
+                        </section>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    <!-- Find and list all mastertable in a tabular format -->
+    <screen name="FindMasterTable">
+        <section>
+            <actions>
+                <set field="headerItem" value="FindMasterTable"/>
+                <set field="titleProperty" value="PageTitleFindOfbizDemo"/>
+                <set field="ofbizDemoCtx" from-field="parameters"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <label text="sfdfdfd"/>
+                        <section>
+                            <condition>
+                                <not><if-has-permission permission="OFBIZDEMO" action="_VIEW"/></not>
+                            </condition>
+                            <widgets>
+                                <decorator-screen name="FindScreenDecorator" location="component://common/widget/CommonScreens.xml">
                                     <decorator-section name="search-options">
-                                        <include-form name="FindOfbizDemo" location="component://ofbizDemo/widget/OfbizDemoForms.xml"/>
+                                        <include-form name="FindMasterTable" location="component://HotWax-Systems-Training/widget/FormPractice.xml"/>
                                     </decorator-section>
                                     <decorator-section name="search-results">
-                                        <include-form name="ListOfbizDemo" location="component://ofbizDemo/widget/OfbizDemoForms.xml"/>
+                                        <include-form name="ListMasterTable" location="component://HotWax-Systems-Training/widget/FormPractice.xml"/>
                                     </decorator-section>
                                 </decorator-screen>
                             </widgets>
@@ -52,5 +81,4 @@ under the License.
             </widgets>
         </section>
     </screen>
-
 </screens>

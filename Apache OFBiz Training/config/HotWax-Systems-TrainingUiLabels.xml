@@ -33,4 +33,23 @@ under the License.
     <property key="HotWax-Systems-TrainingViewPermissionError">
         <value xml:lang="en">You are not allowed to view this page.</value>
     </property>
+
+    <property key="MasterTableFind">
+        <value xml:lang="en">Find</value>
+    </property>
+    <property key="MasterTableFirstName">
+        <value xml:lang="en">First Name</value>
+    </property>
+    <property key="MasterTableId">
+        <value xml:lang="en">Master Table Id</value>
+    </property>
+    <property key="MasterTableTypeId">
+        <value xml:lang="en">Master Table Type Id</value>
+    </property>
+    <property key="MasterTableLastName">
+        <value xml:lang="en">Last Name</value>
+    </property>
+    <property key="MasterTableComment">
+        <value xml:lang="en">Comment</value>
+    </property>
 </resource>

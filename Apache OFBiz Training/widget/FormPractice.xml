@@ -17,7 +17,7 @@
     </form>
 
     <form name="FindMasterTable" type="single" target="FindMasterTable" default-entity-name="masterTable">
-        <field name="noConditionfind"><hidden value="Y"/><!-- if this isn't there then with all fields empty no query will be done i.e. all the records will be visible--></field>
+        <field name="noConditionFind"><hidden value="Y"/><!-- if this isn't there then with all fields empty no query will be done i.e. all the records will be visible--></field>
         <field name="masterTableId" title="${uiLabelMap.masterTableId}"><text-find/></field>
         <field name="firstName" title="${uiLabelMap.masterTableFirstName}"><text-find/></field>
         <field name="lastName" title="${uiLabelMap.masterTableLastName}"><text-find/></field>
@@ -32,22 +32,21 @@
 
     </form>
 
-
-    <form name="ListMasterTable" type="list" list-name="listIt" paginate-target="FindmasterTable" default-entity-name="masterTable" separate-columns="true" odd-row-style="alternate-row" header-row-style="header-row-2" default-table-style="basic-table hover-bar">
+    <form name="ListMasterTable" type="list" list-name="listIt" paginate-target="FindMasterTable" default-entity-name="MasterTable" separate-columns="true" odd-row-style="alternate-row" header-row-style="header-row-2" default-table-style="basic-table hover-bar">
         <actions>
             <!--        Preparing search results for user query by using OFBiz stock service to perform find operation on a single or view entity-->
-            <service service-name="performFind" result-map="result" result-map-list="listIt">
-                <field-map field-name="inputFields" from-field="ofbizDemoCtx"/>
-                <field-map field-name="entityName" value="OfbizDemo"/>
-                <field-map field-name="orderBy" from-field="parameters.sortField"/>
-                <field-map field-name="viewIndex" from-field="viewIndex"/>
-                <field-map field-name="viewSize" from-field="viewSize"/>
-            </service>
+            <!--            <service service-name="performFind" result-map="result" result-map-list="listIt">-->
+            <!--                <field-map field-name="inputFields" from-field="HotWax-Systems-TrainingCtx"/>-->
+            <!--                <field-map field-name="entityName" value="MasterTable"/>-->
+            <!--                <field-map field-name="orderBy" from-field="parameters.sortField"/>-->
+            <!--                <field-map field-name="viewIndex" from-field="viewIndex"/>-->
+            <!--                <field-map field-name="viewSize" from-field="viewSize"/>-->
+            <!--            </service>-->
         </actions>
-        <field name="masterTableId" title="${uiLabelMap.masterTableId}"><display/></field>
-        <field name="masterTableTypeId" title="${uiLabelMap.masterTableType}"><display-entity entity-name="masterTableType"/></field>
-        <field name="firstName" title="${uiLabelMap.masterTableFirstName}" sort-field="true"><display/></field>
-        <field name="lastName" title="${uiLabelMap.masterTableLastName}" sort-field="true"><display/></field>
-        <field name="comments" title="${uiLabelMap.masterTableComment}"><display/></field>
+        <field name="masterTableId" title="${uiLabelMap.MasterTableId}"><display/></field>
+        <field name="masterTableTypeId" title="${uiLabelMap.MasterTableType}"><display-entity entity-name="masterTableType"/></field>
+        <field name="firstName" title="${uiLabelMap.MasterTableFirstName}" sort-field="true"><display/></field>
+        <field name="lastName" title="${uiLabelMap.MasterTableLastName}" sort-field="true"><display/></field>
+        <field name="comments" title="${uiLabelMap.MasterTableComment}"><display/></field>
     </form>
 </forms>
