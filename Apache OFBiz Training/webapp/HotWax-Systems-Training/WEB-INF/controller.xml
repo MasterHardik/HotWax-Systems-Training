@@ -19,7 +19,7 @@ under the License.
 -->
 
 <site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns="http://ofbiz.apache.org/Site-Conf" xsi:schemaLocation="http://ofbiz.apache.org/Site-Conf http://ofbiz.apache.org/dtds/site-conf.xsd">
+           xmlns="http://ofbiz.apache.org/Site-Conf" xsi:schemaLocation="http://ofbiz.apache.org/Site-Conf http://ofbiz.apache.org/dtds/site-conf.xsd">
     <!-- The controller elements that are common to all OFBiz components
          can be found in the following xml file. A component can override the
          elements found in the common-controller.xml file. -->
@@ -49,6 +49,25 @@ under the License.
     <request-map uri="FindMasterTable">
         <security https="true" auth="true"/>
         <response name="success" type="view" value="FindMasterTable"/>
+    </request-map>
+
+    <request-map uri="createOfbizDemoEvent">
+        <security https="true" auth="true"/>
+        <event type="java" path="com.companyname.ofbizdemo.events.OfbizDemoEvents" invoke="createOfbizDemoEvent"/>
+        <response name="success" type="view" value="main"/>
+        <response name="error" type="view" value="main"/>
+    </request-map>
+    <!--    <request-map uri="createMasterTable">-->
+    <!--        <security https="true" auth="true"/>-->
+    <!--        <event type="service" invoke="createMasterTableByJavaService"/>-->
+    <!--        <response name="success" type="view" value="main"/>-->
+    <!--    </request-map>-->
+
+    <request-map uri="createMasterTableEvent">
+        <security https="true" auth="true"/>
+        <event type="java" path="com.companyname.HotWax_Systems_Training.events.MasterTableEvents" invoke="createOfbizDemoEvent"/>
+        <response name="success" type="view" value="main"/>
+        <response name="error" type="view" value="main"/>
     </request-map>
 
     <!-- View Mappings -->
