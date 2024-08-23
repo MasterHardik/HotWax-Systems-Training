@@ -19,6 +19,6 @@ under the License.
 -->
 
 <entity-engine-xml>
-    <MasterTableType masterTableTypeId="INTERNAL" description="Internal table - Office"/>
-    <MasterTableType masterTableTypeId="EXTERNAL" description="External table - On Site"/>
+    <masterTableType masterTableTypeId="INTERNAL" description="Internal table - Office"/>
+    <masterTableType masterTableTypeId="EXTERNAL" description="External table - On Site"/>
 </entity-engine-xml>

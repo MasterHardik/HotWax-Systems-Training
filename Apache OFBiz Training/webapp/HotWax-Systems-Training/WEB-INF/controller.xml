@@ -19,7 +19,7 @@ under the License.
 -->
 
 <site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xmlns="http://ofbiz.apache.org/Site-Conf" xsi:schemaLocation="http://ofbiz.apache.org/Site-Conf http://ofbiz.apache.org/dtds/site-conf.xsd">
+        xmlns="http://ofbiz.apache.org/Site-Conf" xsi:schemaLocation="http://ofbiz.apache.org/Site-Conf http://ofbiz.apache.org/dtds/site-conf.xsd">
     <!-- The controller elements that are common to all OFBiz components
          can be found in the following xml file. A component can override the
          elements found in the common-controller.xml file. -->
@@ -44,7 +44,7 @@ under the License.
     <request-map uri="createMasterTable">
         <security https="true" auth="true"/>
         <event type="service" invoke="createMasterTable"/>
-        <response name="success" type="view"></response>
+        <response name="success" type="view" value="main"></response>
     </request-map>
     <request-map uri="FindMasterTable">
         <security https="true" auth="true"/>
@@ -57,20 +57,27 @@ under the License.
         <response name="success" type="view" value="main"/>
         <response name="error" type="view" value="main"/>
     </request-map>
-    <!--    <request-map uri="createMasterTable">-->
-    <!--        <security https="true" auth="true"/>-->
-    <!--        <event type="service" invoke="createMasterTableByJavaService"/>-->
-    <!--        <response name="success" type="view" value="main"/>-->
-    <!--    </request-map>-->
+<!--    <request-map uri="createMasterTable">-->
+<!--        <security https="true" auth="true"/>-->
+<!--        <event type="service" invoke="createMasterTableByJavaService"/>-->
+<!--        <response name="success" type="view" value="main"/>-->
+<!--    </request-map>-->
 
     <request-map uri="createMasterTableEvent">
         <security https="true" auth="true"/>
-        <event type="java" path="com.companyname.HotWax_Systems_Training.events.MasterTableEvents" invoke="createOfbizDemoEvent"/>
+        <event type="java" path="com.companyname.HotWax_Systems_Training.events.MasterTableEvents" invoke="createMasterTableEvent"/>
         <response name="success" type="view" value="main"/>
         <response name="error" type="view" value="main"/>
+    </request-map>
+
+    <request-map uri="AddMasterTableFtl">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="AddMasterTableFtl"/>
     </request-map>
 
     <!-- View Mappings -->
     <view-map name="FindMasterTable" type="screen" page="component://HotWax-Systems-Training/widget/HotWax-Systems-TrainingScreens.xml#FindMasterTable"/>
     <view-map name="main" type="screen" page="component://HotWax-Systems-Training/widget/HotWax-Systems-TrainingScreens.xml#main"/>
+    <view-map name="AddMasterTableFtl" type="screen" page="component://HotWax-Systems-Training/widget/HotWax-Systems-TrainingScreens.xml#AddMasterTableFtl"/>
+
 </site-conf>

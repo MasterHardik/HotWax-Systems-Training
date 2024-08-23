@@ -21,7 +21,7 @@ public class MasterTableEvents {
         LocalDispatcher dispatcher = (LocalDispatcher) request.getAttribute("dispatcher");
         GenericValue userLogin = (GenericValue) request.getSession().getAttribute("userLogin");
 
-        String masterTableTypeId = request.getParameter("MasterTableTypeId");
+        String masterTableTypeId = request.getParameter("masterTableTypeId");
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
 
@@ -34,7 +34,7 @@ public class MasterTableEvents {
 
         try {
             Debug.logInfo("=======Creating OfbizDemo record in event using service createOfbizDemoByGroovyService=========", module);
-            dispatcher.runSync("createMasterTableByGroovyService", UtilMisc.toMap("MasterTableTypeId", masterTableTypeId,
+            dispatcher.runSync("createMasterTableByGroovyService", UtilMisc.toMap("masterTableTypeId", masterTableTypeId,
                     "firstName", firstName, "lastName", lastName, "comments", comments, "userLogin", userLogin));
         } catch (GenericServiceException e) {
             String errMsg = "Unable to create new records in OfbizDemo entity: " + e.toString();

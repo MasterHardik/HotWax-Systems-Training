@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms xmlns="http://ofbiz.apache.org/Widget-Form">
     <form name="MasterTableCreateForm" type="single" target="createMasterTable">
+<!--    Bellow line will hit the event we created above line target vas for invoking a service and doing the same addition task-->
+<!--    <form name="MasterTableCreateForm" type="single" target="createMasterTableEvent">-->
         <!-- We have this utility in OFBiz to render form based on service definition.
             Service attributes will automatically lookedup and will be shown on form
        -->
@@ -29,19 +31,19 @@
             </drop-down>
         </field>
         <field name="searchButton" title="${uiLabelMap.CommonFind}" widget-style="smallSubmit"><submit button-type="button" image-location="/images/icons/magnifier.png"/></field>
-
+        
     </form>
 
     <form name="ListMasterTable" type="list" list-name="listIt" paginate-target="FindMasterTable" default-entity-name="MasterTable" separate-columns="true" odd-row-style="alternate-row" header-row-style="header-row-2" default-table-style="basic-table hover-bar">
         <actions>
-            <!--        Preparing search results for user query by using OFBiz stock service to perform find operation on a single or view entity-->
-            <!--            <service service-name="performFind" result-map="result" result-map-list="listIt">-->
-            <!--                <field-map field-name="inputFields" from-field="HotWax-Systems-TrainingCtx"/>-->
-            <!--                <field-map field-name="entityName" value="MasterTable"/>-->
-            <!--                <field-map field-name="orderBy" from-field="parameters.sortField"/>-->
-            <!--                <field-map field-name="viewIndex" from-field="viewIndex"/>-->
-            <!--                <field-map field-name="viewSize" from-field="viewSize"/>-->
-            <!--            </service>-->
+<!--        Preparing search results for user query by using OFBiz stock service to perform find operation on a single or view entity-->
+<!--            <service service-name="performFind" result-map="result" result-map-list="listIt">-->
+<!--                <field-map field-name="inputFields" from-field="HotWax-Systems-TrainingCtx"/>-->
+<!--                <field-map field-name="entityName" value="MasterTable"/>-->
+<!--                <field-map field-name="orderBy" from-field="parameters.sortField"/>-->
+<!--                <field-map field-name="viewIndex" from-field="viewIndex"/>-->
+<!--                <field-map field-name="viewSize" from-field="viewSize"/>-->
+<!--            </service>-->
         </actions>
         <field name="masterTableId" title="${uiLabelMap.MasterTableId}"><display/></field>
         <field name="masterTableTypeId" title="${uiLabelMap.MasterTableType}"><display-entity entity-name="masterTableType"/></field>

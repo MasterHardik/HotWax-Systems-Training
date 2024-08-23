@@ -20,9 +20,10 @@
         <field name="lastName" type="name"></field>
         <field name="comments" type="comment"></field>
         <prim-key field="masterTableId"/>
-        <relation type="one" fk-name="masterTableTypeId" rel-entity-name="masterTableType">
+        <relation type="one" fk-name="ODEM_OD_TYPE_ID" rel-entity-name="masterTableType">
             <key-map field-name="masterTableTypeId"/>
         </relation>
     </entity>
+
 
 </entitymodel>

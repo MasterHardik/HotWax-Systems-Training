@@ -19,7 +19,7 @@ under the License.
 -->
 
 <screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://ofbiz.apache.org/Widget-Screen" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Screen http://ofbiz.apache.org/dtds/widget-screen.xsd">
+        xmlns="http://ofbiz.apache.org/Widget-Screen" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Screen http://ofbiz.apache.org/dtds/widget-screen.xsd">
 
     <screen name="main">
         <section>
@@ -60,7 +60,7 @@ under the License.
                         <label text="sfdfdfd"/>
                         <section>
                             <condition>
-                                <not><if-has-permission permission="OFBIZDEMO" action="_VIEW"/></not>
+                               <not><if-has-permission permission="OFBIZDEMO" action="_VIEW"/></not>
                             </condition>
                             <widgets>
                                 <decorator-screen name="FindScreenDecorator" location="component://common/widget/CommonScreens.xml">
@@ -76,6 +76,32 @@ under the License.
                                 <label style="h3">${uiLabelMap.OfbizDemoViewPermissionError}</label>
                             </fail-widgets>
                         </section>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+<!--   ftl screen  -->
+    <screen name="AddMasterTableFtl">
+        <section>
+            <actions>
+                <set field="titleProperty" value="PageTitleAddOfbizDemos"/>
+                <set field="headerItem" value="addOfbizDemoFtl"/>
+                <script location="component://HotWax-Systems-Training/webapp/HotWax-Systems-Training/WEB-INF/actions/crud/ListMasterTable.groovy"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <screenlet title="${uiLabelMap.OfbizDemoListOfbizDemos}">
+                            <platform-specific>
+                                <html><html-template location="component://HotWax-Systems-Training/webapp/HotWax-Systems-Training/crud/ListMasterTable.ftl"/></html>
+                            </platform-specific>
+                        </screenlet>
+                        <screenlet title="${uiLabelMap.OfbizDemoAddOfbizDemoServiceByFtl}">
+                            <platform-specific>
+                                <html><html-template location="component://HotWax-Systems-Training/webapp/HotWax-Systems-Training/crud/AddMasterTable.ftl"/></html>
+                            </platform-specific>
+                        </screenlet>
                     </decorator-section>
                 </decorator-screen>
             </widgets>
