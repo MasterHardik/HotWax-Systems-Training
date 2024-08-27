@@ -37,10 +37,13 @@ under the License.
     <property key="MasterTableFind">
         <value xml:lang="en">Find</value>
     </property>
+    <property key="OfbizDemoAddFtl">
+        <value xml:lang="en">Find and List Page</value>
+    </property>
     <property key="MasterTableFirstName">
         <value xml:lang="en">First Name</value>
     </property>
-    <property key="MasterTableId">
+    <property key="masterTableId">
         <value xml:lang="en">Master Table Id</value>
     </property>
     <property key="MasterTableTypeId">
@@ -51,5 +54,8 @@ under the License.
     </property>
     <property key="MasterTableComment">
         <value xml:lang="en">Comment</value>
+    </property>
+    <property key="MasterLoginFtl">
+        <value xml:lang="en">Login</value>
     </property>
 </resource>

@@ -1,9 +1,9 @@
 <div class="screenlet-body">
         <h2>====== Hello from <i>ListMasterTable.ftl</i> para ======</h2>
-  <#if masterTableList?has_content>
+  <#if masterTable?has_content>
     <table cellspacing=0 cellpadding=2 border=0 class="basic-table">
       <thead><tr>
-        <th>${uiLabelMap.MasterTableId}</th>
+        <th>${uiLabelMap.masterTableId}</th>
         <th>${uiLabelMap.MasterTableType}</th>
         <th>${uiLabelMap.MasterTableFirstName}</th>
         <th>${uiLabelMap.MasterTableLastName}</th>

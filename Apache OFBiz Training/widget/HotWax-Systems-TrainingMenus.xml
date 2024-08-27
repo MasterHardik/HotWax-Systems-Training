@@ -23,5 +23,6 @@ under the License.
 <!--        <menu-item name="main" title="${uiLabelMap.CommonMain}"><link target="main"/></menu-item>-->
         <menu-item name="FindMasterTable" title="${uiLabelMap.MasterTableFind}"><link target="FindMasterTable"/></menu-item>
         <menu-item name="addMasterTableFtl" title="${uiLabelMap.OfbizDemoAddFtl}"><link target="AddMasterTableFtl"/></menu-item>
+        <menu-item name="MasterLogin" title="${uiLabelMap.MasterLoginFtl}"><link target="MasterLoginFtl"/></menu-item>
     </menu>
 </menus>

@@ -25,22 +25,31 @@ under the License.
         <section>
             <actions>
                 <set field="headerItem" value="main"/><!-- this highlights the selected menu-item with name "main" -->
+                <set field="titleProperty" value="PageTitleFindOfbizDemo"/>
             </actions>
             <widgets>
                 <decorator-screen name="HotWax-Systems-TrainingCommonDecorator" location="${parameters.mainDecoratorLocation}">
                     <decorator-section name="body">
-                        <section>
-                            <condition>
-                                <if-has-permission permission="OFBIZDEMO" action="_VIEW"/>
-                            </condition>
-                            <widgets>
-                                <decorator-screen name="FindScreenDecorator" location="component://common/widget/CommonScreens.xml">
-                                </decorator-screen>
-                            </widgets>
-                            <fail-widgets>
-                                <label style="h3">${uiLabelMap.OfbizDemoViewPermissionError}</label>
-                            </fail-widgets>
-                        </section>
+                        <label style="h4" text="${uiLabelMap.OfbizDemoListOfbizDemos}"/>
+                        <platform-specific>
+                            <html><html-template location="component://HotWax-Systems-Training/webapp/HotWax-Systems-Training/crud/ListMasterTable.ftl"/></html>
+                        </platform-specific>
+                        <label style="h4" text="${uiLabelMap.OfbizDemoAddOfbizDemoFtl}"/>
+                        <platform-specific>
+                            <html><html-template location="component://HotWax-Systems-Training/webapp/HotWax-Systems-Training/crud/AddMasterTable.ftl"/></html>
+                        </platform-specific>
+<!--                        <section>-->
+<!--                            <condition>-->
+<!--                                <if-has-permission permission="OFBIZDEMO" action="_VIEW"/>-->
+<!--                            </condition>-->
+<!--                            <widgets>-->
+<!--                                <decorator-screen name="FindScreenDecorator" location="component://common/widget/CommonScreens.xml">-->
+<!--                                </decorator-screen>-->
+<!--                            </widgets>-->
+<!--                            <fail-widgets>-->
+<!--                                <label style="h3">${uiLabelMap.OfbizDemoViewPermissionError}</label>-->
+<!--                            </fail-widgets>-->
+<!--                        </section>-->
                     </decorator-section>
                 </decorator-screen>
             </widgets>
@@ -51,7 +60,7 @@ under the License.
         <section>
             <actions>
                 <set field="headerItem" value="FindMasterTable"/>
-                <set field="titleProperty" value="PageTitleFindOfbizDemo"/>
+                <set field="titleProperty" value="Find and List"/>
                 <set field="ofbizDemoCtx" from-field="parameters"/>
             </actions>
             <widgets>
@@ -107,4 +116,52 @@ under the License.
             </widgets>
         </section>
     </screen>
+
+
+    <screen name="MasterLoginFtl">
+        <section>
+            <actions>
+                <set field="titleProperty" value="PageTitleAddOfbizDemos"/>
+                <set field="headerItem" value="addOfbizDemoFtl"/>
+<!--                <script location="component://ofbizDemo/webapp/ofbizDemo/WEB-INF/actions/crud/ListOfbizDemo.groovy"/>-->
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <label text="inside you MasterLoginFtl "/>
+                        <screenlet title="${uiLabelMap.MasterLogin}">
+                            <platform-specific>
+                                <html><html-template location="component://HotWax-Systems-Training/webapp/HotWax-Systems-Training/crud/MasterLogin.ftl"/></html>
+                            </platform-specific>
+                        </screenlet>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="success">
+        <section>
+            <actions>
+                <set field="titleProperty" value="SuccessPageTitle"/>
+                <set field="headerItem" value="successFtl"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <label text="Success!"/>
+                        <screenlet title="${uiLabelMap.SuccessMessage}">
+                            <platform-specific>
+                                <html>
+                                    <html-template location="component://HotWax-Systems-Training/webapp/HotWax-Systems-Training/crud/success.ftl"/>
+                                </html>
+                            </platform-specific>
+                        </screenlet>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+
 </screens>

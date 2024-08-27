@@ -74,10 +74,36 @@ under the License.
         <security https="true" auth="true"/>
         <response name="success" type="view" value="AddMasterTableFtl"/>
     </request-map>
+    
+    <request-map uri="MasterLoginFtl">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="MasterLoginFtl"/>
+    </request-map>
+
+
+<!--    <request-map uri="masterLogin">-->
+<!--&lt;!&ndash;        <security https="true" auth="false"/>&ndash;&gt;-->
+<!--        <security https="true" auth="true"/>-->
+<!--&lt;!&ndash;        <event type="java" path="org.apache.ofbiz.webapp.control.LoginWorker" invoke="login"/>&ndash;&gt;-->
+<!--        <response name="success" type="view" value="masterLogin"/>-->
+<!--&lt;!&ndash;        <response name="requirePasswordChange" type="view" value="requirePasswordChange"/>&ndash;&gt;-->
+<!--        <response name="error" type="view" value="login"/>-->
+<!--    </request-map>-->
+
+    <request-map uri="masterLogin">
+        <security https="true" auth="true"/>
+        <event type="java" path="com.companyname.HotWax_Systems_Training.masterLogin.masterLogin" invoke="simpleLogin"/>
+        <response name="success" type="view" value="masterLoginSuccess"/>
+        <!-- <response name="requirePasswordChange" type="view" value="requirePasswordChange"/> -->
+        <response name="error" type="view" value="MasterLoginFtl"/>
+    </request-map>
+
+
 
     <!-- View Mappings -->
     <view-map name="FindMasterTable" type="screen" page="component://HotWax-Systems-Training/widget/HotWax-Systems-TrainingScreens.xml#FindMasterTable"/>
     <view-map name="main" type="screen" page="component://HotWax-Systems-Training/widget/HotWax-Systems-TrainingScreens.xml#main"/>
     <view-map name="AddMasterTableFtl" type="screen" page="component://HotWax-Systems-Training/widget/HotWax-Systems-TrainingScreens.xml#AddMasterTableFtl"/>
-
+    <view-map name="MasterLoginFtl" type="screen" page="component://HotWax-Systems-Training/widget/HotWax-Systems-TrainingScreens.xml#MasterLoginFtl"/>
+    <view-map name="masterLoginSuccess" type="screen" page="component://HotWax-Systems-Training/widget/HotWax-Systems-TrainingScreens.xml#success"/>
 </site-conf>
