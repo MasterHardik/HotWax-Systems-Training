@@ -5,15 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Success</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #d4edda; /* Light green background */
-            color: #155724; /* Dark green text */
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-            }
         .container {
+        text-align:center;
         max-width: 600px;
         margin: 0 auto;
         padding: 20px;

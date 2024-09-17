@@ -98,7 +98,24 @@ under the License.
         <response name="error" type="view" value="MasterLoginFtl"/>
     </request-map>
 
+    <request-map uri="ImportXMLData">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="ImportXMLDataScreen"/>
+    </request-map>
 
+    <request-map uri="uploadXML">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="uploadXML"/>
+        <response name="success" type="view" value="masterLoginSuccess"/>
+        <response name="error" type="view" value="error"/>
+    </request-map>
+
+    <request-map uri="processXMLService">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="processXMLService"/>
+        <response name="success" type="view" value="masterLoginSuccess"/>
+        <response name="error" type="view" value="error"/>
+    </request-map>
 
     <!-- View Mappings -->
     <view-map name="FindMasterTable" type="screen" page="component://HotWax-Systems-Training/widget/HotWax-Systems-TrainingScreens.xml#FindMasterTable"/>
@@ -106,4 +123,5 @@ under the License.
     <view-map name="AddMasterTableFtl" type="screen" page="component://HotWax-Systems-Training/widget/HotWax-Systems-TrainingScreens.xml#AddMasterTableFtl"/>
     <view-map name="MasterLoginFtl" type="screen" page="component://HotWax-Systems-Training/widget/HotWax-Systems-TrainingScreens.xml#MasterLoginFtl"/>
     <view-map name="masterLoginSuccess" type="screen" page="component://HotWax-Systems-Training/widget/HotWax-Systems-TrainingScreens.xml#success"/>
+    <view-map name="ImportXMLDataScreen" type="screen" page="component://HotWax-Systems-Training/widget/HotWax-Systems-TrainingScreens.xml#ImportXMLDataScreen"/>
 </site-conf>

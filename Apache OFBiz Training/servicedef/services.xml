@@ -19,11 +19,10 @@ under the License.
 -->
 
 <services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
-    <description>HotWax-Systems-Training Services</description>
-    <vendor></vendor>
+          xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+    <description>Party Component Services</description>
+    <vendor>OFBiz</vendor>
     <version>1.0</version>
-
     <service name="noSyntaxError" engine="interface">
         <description>
             Dummy service to prevent empty files and syntax error - Remove when the 1st real service will be added here 
@@ -31,12 +30,11 @@ under the License.
     </service>
 
 
-    <!--    Custom service practice here -->
-
     <service name="createMasterTable" default-entity-name="masterTable" engine="entity-auto" invoke="create" auth="true" >
-        <description>This is service to create MasterTable Entity</description>
-        <auto-attributes include="pk" mode="OUT" optional="false" />
-        <auto-attributes include="nonpk" mode="IN" optional="false"/>
+    <description>This is service to create MasterTable Entity</description>
+    <auto-attributes include="pk" mode="OUT" optional="false" />
+    <auto-attributes include="nonpk" mode="IN" optional="false"/>
+    <!--    Custom service practice here -->
         <override name="comments" optional="true" />
     </service>
 
@@ -55,5 +53,36 @@ under the License.
         <auto-attributes include="nonpk" mode="IN" optional="false"/>
         <override name="comments" optional="true"/>
     </service>
-    
+
+    <!--    my custom XML Data import logic -->
+<!--    <service name="processXMLService" engine="java"-->
+<!--             location="com.companyname.HotWax_Systems_Training.services.ProcessXMLClass" invoke="processXMLService" auth="true">-->
+
+    <service name="processXMLService" engine="java"
+             location="com.companyname.HotWax_Systems_Training.services.ProcessPIESXMLService" invoke="processPIESXML" auth="true">
+        <description>Imports a xml file data or text string and print it on console</description>
+        <attribute name="fileName" type="java.nio.ByteBuffer" mode="IN" optional="false" allow-html="any"/>
+        <attribute name="success" type="String" mode="OUT" optional="false"/>
+    </service>
+    <!-- END of Custom XML Import logic    -->
+
+
+
+<!--    <service name="uploadXML" engine="java" location="com.companyname.HotWax_Systems_Training.services.UploadXMLService" invoke="uploadXML"  auth="true" >-->
+<!--        <description>Service to handle XML file upload and parsing</description>-->
+<!--        <attribute name="fileName" type="String" mode="IN" optional="false"/>-->
+<!--        <attribute name="result" type="Map" mode="OUT" optional="true"/>-->
+<!--        <attribute name="success" type="String" mode="OUT" optional="true"/>-->
+<!--        <attribute name="errorMessage" type="String" mode="OUT" optional="true"/>-->
+<!--    </service>-->
+
+    <!--    <service name="uploadXML"-->
+<!--             location="org.example.UploadXMLService"-->
+<!--             invoke="uploadXML">-->
+<!--        <description>Upload XML file and parse it</description>-->
+<!--        <attribute name="file" type="org.apache.commons.fileupload.FileItem" mode="IN"/>-->
+<!--&lt;!&ndash;        <parameter name="result" type="String" mode="OUT"/>&ndash;&gt;-->
+<!--&lt;!&ndash;        <default-entity-engine-name>java</default-entity-engine-name>&ndash;&gt;-->
+<!--    </service>-->
+
 </services>

@@ -163,5 +163,27 @@ under the License.
         </section>
     </screen>
 
-
+<!--    ImportXMLDataScreen-->
+    <screen name="ImportXMLDataScreen">
+        <section>
+            <actions>
+                <set field="PageTitle" value="XML Import"/>
+                <set field="headerItem" value="XML Import Page"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+<!--                        <label text="Label for ImportXMLDataScreen!"/>-->
+                        <screenlet title="Screen For XML Data Import">
+                            <platform-specific>
+                                <html>
+                                    <html-template location="component://HotWax-Systems-Training/webapp/HotWax-Systems-Training/XMLImport/ImportXMLFile.ftl"/>
+                                </html>
+                            </platform-specific>
+                        </screenlet>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
 </screens>
