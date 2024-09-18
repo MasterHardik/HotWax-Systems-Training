@@ -17,9 +17,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -27,11 +25,69 @@ import java.util.Map;
 
 public class ProcessPIESXMLService {
 
+    private static String getTextContent(Element element, String tagName) {
+        NodeList nodeList = element.getElementsByTagName(tagName);
+        if (nodeList.getLength() > 0) {
+            return nodeList.item(0).getTextContent();
+        }
+        return "";
+    }
+
+    public static InputStream byteBufferToInputStream(ByteBuffer buffer) {
+        byte[] bytes = new byte[buffer.remaining()];
+        buffer.get(bytes);
+        return new ByteArrayInputStream(bytes);
+    }
+
+
+    public static Document parseXML(InputStream inputStream) {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        try {
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            return builder.parse(inputStream);
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public static void extractDataFromXML(Document document) {
+        if (document != null) {
+            Element rootElement = document.getDocumentElement();
+            NodeList itemList = rootElement.getElementsByTagName("Item");
+
+            for (int i = 0; i < itemList.getLength(); i++) {
+                Element itemElement = (Element) itemList.item(i);
+
+                String baseItemId = getTextContent(itemElement, "BaseItemID");
+                String brandLabel = getTextContent(itemElement, "BrandLabel");
+                String itemEffectiveDate = getTextContent(itemElement, "ItemEffectiveDate");
+                String availableDate = getTextContent(itemElement, "AvailableDate");
+                String hazardousMaterialCode = getTextContent(itemElement, "HazardousMaterialCode");
+
+                System.out.println("BaseItemID: " + baseItemId);
+                System.out.println("BrandLabel: " + brandLabel);
+                System.out.println("ItemEffectiveDate: " + itemEffectiveDate);
+                System.out.println("AvailableDate: " + availableDate);
+                System.out.println("HazardousMaterialCode: " + hazardousMaterialCode);
+            }
+        }
+    }
     public static Map<String, Object> processPIESXML(DispatchContext dctx, Map<String, Object> context) {
         Debug.log("========Debug log START 01==================");
         System.out.println("======== Code reached here START ==================");
         ByteBuffer fileBuffer = (ByteBuffer) context.get("fileName");
+
+        /* ===== Logic Start ========== */
+        InputStream inputStream = byteBufferToInputStream(fileBuffer);
+        Document document = parseXML(inputStream);
+        extractDataFromXML(document);
+        /* ======= Logic End ============ */
+
         String successMessage;
+
+
 
         try {
             // Convert the ByteBuffer to a String for processing
