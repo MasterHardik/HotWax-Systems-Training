@@ -168,7 +168,55 @@ public class ProcessPIESXMLService {
         Debug.logInfo("Product created successfully with productId: " + productId, MODULE);
     }
 
-        /*=======  END ======== */
+    public static void storeProductDescriptions(Delegator delegator, String productId, Element descriptionElements) throws GenericEntityException {
+        Timestamp nowTimestamp = UtilDateTime.nowTimestamp(); // Current timestamp
+        NodeList descriptionList = descriptionElements.getElementsByTagName("Description"); // Change here
+
+        for (int i = 0; i < descriptionList.getLength(); i++) {
+            // Extract data from each Description element
+            Element descriptionElement = (Element) descriptionList.item(i);
+            String languageCode = descriptionElement.getAttribute("LanguageCode");
+            String descriptionCode = descriptionElement.getAttribute("DescriptionCode");
+            String sequenceAttr = descriptionElement.getAttribute("Sequence");
+            String descriptionText = descriptionElement.getTextContent();
+
+            // Generate a new ContentId
+            String contentId = delegator.getNextSeqId("Content");
+            System.out.println(languageCode + descriptionCode + sequenceAttr + descriptionText + contentId);
+
+            // Create a new record in the Content table
+            GenericValue content = delegator.makeValue("Content");
+            content.set("contentId", contentId);
+            content.set("contentName", descriptionCode);  // Mapping description code (e.g., ABR, DES)
+            content.set("description", descriptionText);  // Storing the actual description text
+            content.set("localeString", languageCode);    // Storing language code (e.g., EN)
+            content.set("createdStamp", nowTimestamp);    // Current timestamp
+            content.set("lastUpdatedStamp", nowTimestamp); // Set last updated timestamp
+
+            // Save Content record
+            delegator.create(content);
+
+            // Now associate this content with the product in the ProductContent table
+            GenericValue productContent = delegator.makeValue("ProductContent");
+            productContent.set("contentId", contentId);                      // Linking the generated contentId
+            productContent.set("productContentTypeId", "DESCRIPTION");       // Set productContentTypeId to DESCRIPTION
+            productContent.set("productId", productId);                      // Associating the content with the product
+            productContent.set("sequenceNum", sequenceAttr);                 // Sequence number from XML
+            productContent.set("fromDate", nowTimestamp);                    // Set fromDate as the current timestamp
+            productContent.set("createdStamp", nowTimestamp);                // Current timestamp
+            productContent.set("lastUpdatedStamp", nowTimestamp);            // Last updated timestamp
+
+            // Save ProductContent record
+            delegator.create(productContent);
+
+            Debug.logInfo("Descriptions stored successfully with contentId: " + contentId, MODULE);
+        }
+
+        Debug.logInfo("Descriptions stored successfully for productId: " + productId, MODULE);
+    }
+
+
+    /*=======  END ======== */
     public static void extractDataFromXML(DispatchContext dctx,Document document) {
         if (document != null) {
             Element rootElement = document.getDocumentElement();
@@ -207,6 +255,12 @@ public class ProcessPIESXMLService {
                 createHazmatFeature(delegator,hazardousMaterialCode,partNumber);
                 try {
                     saveItemLevelGTIN(delegator,itemElement, partNumber);
+                } catch (GenericEntityException e) {
+                    throw new RuntimeException(e);
+                }
+                // Description
+                try {
+                    storeProductDescriptions(delegator,partNumber,itemElement);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
@@ -347,3 +401,4 @@ public class ProcessPIESXMLService {
 }
 
 // The buffer get's depleted (or "Consumed" ) when you read from it.
+// when trying to delete the content  I first need to delete it's 3 reference in contenKeyword table.
