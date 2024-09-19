@@ -3,6 +3,7 @@ package com.companyname.HotWax_Systems_Training.services;
 import org.apache.calcite.util.Static;
 import org.apache.ofbiz.base.util.Debug;
 import org.apache.ofbiz.base.util.UtilDateTime;
+import org.apache.ofbiz.base.util.UtilMisc;
 import org.apache.ofbiz.entity.Delegator;
 import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.service.DispatchContext;
@@ -18,6 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ofbiz.entity.GenericEntityException;
@@ -215,6 +217,137 @@ public class ProcessPIESXMLService {
         Debug.logInfo("Descriptions stored successfully for productId: " + productId, MODULE);
     }
 
+    public static void createProductPriceType(Delegator delegator, String priceTypeId, String description) throws GenericEntityException {
+        // Check if the ProductPriceType already exists
+        GenericValue existingProductPriceType = EntityQuery.use(delegator)
+                .from("ProductPriceType")
+                .where("productPriceTypeId", priceTypeId)
+                .queryOne();
+
+        if (existingProductPriceType == null) {
+            // Create a new ProductPriceType record
+            GenericValue productPriceType = delegator.makeValue("ProductPriceType");
+            productPriceType.set("productPriceTypeId", priceTypeId);
+            productPriceType.set("description", description);
+            productPriceType.set("createdStamp", UtilDateTime.nowTimestamp());
+            productPriceType.set("lastUpdatedStamp", UtilDateTime.nowTimestamp());
+
+            // Save the new ProductPriceType
+            delegator.create(productPriceType);
+            Debug.logInfo("ProductPriceType created successfully with productPriceTypeId: " + priceTypeId, MODULE);
+        } else {
+            Debug.logInfo("ProductPriceType already exists with productPriceTypeId: " + priceTypeId, MODULE);
+        }
+    }
+    public static void storePrices(Delegator delegator, String productId, Element priceElements) throws GenericEntityException {
+        Timestamp nowTimestamp = UtilDateTime.nowTimestamp(); // Current timestamp
+        NodeList pricingList = priceElements.getElementsByTagName("Pricing");
+
+        for (int i = 0; i < pricingList.getLength(); i++) {
+            // Extract data from each Pricing element
+            Element pricingElement = (Element) pricingList.item(i);
+            String priceType = pricingElement.getAttribute("PriceType");
+            String priceSheetNumber = pricingElement.getElementsByTagName("PriceSheetNumber").item(0).getTextContent();
+            String currencyCode = pricingElement.getElementsByTagName("CurrencyCode").item(0).getTextContent();
+            String effectiveDateStr = pricingElement.getElementsByTagName("EffectiveDate").item(0).getTextContent();
+            String expirationDateStr = pricingElement.getElementsByTagName("ExpirationDate").item(0).getTextContent();
+
+            // Extract Price and UOM
+            Element priceUOMElement = (Element) pricingElement.getElementsByTagName("Price").item(0);
+            String priceValue = pricingElement.getElementsByTagName("Price").item(0).getTextContent();
+
+            // Extract PriceBreak and UOM (if needed)
+            Element priceBreakUOMElement = (Element) pricingElement.getElementsByTagName("PriceBreak").item(0);
+            String priceBreakUOM = priceBreakUOMElement.getAttribute("UOM");
+            String priceBreakValue = pricingElement.getElementsByTagName("PriceBreak").item(0).getTextContent();
+
+            // Check if the ProductPrice already exists
+            boolean priceExists = EntityQuery.use(delegator)
+                    .from("ProductPrice")
+                    .where("productId", productId,
+                            "productPriceTypeId", priceType,
+                            "currencyUomId", currencyCode,
+                            "productPricePurposeId", "PURCHASE")
+                    .queryCount() > 0;
+
+            if (!priceExists) {
+                // Generate a random PriceId
+                String priceId = delegator.getNextSeqId("ProductPrice");
+
+                // Create a new record in the ProductPrice table
+                GenericValue price = delegator.makeValue("ProductPrice");
+                price.set("productId", productId);
+                createProductPriceType(delegator, priceType, ""); // Ensure the price type is valid
+                price.set("productPriceTypeId", priceType);
+                price.set("currencyUomId", currencyCode);
+                price.set("fromDate", effectiveDateStr);
+                price.set("thruDate", expirationDateStr);
+                price.set("productPricePurpoexistingPrices.isEmpty()seId", "PURCHASE");
+                price.set("productStoreGroupId", "_NA_"); // Default value for store group
+                price.set("price", priceValue);
+                price.set("createdStamp", nowTimestamp);
+                price.set("lastUpdatedStamp", nowTimestamp);
+
+                // Save the ProductPrice record
+                delegator.create(price);
+                Debug.logInfo("Price stored successfully with productId+(PriceTypeId): " + priceId + ":" + priceType, MODULE);
+            } else {
+                Debug.logInfo("Price already exists for productId: " + productId + " with priceTypeId: " + priceType + " and currencyUomId: " + currencyCode, MODULE);
+            }
+        }
+
+        Debug.logInfo("Prices stored successfully for productId: " + productId, MODULE);
+    }
+
+    public static void storeExtendedProductInformation(Delegator delegator, String productId, Element extendedInfoElements) throws GenericEntityException {
+        Timestamp nowTimestamp = UtilDateTime.nowTimestamp(); // Current timestamp
+        NodeList extendedInfoList = extendedInfoElements.getElementsByTagName("ExtendedProductInformation");
+
+        // Check if the ProductFeatureType "EXPI" exists, if not, create it
+        if (EntityQuery.use(delegator)
+                .from("ProductFeatureType")
+                .where("productFeatureTypeId", "EXPI")
+                .queryCount() == 0) {
+            GenericValue productFeatureType = delegator.makeValue("ProductFeatureType");
+            productFeatureType.set("productFeatureTypeId", "EXPI");
+            productFeatureType.set("description", "Extended Product Information");
+            productFeatureType.set("createdStamp", nowTimestamp);
+            productFeatureType.set("lastUpdatedStamp", nowTimestamp);
+            delegator.create(productFeatureType);
+
+            Debug.logInfo("ProductFeatureType 'EXPI' created with description: Extended Product Information", MODULE);
+        }
+
+        for (int i = 0; i < extendedInfoList.getLength(); i++) {
+            // Extract data from each ExtendedProductInformation element
+            Element extendedInfoElement = (Element) extendedInfoList.item(i);
+            String expiCode = extendedInfoElement.getAttribute("EXPICode");
+            String languageCode = extendedInfoElement.getAttribute("LanguageCode");
+            String description = extendedInfoElement.getTextContent(); // Value inside the element
+
+            // Generate a random ProductFeatureId
+            String productFeatureId = delegator.getNextSeqId("ProductFeature");
+
+            // Create a new record in the ProductFeature table
+            GenericValue productFeature = delegator.makeValue("ProductFeature");
+            productFeature.set("productFeatureId", productFeatureId);
+            productFeature.set("productFeatureTypeId", "EXPI");
+            productFeature.set("idCode", expiCode);
+            productFeature.set("description", description);
+            productFeature.set("createdStamp", nowTimestamp);
+            productFeature.set("lastUpdatedStamp", nowTimestamp);
+
+            // Save ProductFeature record
+            delegator.create(productFeature);
+
+            // Create a new record in the ProductFeatureAppl table
+            associateFeatureWithProduct(delegator,productId,productFeatureId);
+
+            Debug.logInfo("Product Feature stored successfully with productId: " + productId + ", productFeatureId: " + productFeatureId + ", expiCode: " + expiCode, MODULE);
+        }
+        Debug.logInfo("Extended Product Information stored successfully for productId: " + productId, MODULE);
+    }
+
 
     /*=======  END ======== */
     public static void extractDataFromXML(DispatchContext dctx,Document document) {
@@ -264,6 +397,21 @@ public class ProcessPIESXMLService {
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
+
+                // Price
+                try {
+                    storePrices(delegator,partNumber,itemElement);
+                } catch (GenericEntityException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // EXPI
+                try {
+                    storeExtendedProductInformation(delegator,partNumber,itemElement);
+                } catch (GenericEntityException e) {
+                    throw new RuntimeException(e);
+                }
+
 //                    // Inserting Brand as a ProductFeature
 //                    if (!brandLabel.isEmpty()) {
 //                        GenericValue brandFeature = delegator.makeValue("ProductFeature");
