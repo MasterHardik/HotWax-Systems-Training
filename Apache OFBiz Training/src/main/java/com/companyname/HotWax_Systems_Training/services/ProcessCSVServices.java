@@ -57,10 +57,10 @@ public class ProcessCSVServices {
         injectPriceData(values[0], values[1], values[2], values[3], values[4], values[5], delegator);
     }
 
-    private static void injectPriceData(String mfg, String mfrSubLineCode, String partNumber, String regionId, String price, String corePrice, Delegator delegator) throws GenericEntityException {
+    private static void injectPriceData(String mfr, String mfrSubLineCode, String partNumber, String regionId, String price,String corePrice, Delegator delegator) throws GenericEntityException {
         String facilityGroupId = getOrCreateFacilityGroup(regionId, delegator);
-        String partyId = getOrCreateParty(mfg, delegator);
-        String productId = getOrCreateProduct(partNumber, mfrSubLineCode, partyId, delegator);
+        String partyId = getOrCreateParty("APH", delegator);
+        String productId = getOrCreateProduct(mfr,partNumber,mfrSubLineCode, partyId, delegator);
         upsertPriceRecord(productId, price, delegator);
     }
 
@@ -83,22 +83,18 @@ public class ProcessCSVServices {
         return facilityGroup.getString("facilityGroupId");
     }
 
-    private static String getOrCreateParty(String mfg, Delegator delegator) throws GenericEntityException {
-        GenericValue party = EntityQuery.use(delegator)
-                .from("Party")
-                .where("externalId", mfg)
-                .queryOne();
-
+    private static String getOrCreateParty(String externalId, Delegator delegator) throws GenericEntityException {
+        GenericValue party = EntityQuery.use(delegator).from("Party").where("externalId", externalId).queryFirst();
         if (party == null) {
-            String partyId = createParty(delegator, "APH", "PARTY_GROUP");
+            String partyId = createParty(delegator, externalId, "PARTY_GROUP");
             Debug.log("Created new party with partyID: " + partyId);
             return partyId;
         }
         return party.getString("partyId");
     }
 
-    private static String getOrCreateProduct(String partNumber, String mfrSubLineCode, String partyId, Delegator delegator) throws GenericEntityException {
-        String mfrLineCode = partyId + "_" + mfrSubLineCode;
+    private static String getOrCreateProduct(String mfr , String partNumber, String mfrSubLineCode, String partyId, Delegator delegator) throws GenericEntityException {
+        String mfrLineCode = partyId + "_" +  mfr + "_" +mfrSubLineCode;
 
         GenericValue product = EntityQuery.use(delegator)
                 .from("Product")
@@ -150,8 +146,7 @@ public class ProcessCSVServices {
                 "partyId", partyId,
                 "partyTypeId", partyTypeId,
                 "externalId", externalId,
-                "description", "new party by createParty() method",
-                "lastUpdatedStamp", UtilDateTime.nowTimestamp()
+                "description", "new party by createParty() method"
         ));
 
         try {
