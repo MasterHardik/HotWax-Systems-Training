@@ -186,4 +186,30 @@ under the License.
             </widgets>
         </section>
     </screen>
+
+
+
+    <!--  Process CSV to update productprice   -->
+    <screen name="ImportCSVDataScreen">
+        <section>
+            <actions>
+                <set field="PageTitle" value="CSV Import"/>
+                <set field="headerItem" value="CSV Import Page"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+<!--                                                <label text="Label for ImportXMLDataScreen!"/>-->
+                        <screenlet title="Screen For CSV Data Import">
+                            <platform-specific>
+                                <html>
+                                    <html-template location="component://HotWax-Systems-Training/webapp/HotWax-Systems-Training/CSVImport/ImportCSVFile.ftl"/>
+                                </html>
+                            </platform-specific>
+                        </screenlet>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
 </screens>

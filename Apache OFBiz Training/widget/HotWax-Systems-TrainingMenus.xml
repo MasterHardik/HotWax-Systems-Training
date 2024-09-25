@@ -25,5 +25,6 @@ under the License.
         <menu-item name="addMasterTableFtl" title="${uiLabelMap.OfbizDemoAddFtl}"><link target="AddMasterTableFtl"/></menu-item>
         <menu-item name="MasterLogin" title="${uiLabelMap.MasterLoginFtl}"><link target="MasterLoginFtl"/></menu-item>
         <menu-item name="XML Data Import" title="${uiLabelMap.XMLDataImport}"><link target="ImportXMLData"/></menu-item>
+        <menu-item name="CSV Data Import" title="${uiLabelMap.CSVDataImport}"><link target="ImportCSVDataScreen"/></menu-item>
     </menu>
 </menus>

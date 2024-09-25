@@ -62,4 +62,10 @@ under the License.
     </service>
     <!-- END of Custom XML Import logic    -->
 
+    processCSVService
+    <service name="processCSVService" engine="java" location="com.companyname.HotWax_Systems_Training.services.ProcessCSVServices" invoke="updateProductPrice" auth="true">
+        <description>This service will updateProductPrice</description>
+        <attribute name="fileName" type="java.nio.ByteBuffer" mode="IN" optional="false" allow-html="any"/>
+    </service>
+
 </services>
