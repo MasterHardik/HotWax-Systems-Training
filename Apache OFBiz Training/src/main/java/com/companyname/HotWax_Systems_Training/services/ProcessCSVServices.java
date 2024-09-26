@@ -61,7 +61,7 @@ public class ProcessCSVServices {
         String facilityGroupId = getOrCreateFacilityGroup(regionId, delegator);
         String partyId = getOrCreateParty("APH", delegator);
         String productId = getOrCreateProduct(mfr,partNumber,mfrSubLineCode, partyId, delegator);
-        upsertPriceRecord(productId, price, delegator);
+        upsertPriceRecord(productId, price, facilityGroupId,delegator);
     }
 
     private static String getOrCreateFacilityGroup(String regionId, Delegator delegator) throws GenericEntityException {
@@ -115,10 +115,10 @@ public class ProcessCSVServices {
         return product.getString("productId");
     }
 
-    private static void upsertPriceRecord(String productId, String price, Delegator delegator) throws GenericEntityException {
+    private static void upsertPriceRecord(String productId, String price,String facilityGroupId, Delegator delegator) throws GenericEntityException {
         GenericValue priceRecord = EntityQuery.use(delegator)
                 .from("ProductPrice")
-                .where("productId", productId)
+                .where("productId", productId,"facilityGroupId",facilityGroupId)
                 .queryFirst();
 
         Map<String, Object> fields = new HashMap<>();
@@ -128,6 +128,7 @@ public class ProcessCSVServices {
         fields.put("productPricePurposeId", "PURCHASE");
         fields.put("productPriceTypeId", "B2C_OFFER_PRICE");
         fields.put("productStoreGroupId", "_NA_");
+        fields.put("facilityGroupId",facilityGroupId);
 
         if (priceRecord == null) {
             fields.put("fromDate", UtilDateTime.nowTimestamp());
