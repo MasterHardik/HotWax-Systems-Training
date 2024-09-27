@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms xmlns="http://ofbiz.apache.org/Widget-Form">
+
     <form name="MasterTableCreateForm" type="single" target="createMasterTable">
-<!--    Bellow line will hit the event we created above line target vas for invoking a service and doing the same addition task-->
-<!--    <form name="MasterTableCreateForm" type="single" target="createMasterTableEvent">-->
-        <!-- We have this utility in OFBiz to render form based on service definition.
-            Service attributes will automatically lookedup and will be shown on form
-       -->
+        <!--
+            Below line will trigger the event we created above; the target is for invoking a service to perform the same addition task.
+            <form name="MasterTableCreateForm" type="single" target="createMasterTableEvent">
+
+            We have this utility in OFBiz to render forms based on service definitions.
+            Service attributes will automatically be looked up and displayed on the form.
+        -->
         <auto-fields-service service-name="createMasterTable"/>
         <field name="masterTableTypeId" title="${uiLabelMap.CommonType}">
             <drop-down allow-empty="false" current-description="">
@@ -25,30 +28,32 @@
         <field name="lastName" title="${uiLabelMap.masterTableLastName}"><text-find/></field>
         <field name="masterTableTypeId" title="${uiLabelMap.masterTableType}">
             <drop-down allow-empty="true" current-description="">
-                <entity-options entity-name="masterTableType" key-field-name="masterTableTypeId" description="${description}">
+                <entity-options description="${description}" key-field-name="masterTableTypeId" entity-name="masterTableType">
                     <entity-order-by field-name="description"/>
                 </entity-options>
             </drop-down>
         </field>
         <field name="searchButton" title="${uiLabelMap.CommonFind}" widget-style="smallSubmit"><submit button-type="button" image-location="/images/icons/magnifier.png"/></field>
-        
     </form>
 
-    <form name="ListMasterTable" type="list" list-name="listIt" paginate-target="FindMasterTable" default-entity-name="MasterTable" separate-columns="true" odd-row-style="alternate-row" header-row-style="header-row-2" default-table-style="basic-table hover-bar">
+    <form name="ListMasterTable" target="" title="" list-name="listIt" type="list" paginate-target="FindMasterTable"
+          odd-row-style="alternate-row" header-row-style="header-row-2" default-table-style="basic-table hover-bar">
         <actions>
-<!--        Preparing search results for user query by using OFBiz stock service to perform find operation on a single or view entity-->
-<!--            <service service-name="performFind" result-map="result" result-map-list="listIt">-->
-<!--                <field-map field-name="inputFields" from-field="HotWax-Systems-TrainingCtx"/>-->
-<!--                <field-map field-name="entityName" value="MasterTable"/>-->
-<!--                <field-map field-name="orderBy" from-field="parameters.sortField"/>-->
-<!--                <field-map field-name="viewIndex" from-field="viewIndex"/>-->
-<!--                <field-map field-name="viewSize" from-field="viewSize"/>-->
-<!--            </service>-->
+            <service result-map-list="listIt" result-map="result" service-name="performFind">
+                <field-map field-name="inputFields" from-field="parameters"/>
+                <field-map field-name="entityName" value="masterTable"/>
+                <field-map field-name="orderBy" from-field="parameters.sortField"/>
+                <field-map field-name="viewIndex" from-field="viewIndex"/>
+                <field-map field-name="viewSize" from-field="viewSize"/>
+            </service>
         </actions>
-        <field name="masterTableId" title="${uiLabelMap.MasterTableId}"><display/></field>
-        <field name="masterTableTypeId" title="${uiLabelMap.MasterTableType}"><display-entity entity-name="masterTableType"/></field>
-        <field name="firstName" title="${uiLabelMap.MasterTableFirstName}" sort-field="true"><display/></field>
-        <field name="lastName" title="${uiLabelMap.MasterTableLastName}" sort-field="true"><display/></field>
-        <field name="comments" title="${uiLabelMap.MasterTableComment}"><display/></field>
+        <auto-fields-entity entity-name="masterTable" default-field-type="display"/>
+        <field name="masterTableId" title="${uiLabelMap.masterTableId}" widget-style="buttontext" sort-field="true">
+            <hyperlink description="${masterTableId}" target="EditMasterTable" also-hidden="false">
+                <parameter param-name="masterTableId"/>
+            </hyperlink>
+        </field>
+        <on-event-update-area event-type="paginate" area-id="search-results" area-target="ListMasterTableSearchResults"/>
     </form>
+
 </forms>

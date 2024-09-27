@@ -40,7 +40,7 @@ under the License.
     <property key="OfbizDemoAddFtl">
         <value xml:lang="en">Find and List Page</value>
     </property>
-    <property key="MasterTableFirstName">
+    <property key="masterTableFirstName">
         <value xml:lang="en">First Name</value>
     </property>
     <property key="masterTableId">
@@ -49,7 +49,10 @@ under the License.
     <property key="MasterTableTypeId">
         <value xml:lang="en">Master Table Type Id</value>
     </property>
-    <property key="MasterTableLastName">
+    <property key="masterTableType">
+        <value xml:lang="en">Master Table Type</value>
+    </property>
+    <property key="masterTableLastName">
         <value xml:lang="en">Last Name</value>
     </property>
     <property key="MasterTableComment">

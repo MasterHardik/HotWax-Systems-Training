@@ -48,7 +48,7 @@ under the License.
     </request-map>
     <request-map uri="FindMasterTable">
         <security https="true" auth="true"/>
-        <response name="success" type="view" value="FindMasterTable"/>
+        <response name="success" type="view" value="FindMasterTable" />
     </request-map>
 
     <request-map uri="createOfbizDemoEvent">
