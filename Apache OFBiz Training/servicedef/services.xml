@@ -47,7 +47,7 @@ under the License.
     </service>
 
     <service name="createMasterTableByGroovyService" default-entity-name="masterTable" engine="groovy"
-             location="component://HotWax-Systems-Training/groovyScripts/ofbizdemo/OfbizDemoServices" invoke="createMasterTable" auth="true">
+             location="component://HotWax-Systems-Training/groovyScripts/ofbizdemo/OfbizDemoServices.groovy" invoke="createMasterTable" auth="true">
         <description>Create an Ofbiz Demo record using a service in Groovy</description>
         <auto-attributes include="pk" mode="OUT" optional="false"/>
         <auto-attributes include="nonpk" mode="IN" optional="false"/>

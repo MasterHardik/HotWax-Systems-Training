@@ -55,10 +55,16 @@ under the License.
     <property key="masterTableLastName">
         <value xml:lang="en">Last Name</value>
     </property>
-    <property key="MasterTableComment">
+    <property key="masterTableComment">
         <value xml:lang="en">Comment</value>
     </property>
     <property key="MasterLoginFtl">
         <value xml:lang="en">Login</value>
+    </property>
+    <property key="OfbizDemoListOfbizDemos">
+        <value xml:lang="en">Data List Ftl</value>
+    </property>
+    <property key="OfbizDemoAddOfbizDemoServiceByFtl">
+        <value xml:lang="en">Add Data Ftl</value>
     </property>
 </resource>
