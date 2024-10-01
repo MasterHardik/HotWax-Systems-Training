@@ -13,7 +13,9 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.io.BufferedReader;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ProcessCSVServices {
@@ -28,17 +30,21 @@ public class ProcessCSVServices {
         String fileContent = StandardCharsets.UTF_8.decode(fileContentBuffer).toString();
         Delegator delegator = dctx.getDelegator();
 
-        try (BufferedReader br = new BufferedReader(new StringReader(fileContent))) {
-            String line;
-            boolean skipHeader = true;
+        try {
+            // Split the file content into lines
+            List<String> lines = Arrays.asList(fileContent.split("\n"));
 
-            while ((line = br.readLine()) != null) {
-                if (skipHeader) {
-                    skipHeader = false;
-                    continue;
-                }
-                processLine(line, delegator);
-            }
+            // Process the lines in parallel, skipping the header
+            lines.stream()
+                    .skip(1) // Skip the header line
+                    .parallel() // Process in parallel
+                    .forEach(line -> {
+                        try {
+                            processLine(line, delegator);
+                        } catch (GenericEntityException e) {
+                            Debug.logError(e, "Error processing line: " + line, MODULE);
+                        }
+                    });
         } catch (Exception e) {
             Debug.logError(e, "Error processing CSV", MODULE);
         }
@@ -46,7 +52,6 @@ public class ProcessCSVServices {
         Debug.log("=============== CSV Processing Complete ======================");
         return UtilMisc.toMap("success", "CSV processed successfully");
     }
-
     private static void processLine(String line, Delegator delegator) throws GenericEntityException {
         String[] values = line.split(DELIMITER);
         if (values.length < 6) {
