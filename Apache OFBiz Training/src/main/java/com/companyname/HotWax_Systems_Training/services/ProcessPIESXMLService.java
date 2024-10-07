@@ -20,6 +20,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -393,6 +394,171 @@ public class ProcessPIESXMLService {
     }
 
 
+    private static void storeDigitalAssets(Delegator delegator, String partNumber, Element itemElement) throws GenericEntityException {
+        Element digitalAssetsElement = UtilXml.firstChildElement(itemElement, "DigitalAssets");
+        int seqNum = 0;
+        if (digitalAssetsElement != null) {
+            List<? extends Element> digitalFileInfoList = UtilXml.childElementList(digitalAssetsElement, "DigitalFileInformation");
+
+            for (Element digitalFileInfoElement : digitalFileInfoList) {
+                // Generate unique IDs for content and data resource
+                String dataResourceId = delegator.getNextSeqId("DataResource");
+                String contentId = delegator.getNextSeqId("Content");
+
+                // Extract values from XML
+                String assetId = digitalFileInfoElement.getAttribute("AssetID");
+                String maintenanceType = digitalFileInfoElement.getAttribute("MaintenanceType");
+                String languageCode = digitalFileInfoElement.getAttribute("LanguageCode");
+
+                String fileName = UtilXml.childElementValue(digitalFileInfoElement, "FileName", null);
+                String assetType = UtilXml.childElementValue(digitalFileInfoElement, "AssetType", null);
+                String fileType = UtilXml.childElementValue(digitalFileInfoElement, "FileType", null);
+                String representation = UtilXml.childElementValue(digitalFileInfoElement, "Representation", null);
+                String fileSize = UtilXml.childElementValue(digitalFileInfoElement, "FileSize", null);
+                String resolution = UtilXml.childElementValue(digitalFileInfoElement, "Resolution", null);
+                String colorMode = UtilXml.childElementValue(digitalFileInfoElement, "ColorMode", null);
+                String background = UtilXml.childElementValue(digitalFileInfoElement, "Background", null);
+                String orientationView = UtilXml.childElementValue(digitalFileInfoElement, "OrientationView", null);
+                String filePath = UtilXml.childElementValue(digitalFileInfoElement, "FilePath", null);
+                String uri = UtilXml.childElementValue(digitalFileInfoElement, "URI", null);
+                String country = UtilXml.childElementValue(digitalFileInfoElement, "Country", null);
+                String frame = UtilXml.childElementValue(digitalFileInfoElement, "Frame", null);
+                String totalFrames = UtilXml.childElementValue(digitalFileInfoElement, "TotalFrames", null);
+                String plane = UtilXml.childElementValue(digitalFileInfoElement, "Plane", null);
+                String plunge = UtilXml.childElementValue(digitalFileInfoElement, "Plunge", null);
+                String totalPlanes = UtilXml.childElementValue(digitalFileInfoElement, "TotalPlanes", null);
+
+
+                // Dimensions
+                Element assetDimensionsElement = UtilXml.firstChildElement(digitalFileInfoElement, "AssetDimensions");
+                String assetHeight = (assetDimensionsElement != null) ? UtilXml.childElementValue(assetDimensionsElement, "AssetHeight", null) : null;
+                String assetWidth = (assetDimensionsElement != null) ? UtilXml.childElementValue(assetDimensionsElement, "AssetWidth", null) : null;
+                String uom = (assetDimensionsElement != null) ? assetDimensionsElement.getAttribute("UOM") : null;
+
+                // Asset Date
+                Element assetDatesElement = UtilXml.firstChildElement(digitalFileInfoElement, "AssetDates");
+                Element assetDateElement = UtilXml.firstChildElement(assetDatesElement, "AssetDate");
+                String assetDate = (assetDateElement != null) ? assetDateElement.getTextContent() : null;
+
+                // Create DataResource
+                Map<String, Object> dataResourceFields = UtilMisc.toMap(
+                        "dataResourceId", dataResourceId,
+                        "mimeTypeId", fileType,
+                        "objectInfo", filePath,
+                        "dataResourceName", fileName
+                );
+                delegator.create("DataResource", dataResourceFields);
+
+                // Create Content
+                Map<String, Object> contentFields = UtilMisc.toMap(
+                        "contentId", contentId,
+                        "contentTypeId", "DFI", // Assuming "DFI" as the content type
+                        "mimeTypeId", fileType,
+                        "contentName", fileName,
+                        "description", uri,
+                        "serviceName", assetId,
+                        "localeString", languageCode,
+                        "dataResourceId", dataResourceId
+                );
+                delegator.create("Content", contentFields);
+
+                // Create ProductContent
+                Map<String, Object> productContentFields = UtilMisc.toMap(
+                        "productId", partNumber,
+                        "productContentTypeId", "DA", // Assuming "DA" as the product content type
+                        "contentId", contentId,
+                        "sequenceNum", (seqNum = seqNum + 1),
+                        "fromDate", assetDate
+                );
+                delegator.create("ProductContent", productContentFields);
+
+                // Create Content Attributes (Dimensions)
+                if (assetHeight != null && assetWidth != null) {
+                    Map<String, Object> contentAttrHeightFields = UtilMisc.toMap(
+                            "contentId", contentId,
+                            "attrName", "AssetHeight",
+                            "attrValue", assetHeight,
+                            "attrDescription", uom
+                    );
+                    delegator.create("ContentAttribute", contentAttrHeightFields);
+
+                    Map<String, Object> contentAttrWidthFields = UtilMisc.toMap(
+                            "contentId", contentId,
+                            "attrName", "AssetWidth",
+                            "attrValue", assetWidth,
+                            "attrDescription", uom
+                    );
+                    delegator.create("ContentAttribute", contentAttrWidthFields);
+                }
+
+                // Create DataResourceMetadata for additional fields
+                List<Map<String, String>> metadataEntries = new ArrayList<>();
+
+                if (representation != null) {
+                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "REP", "metaDataValue", representation));
+                }
+
+                if (fileSize != null) {
+                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "FS", "metaDataValue", fileSize));
+                }
+
+                if (resolution != null) {
+                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "RES", "metaDataValue", resolution));
+                }
+
+                if (colorMode != null) {
+                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "COM", "metaDataValue", colorMode));
+                }
+
+                if (background != null) {
+                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "BG", "metaDataValue", background));
+                }
+
+                if (orientationView != null) {
+                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "OV", "metaDataValue", orientationView));
+                }
+
+                // Add new fields to metadata entries
+                if (frame != null) {
+                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "FR", "metaDataValue", frame));
+                }
+
+                if (totalFrames != null) {
+                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "TF", "metaDataValue", totalFrames));
+                }
+
+                if (plane != null) {
+                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "PL", "metaDataValue", plane));
+                }
+
+                if (plunge != null) {
+                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "PU", "metaDataValue", plunge));
+                }
+
+                if (totalPlanes != null) {
+                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "TP", "metaDataValue", totalPlanes));
+                }
+
+                // Create all DataResourceMetadata entries
+                for (Map<String, String> entry : metadataEntries) {
+                    // Checking for null values before creating the entry
+                    String metaDataPredicateId = entry.get("metaDataPredicateId");
+                    String metaDataValue = entry.get("metaDataValue");
+
+                    if (metaDataPredicateId != null && metaDataValue != null) {
+                        Map<String, Object> dataResourceMetaFields = UtilMisc.toMap(
+                                "dataResourceId", dataResourceId, // Use of generated dataResourceId
+                                "metaDataPredicateId", metaDataPredicateId,
+                                "metaDataValue", metaDataValue
+                        );
+                        delegator.create("DataResourceMetaData", dataResourceMetaFields);
+                    }
+                }
+
+            }
+        }
+    }
+
 
     /*=======  END ======== */
     public static void extractDataFromXML(DispatchContext dctx,Document document) {
@@ -465,9 +631,13 @@ public class ProcessPIESXMLService {
                     throw new RuntimeException(e);
                 }
 
-
-
-                // Product
+                // Digital Asset
+                try {
+                    storeDigitalAssets(delegator,partNumber,itemElement);
+                }
+                catch (GenericEntityException e){
+                    throw new RuntimeException(e);
+                }
 
 //                    // Inserting Brand as a ProductFeature
 //                    if (!brandLabel.isEmpty()) {
@@ -498,64 +668,7 @@ public class ProcessPIESXMLService {
 //                        vmrsAppl.set("fromDate", UtilDateTime.nowTimestamp());
 //                        delegator.create(vmrsAppl);
 //                    }
-//
-//                    // Inserting Hazardous Material Code as ProductFeature
-//                    if (productFeatureId != null) {
-//                        GenericValue hazmatFeatureAppl = delegator.makeValue("ProductFeatureAppl");
-//                        hazmatFeatureAppl.set("productId", partNumber);
-//                        hazmatFeatureAppl.set("productFeatureId", productFeatureId);
-//                        hazmatFeatureAppl.set("fromDate", UtilDateTime.nowTimestamp());
-//                        delegator.create(hazmatFeatureAppl);
-//                    }
-//
-//                    // Process Prices
-//                    NodeList priceList = itemElement.getElementsByTagName("Pricing");
-//                    for (int j = 0; j < priceList.getLength(); j++) {
-//                        Element priceElement = (Element) priceList.item(j);
-//                        String priceAmount = getTextContent(priceElement, "Price");
-//
-//                        if (!priceAmount.isEmpty()) {
-//                            GenericValue productPrice = delegator.makeValue("ProductPrice");
-//                            productPrice.set("productId", partNumber);
-//                            productPrice.set("productPriceTypeId", "DEFAULT_PRICE");
-//                            productPrice.set("currencyUomId", "USD");
-//                            productPrice.set("price", priceAmount);
-//                            productPrice.set("fromDate", UtilDateTime.nowTimestamp());
-//                            delegator.create(productPrice);
-//                        }
-//                    }
-//
-//                    // Process Digital Assets
-//                    NodeList digitalAssets = itemElement.getElementsByTagName("DigitalFileInformation");
-//                    for (int k = 0; k < digitalAssets.getLength(); k++) {
-//                        Element assetElement = (Element) digitalAssets.item(k);
-//                        String fileName = getTextContent(assetElement, "FileName");
-//                        String fileType = getTextContent(assetElement, "FileType");
-//                        String assetType = getTextContent(assetElement, "AssetType");
-//                        String filePath = getTextContent(assetElement, "FilePath");
-//
-//                        if (!fileName.isEmpty() && !fileType.isEmpty()) {
-//                            GenericValue content = delegator.makeValue("Content");
-//                            content.set("contentId", partNumber + "_" + assetType);
-//                            content.set("contentTypeId", assetType);
-//                            content.set("dataResourceId", partNumber + "_DATA");
-//                            content.set("description", fileName);
-//                            delegator.create(content);
-//
-//                            GenericValue dataResource = delegator.makeValue("DataResource");
-//                            dataResource.set("dataResourceId", partNumber + "_DATA");
-//                            dataResource.set("dataResourceTypeId", "DIGITAL_ASSET");
-//                            dataResource.set("mimeTypeId", fileType);
-//                            dataResource.set("objectInfo", filePath);
-//                            delegator.create(dataResource);
-//                        }
-//                    }
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    Debug.logError(e, "Error processing item: " + baseItemId);
-//                }
-//
+
             }
         }
     }
