@@ -4,6 +4,7 @@ import org.apache.calcite.util.Static;
 import org.apache.ofbiz.base.util.Debug;
 import org.apache.ofbiz.base.util.UtilDateTime;
 import org.apache.ofbiz.base.util.UtilMisc;
+import org.apache.ofbiz.base.util.UtilXml;
 import org.apache.ofbiz.entity.Delegator;
 import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.service.DispatchContext;
@@ -141,7 +142,6 @@ public class ProcessPIESXMLService {
         }
     }
 
-
     public static void createItem(Delegator delegator, String productId, Timestamp introductionDate, Timestamp releaseDate, String quantityPerApplication, String minimumOrderQuantity) throws GenericEntityException {
         // Checking if the product already exists
         GenericValue existingProduct = EntityQuery.use(delegator).from("Product").where("productId", productId).queryOne();
@@ -216,7 +216,6 @@ public class ProcessPIESXMLService {
 
         Debug.logInfo("Descriptions stored successfully for productId: " + productId, MODULE);
     }
-
     public static void createProductPriceType(Delegator delegator, String priceTypeId, String description) throws GenericEntityException {
         // Check if the ProductPriceType already exists
         GenericValue existingProductPriceType = EntityQuery.use(delegator)
@@ -282,7 +281,7 @@ public class ProcessPIESXMLService {
                 price.set("currencyUomId", currencyCode);
                 price.set("fromDate", effectiveDateStr);
                 price.set("thruDate", expirationDateStr);
-                price.set("productPricePurpoexistingPrices.isEmpty()seId", "PURCHASE");
+                price.set("productPricePurposeId", "PURCHASE");
                 price.set("productStoreGroupId", "_NA_"); // Default value for store group
                 price.set("price", priceValue);
                 price.set("createdStamp", nowTimestamp);
@@ -348,6 +347,52 @@ public class ProcessPIESXMLService {
         Debug.logInfo("Extended Product Information stored successfully for productId: " + productId, MODULE);
     }
 
+    private static void storeProductAttributes(Delegator delegator, String partNumber, Element itemElement) throws GenericEntityException {
+        // Assuming itemElement contains the <ProductAttributes> element
+        Element productAttributesElement = UtilXml.firstChildElement(itemElement, "ProductAttributes");
+
+        if (productAttributesElement != null) {
+            List<? extends Element> productAttributeList = UtilXml.childElementList(productAttributesElement, "ProductAttribute");
+
+            for (Element productAttributeElement : productAttributeList) {
+                String maintenanceType = productAttributeElement.getAttribute("MaintenanceType");
+                String attributeId = productAttributeElement.getAttribute("AttributeID");
+                String padbAttribute = productAttributeElement.getAttribute("PADBAttribute");
+                String attributeUom = productAttributeElement.getAttribute("AttributeUOM");
+                String recordNumber = productAttributeElement.getAttribute("RecordNumber");
+                String attributeValue = productAttributeElement.getTextContent(); // The value inside <ProductAttribute>
+
+                // Build the description using RecordNumber
+                String attributeDescr = "RecordNumber_" + recordNumber;
+
+                // Prepare the fields for insertion into the ProductAttribute table
+                Map<String, Object> fields = UtilMisc.toMap(
+                        "productId", partNumber,
+                        "attrName", attributeId,
+                        "attrValue", attributeValue,
+                        "attrType", attributeUom,
+                        "attrDescription", attributeDescr
+                );
+
+                // Check if the attribute already exists in the ProductAttribute table
+                GenericValue existingProductAttribute = delegator.findOne("ProductAttribute",
+                        UtilMisc.toMap("productId", partNumber, "attrName", attributeId), false);
+
+                if (existingProductAttribute == null) {
+                    // If it does not exist, create and store the new product attribute record
+                    GenericValue productAttribute = delegator.makeValue("ProductAttribute", fields);
+                    delegator.create(productAttribute);
+                    Debug.log("Created new ProductAttribute: " + fields.toString());
+                } else {
+                    Debug.log("ProductAttribute already exists: " + attributeId + " for productId: " + partNumber);
+                }
+            }
+        } else {
+            Debug.logWarning("No ProductAttributes found for partNumber: " + partNumber, MODULE);
+        }
+    }
+
+
 
     /*=======  END ======== */
     public static void extractDataFromXML(DispatchContext dctx,Document document) {
@@ -392,11 +437,11 @@ public class ProcessPIESXMLService {
                     throw new RuntimeException(e);
                 }
                 // Description
-                try {
-                    storeProductDescriptions(delegator,partNumber,itemElement);
-                } catch (GenericEntityException e) {
-                    throw new RuntimeException(e);
-                }
+//                try {
+//                    storeProductDescriptions(delegator,partNumber,itemElement);
+//                } catch (GenericEntityException e) {
+//                    throw new RuntimeException(e);
+//                }
 
                 // Price
                 try {
@@ -411,6 +456,18 @@ public class ProcessPIESXMLService {
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
+
+
+                // Product Attributes
+                try {
+                    storeProductAttributes(delegator, partNumber, itemElement);
+                } catch (GenericEntityException e) {
+                    throw new RuntimeException(e);
+                }
+
+
+
+                // Product
 
 //                    // Inserting Brand as a ProductFeature
 //                    if (!brandLabel.isEmpty()) {
