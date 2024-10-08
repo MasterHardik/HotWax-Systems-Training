@@ -9,6 +9,7 @@ import org.apache.ofbiz.entity.Delegator;
 import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.service.DispatchContext;
 import org.apache.ofbiz.service.ServiceUtil;
+import org.slf4j.ILoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -26,10 +27,12 @@ import java.util.Map;
 
 import org.apache.ofbiz.entity.GenericEntityException;
 import org.apache.ofbiz.entity.util.EntityQuery;
+
 public class ProcessPIESXMLService {
 
     private static int featureSeq = 0;
     private static final String MODULE = ProcessPIESXMLService.class.getName();
+
     private static String getTextContent(Element element, String tagName) {
         NodeList nodeList = element.getElementsByTagName(tagName);
         if (nodeList.getLength() > 0) {
@@ -56,7 +59,7 @@ public class ProcessPIESXMLService {
         }
     }
 
- /* Small functions for the injecting the data into the fields for our PIES*/
+    /* Small functions for the injecting the data into the fields for our PIES*/
 
     //Associate feature with product
     private static void associateFeatureWithProduct(Delegator delegator, String productId, String productFeatureId) {
@@ -64,7 +67,7 @@ public class ProcessPIESXMLService {
             GenericValue productFeatureAppl = delegator.makeValue("ProductFeatureAppl");
             productFeatureAppl.set("productId", productId);
             productFeatureAppl.set("productFeatureId", productFeatureId);
-            productFeatureAppl.set("sequenceNum", ++featureSeq);
+            productFeatureAppl.set("sequenceNum", (featureSeq = featureSeq + 1));
             Timestamp nowTimestamp = UtilDateTime.nowTimestamp();
             productFeatureAppl.set("fromDate", nowTimestamp);
 
@@ -78,7 +81,7 @@ public class ProcessPIESXMLService {
     }
 
 
-    private static void createHazmatFeature(Delegator delegator, String hazardousMaterialCode,String productId) {
+    private static void createHazmatFeature(Delegator delegator, String hazardousMaterialCode, String productId) {
         // Generate a unique ID for the ProductFeature
         String productFeatureId = delegator.getNextSeqId("ProductFeature");
 
@@ -101,7 +104,7 @@ public class ProcessPIESXMLService {
             throw new RuntimeException(e);
         }
 
-        associateFeatureWithProduct(delegator,productId,productFeatureId);
+        associateFeatureWithProduct(delegator, productId, productFeatureId);
 
     }
 
@@ -135,7 +138,7 @@ public class ProcessPIESXMLService {
             goodIdentification.set("productId", productId);
             goodIdentification.set("idValue", itemLevelGTIN);
             Timestamp nowTimestamp = UtilDateTime.nowTimestamp();
-            goodIdentification.set("createdStamp",nowTimestamp);
+            goodIdentification.set("createdStamp", nowTimestamp);
             goodIdentification.create();
             Debug.logInfo("Created new GoodIdentification for productId: " + productId + " with GTIN: " + itemLevelGTIN, MODULE);
         } else {
@@ -143,7 +146,7 @@ public class ProcessPIESXMLService {
         }
     }
 
-    public static void createItem(Delegator delegator, String productId, Timestamp introductionDate, Timestamp releaseDate, String quantityPerApplication, String minimumOrderQuantity) throws GenericEntityException {
+    public static void createItem(Delegator delegator, String productId, Timestamp introductionDate, Timestamp releaseDate, String quantityPerApplication, String minimumOrderQuantity, String baseItemId) throws GenericEntityException {
         // Checking if the product already exists
         GenericValue existingProduct = EntityQuery.use(delegator).from("Product").where("productId", productId).queryOne();
 
@@ -158,6 +161,7 @@ public class ProcessPIESXMLService {
         product.set("introductionDate", introductionDate);
         product.set("quantityIncluded", quantityPerApplication);
         product.set("releaseDate", releaseDate);
+        product.set("internalName", baseItemId);
         product.set("requireAmount", minimumOrderQuantity);
 
         // Setting the current timestamp as createdStamp
@@ -172,7 +176,6 @@ public class ProcessPIESXMLService {
     }
 
     public static void storeProductDescriptions(Delegator delegator, String productId, Element descriptionElements) throws GenericEntityException {
-        Timestamp nowTimestamp = UtilDateTime.nowTimestamp(); // Current timestamp
         NodeList descriptionList = descriptionElements.getElementsByTagName("Description"); // Change here
 
         for (int i = 0; i < descriptionList.getLength(); i++) {
@@ -185,7 +188,6 @@ public class ProcessPIESXMLService {
 
             // Generate a new ContentId
             String contentId = delegator.getNextSeqId("Content");
-            System.out.println(languageCode + descriptionCode + sequenceAttr + descriptionText + contentId);
 
             // Create a new record in the Content table
             GenericValue content = delegator.makeValue("Content");
@@ -193,8 +195,6 @@ public class ProcessPIESXMLService {
             content.set("contentName", descriptionCode);  // Mapping description code (e.g., ABR, DES)
             content.set("description", descriptionText);  // Storing the actual description text
             content.set("localeString", languageCode);    // Storing language code (e.g., EN)
-            content.set("createdStamp", nowTimestamp);    // Current timestamp
-            content.set("lastUpdatedStamp", nowTimestamp); // Set last updated timestamp
 
             // Save Content record
             delegator.create(content);
@@ -205,9 +205,7 @@ public class ProcessPIESXMLService {
             productContent.set("productContentTypeId", "DESCRIPTION");       // Set productContentTypeId to DESCRIPTION
             productContent.set("productId", productId);                      // Associating the content with the product
             productContent.set("sequenceNum", sequenceAttr);                 // Sequence number from XML
-            productContent.set("fromDate", nowTimestamp);                    // Set fromDate as the current timestamp
-            productContent.set("createdStamp", nowTimestamp);                // Current timestamp
-            productContent.set("lastUpdatedStamp", nowTimestamp);            // Last updated timestamp
+            productContent.set("fromDate", UtilDateTime.nowTimestamp());                    // Set fromDate as the current timestamp
 
             // Save ProductContent record
             delegator.create(productContent);
@@ -217,6 +215,7 @@ public class ProcessPIESXMLService {
 
         Debug.logInfo("Descriptions stored successfully for productId: " + productId, MODULE);
     }
+
     public static void createProductPriceType(Delegator delegator, String priceTypeId, String description) throws GenericEntityException {
         // Check if the ProductPriceType already exists
         GenericValue existingProductPriceType = EntityQuery.use(delegator)
@@ -239,6 +238,7 @@ public class ProcessPIESXMLService {
             Debug.logInfo("ProductPriceType already exists with productPriceTypeId: " + priceTypeId, MODULE);
         }
     }
+
     public static void storePrices(Delegator delegator, String productId, Element priceElements) throws GenericEntityException {
         Timestamp nowTimestamp = UtilDateTime.nowTimestamp(); // Current timestamp
         NodeList pricingList = priceElements.getElementsByTagName("Pricing");
@@ -280,7 +280,7 @@ public class ProcessPIESXMLService {
                 createProductPriceType(delegator, priceType, ""); // Ensure the price type is valid
                 price.set("productPriceTypeId", priceType);
                 price.set("currencyUomId", currencyCode);
-                price.set("fromDate", effectiveDateStr);
+                price.set("fromDate", effectiveDateStr != null ? effectiveDateStr : UtilDateTime.nowTimestamp());
                 price.set("thruDate", expirationDateStr);
                 price.set("productPricePurposeId", "PURCHASE");
                 price.set("productStoreGroupId", "_NA_"); // Default value for store group
@@ -341,7 +341,7 @@ public class ProcessPIESXMLService {
             delegator.create(productFeature);
 
             // Create a new record in the ProductFeatureAppl table
-            associateFeatureWithProduct(delegator,productId,productFeatureId);
+            associateFeatureWithProduct(delegator, productId, productFeatureId);
 
             Debug.logInfo("Product Feature stored successfully with productId: " + productId + ", productFeatureId: " + productFeatureId + ", expiCode: " + expiCode, MODULE);
         }
@@ -438,7 +438,7 @@ public class ProcessPIESXMLService {
                 // Asset Date
                 Element assetDatesElement = UtilXml.firstChildElement(digitalFileInfoElement, "AssetDates");
                 Element assetDateElement = UtilXml.firstChildElement(assetDatesElement, "AssetDate");
-                String assetDate = (assetDateElement != null) ? assetDateElement.getTextContent() : null;
+                String assetDate = (assetDateElement != null) ? assetDateElement.getTextContent() : "";
 
                 // Create DataResource
                 Map<String, Object> dataResourceFields = UtilMisc.toMap(
@@ -468,7 +468,7 @@ public class ProcessPIESXMLService {
                         "productContentTypeId", "DA", // Assuming "DA" as the product content type
                         "contentId", contentId,
                         "sequenceNum", (seqNum = seqNum + 1),
-                        "fromDate", assetDate
+                        "fromDate", UtilDateTime.nowTimestamp()
                 );
                 delegator.create("ProductContent", productContentFields);
 
@@ -559,9 +559,107 @@ public class ProcessPIESXMLService {
         }
     }
 
+    private static void createProductCategory(Delegator delegator, String productCategoryId, String productCategoryTypeId, String description) throws GenericEntityException {
+        // Check if the product category already exists
+        GenericValue existingCategory = delegator.findOne("ProductCategory", UtilMisc.toMap("productCategoryId", productCategoryId), false);
+        if (existingCategory != null) {
+            // Log that the category already exists
+            Debug.log("Product category with ID " + productCategoryId + " already exists. Skipping creation.");
+            return; // Skip creating the category
+        }
+
+        // Create the new product category since it doesn't exist
+        Map<String, Object> categoryMap = UtilMisc.toMap(
+                "productCategoryId", productCategoryId,
+                "productCategoryTypeId", productCategoryTypeId,
+                "description", description
+        );
+        delegator.create("ProductCategory", categoryMap);
+    }
+
+
+    // Helper method to link a product to a category (ProductCategoryMember)
+    private static void linkProductToCategory(Delegator delegator, String productId, String productCategoryId) throws GenericEntityException {
+        Map<String, Object> categoryMemberMap = UtilMisc.toMap(
+                "productCategoryId", productCategoryId,
+                "productId", productId,
+                "fromDate", UtilDateTime.nowTimestamp()
+        );
+        delegator.create("ProductCategoryMember", categoryMemberMap);
+    }
+
+    // Helper method to add or update a ProductAttribute
+    private static void createOrUpdateProductAttribute(Delegator delegator, String productId, String attrName, String attrValue) throws GenericEntityException {
+        GenericValue productAttr = delegator.findOne("ProductAttribute", UtilMisc.toMap("productId", productId, "attrName", attrName), false);
+        if (productAttr == null) {
+            Map<String, Object> attrMap = UtilMisc.toMap(
+                    "productId", productId,
+                    "attrName", attrName,
+                    "attrValue", attrValue
+            );
+            delegator.create("ProductAttribute", attrMap);
+        }
+    }
+
+    private static void createIdentifiers(Delegator delegator, Element itemElement, String productId) throws GenericEntityException {
+        String brandAAIAID = getTextContent(itemElement, "BrandAAIAID"); // Get BrandAAIAID
+        String brandLabel = getTextContent(itemElement, "BrandLabel"); // Get BrandLabel
+        String vmrsBrandId = getTextContent(itemElement, "VMRSBrandID");
+        String UNSPSC = getTextContent(itemElement, "UNSPSC");
+        String vmrsCode = getTextContent(itemElement, "VMRSCode");
+        String manufacturerGroup = getTextContent(itemElement, "Group");
+        String manufacturerSubGroup = getTextContent(itemElement, "SubGroup");
+        String partTerminologyId = getTextContent(itemElement, "PartTerminologyID");
+        String aaiaProductCategoryCode = getTextContent(itemElement, "AAIAProductCategoryCode"); // Get AAIAProductCategoryCode
+        Debug.log(brandAAIAID, brandLabel, vmrsBrandId, UNSPSC, vmrsCode, manufacturerGroup, manufacturerSubGroup, partTerminologyId, aaiaProductCategoryCode);
+        // Create Product Category for BrandAAIAID
+        if (brandAAIAID != null && !brandAAIAID.isEmpty()) {
+            createProductCategory(delegator, brandAAIAID, "BRAND", brandLabel); // Using BrandLabel as description
+            // Link the product to the BrandAAIAID category
+            linkProductToCategory(delegator, productId, brandAAIAID);
+        }
+
+        // Always create the product category for VMRSBrandID
+        if (vmrsBrandId != null && !vmrsBrandId.isEmpty()) {
+            createProductCategory(delegator, vmrsBrandId, "VMRS", "VMRS Brand");
+            // Link the product to the VMRSBrand category
+            linkProductToCategory(delegator, productId, vmrsBrandId);
+        }
+
+        // Create and link the product category for AAIAProductCategoryCode
+        if (aaiaProductCategoryCode != null && !aaiaProductCategoryCode.isEmpty()) {
+            createProductCategory(delegator, aaiaProductCategoryCode, "AAIA", "AAIA Product Category");
+            // Link the product to the AAIA category
+            linkProductToCategory(delegator, productId, aaiaProductCategoryCode);
+        }
+
+        // Add VMRSCode as a Product Attribute, if vmrsCode is not null or empty
+        if (vmrsCode != null && !vmrsCode.isEmpty()) {
+            createOrUpdateProductAttribute(delegator, productId, "VMRSCode", vmrsCode);
+        }
+
+        // Add UNSPSC as a Product Attribute, if UNSPSC is not null or empty
+        if (UNSPSC != null && !UNSPSC.isEmpty()) {
+            createOrUpdateProductAttribute(delegator, productId, "UNSPSC", UNSPSC);
+        }
+
+        // Add Manufacturer Group and SubGroup as Product Attributes, if they are not null or empty
+        if (manufacturerGroup != null && !manufacturerGroup.isEmpty()) {
+            createOrUpdateProductAttribute(delegator, productId, "ManufacturerGroup", manufacturerGroup);
+        }
+        if (manufacturerSubGroup != null && !manufacturerSubGroup.isEmpty()) {
+            createOrUpdateProductAttribute(delegator, productId, "ManufacturerSubGroup", manufacturerSubGroup);
+        }
+
+        // Add PartTerminologyID as a Product Attribute, if it's not null or empty
+        if (partTerminologyId != null && !partTerminologyId.isEmpty()) {
+            createOrUpdateProductAttribute(delegator, productId, "PartTerminologyID", partTerminologyId);
+        }
+    }
+
 
     /*=======  END ======== */
-    public static void extractDataFromXML(DispatchContext dctx,Document document) {
+    public static void extractDataFromXML(DispatchContext dctx, Document document) {
         if (document != null) {
             Element rootElement = document.getDocumentElement();
             NodeList itemList = rootElement.getElementsByTagName("Item");
@@ -572,8 +670,6 @@ public class ProcessPIESXMLService {
                 // Extracting data from the XML
                 String baseItemId = getTextContent(itemElement, "BaseItemID");
                 String partNumber = getTextContent(itemElement, "PartNumber");
-                String brandLabel = getTextContent(itemElement, "BrandLabel");
-                String vmrsBrandId = getTextContent(itemElement, "VMRSBrandID");
                 String hazardousMaterialCode = getTextContent(itemElement, "HazardousMaterialCode");
                 String itemEffectiveDate = getTextContent(itemElement, "ItemEffectiveDate");
                 String availableDate = getTextContent(itemElement, "AvailableDate");
@@ -585,40 +681,48 @@ public class ProcessPIESXMLService {
                 // Parsing dates to the correct format
                 Timestamp introductionDate = itemEffectiveDate.isEmpty() ? null : Timestamp.valueOf(itemEffectiveDate + " 00:00:00");
                 Timestamp releaseDate = availableDate.isEmpty() ? null : Timestamp.valueOf(availableDate + " 00:00:00");
-                Timestamp nowTimestamp = UtilDateTime.nowTimestamp();
 
                 // Data injections starts from here..
 
                 //product
                 try {
-                    createItem(delegator, partNumber,introductionDate,releaseDate,quantityPerApplication,minimumOrderQuantity);
+                    createItem(delegator, partNumber, introductionDate, releaseDate, quantityPerApplication, minimumOrderQuantity, baseItemId);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
-                // Feature
-                createHazmatFeature(delegator,hazardousMaterialCode,partNumber);
+
+                // ID's , Code's and Identifier's
+
                 try {
-                    saveItemLevelGTIN(delegator,itemElement, partNumber);
+                    createIdentifiers(delegator, itemElement, partNumber);
+                } catch (GenericEntityException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // Feature
+                createHazmatFeature(delegator, hazardousMaterialCode, partNumber);
+                try {
+                    saveItemLevelGTIN(delegator, itemElement, partNumber);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
                 // Description
-//                try {
-//                    storeProductDescriptions(delegator,partNumber,itemElement);
-//                } catch (GenericEntityException e) {
-//                    throw new RuntimeException(e);
-//                }
+                try {
+                    storeProductDescriptions(delegator, partNumber, itemElement);
+                } catch (GenericEntityException e) {
+                    throw new RuntimeException(e);
+                }
 
                 // Price
                 try {
-                    storePrices(delegator,partNumber,itemElement);
+                    storePrices(delegator, partNumber, itemElement);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
 
                 // EXPI
                 try {
-                    storeExtendedProductInformation(delegator,partNumber,itemElement);
+                    storeExtendedProductInformation(delegator, partNumber, itemElement);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
@@ -633,42 +737,10 @@ public class ProcessPIESXMLService {
 
                 // Digital Asset
                 try {
-                    storeDigitalAssets(delegator,partNumber,itemElement);
-                }
-                catch (GenericEntityException e){
+                    storeDigitalAssets(delegator, partNumber, itemElement);
+                } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
-
-//                    // Inserting Brand as a ProductFeature
-//                    if (!brandLabel.isEmpty()) {
-//                        GenericValue brandFeature = delegator.makeValue("ProductFeature");
-//                        brandFeature.set("productFeatureId", partNumber + "_BRAND");
-//                        brandFeature.set("description", brandLabel);
-//                        brandFeature.set("productFeatureTypeId", "Brand");
-//                        delegator.create(brandFeature);
-//
-//                        GenericValue brandAppl = delegator.makeValue("ProductFeatureAppl");
-//                        brandAppl.set("productId", partNumber);
-//                        brandAppl.set("productFeatureId", brandFeature.get("productFeatureId"));
-//                        brandAppl.set("fromDate", UtilDateTime.nowTimestamp());
-//                        delegator.create(brandAppl);
-//                    }
-//
-//                    // Inserting VMRSBrandID as ProductFeature
-//                    if (!vmrsBrandId.isEmpty()) {
-//                        GenericValue vmrsFeature = delegator.makeValue("ProductFeature");
-//                        vmrsFeature.set("productFeatureId", partNumber + "_VMRS");
-//                        vmrsFeature.set("description", vmrsBrandId);
-//                        vmrsFeature.set("productFeatureTypeId", "VMRSBrandID");
-//                        delegator.create(vmrsFeature);
-//
-//                        GenericValue vmrsAppl = delegator.makeValue("ProductFeatureAppl");
-//                        vmrsAppl.set("productId", partNumber);
-//                        vmrsAppl.set("productFeatureId", vmrsFeature.get("productFeatureId"));
-//                        vmrsAppl.set("fromDate", UtilDateTime.nowTimestamp());
-//                        delegator.create(vmrsAppl);
-//                    }
-
             }
         }
     }
@@ -681,14 +753,13 @@ public class ProcessPIESXMLService {
         Debug.log("inside the byteBuferToString");
         return new String(bytes);
     }
+
     public static Map<String, Object> processPIESXML(DispatchContext dctx, Map<String, Object> context) {
         Debug.log("========Started processing the ByteBuffer==================");
 
         ByteBuffer fileBuffer = (ByteBuffer) context.get("fileName");
-        System.out.println(fileBuffer.limit());
-        System.out.println(fileBuffer);
 
-        if(fileBuffer.remaining()==0) {
+        if (fileBuffer.remaining() == 0) {
             return ServiceUtil.returnError("No file passed or the file is Empty ! ");
         }
 
