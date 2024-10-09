@@ -24,6 +24,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.ofbiz.entity.GenericEntityException;
 import org.apache.ofbiz.entity.util.EntityQuery;
@@ -659,88 +662,61 @@ public class ProcessPIESXMLService {
 
 
     /*=======  END ======== */
+
+
+    private static void processItem(DispatchContext dctx, Element itemElement) throws GenericEntityException {
+        Delegator delegator = dctx.getDelegator();
+
+        String baseItemId = getTextContent(itemElement, "BaseItemID");
+        String partNumber = getTextContent(itemElement, "PartNumber");
+        String hazardousMaterialCode = getTextContent(itemElement, "HazardousMaterialCode");
+        String itemEffectiveDate = getTextContent(itemElement, "ItemEffectiveDate");
+        String availableDate = getTextContent(itemElement, "AvailableDate");
+        String quantityPerApplication = getTextContent(itemElement, "QuantityPerApplication");
+        String minimumOrderQuantity = getTextContent(itemElement, "MinimumOrderQuantity");
+
+        Timestamp introductionDate = itemEffectiveDate.isEmpty() ? null : Timestamp.valueOf(itemEffectiveDate + " 00:00:00");
+        Timestamp releaseDate = availableDate.isEmpty() ? null : Timestamp.valueOf(availableDate + " 00:00:00");
+
+        createItem(delegator, partNumber, introductionDate, releaseDate, quantityPerApplication, minimumOrderQuantity, baseItemId);
+        createIdentifiers(delegator, itemElement, partNumber);
+        createHazmatFeature(delegator, hazardousMaterialCode, partNumber);
+        saveItemLevelGTIN(delegator, itemElement, partNumber);
+        storeProductDescriptions(delegator, partNumber, itemElement);
+        storePrices(delegator, partNumber, itemElement);
+        storeExtendedProductInformation(delegator, partNumber, itemElement);
+        storeProductAttributes(delegator, partNumber, itemElement);
+        storeDigitalAssets(delegator, partNumber, itemElement);
+    }
+
     public static void extractDataFromXML(DispatchContext dctx, Document document) {
         if (document != null) {
             Element rootElement = document.getDocumentElement();
             NodeList itemList = rootElement.getElementsByTagName("Item");
 
+            // Use a fixed thread pool based on the available processors
+            ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
             for (int i = 0; i < itemList.getLength(); i++) {
-                Element itemElement = (Element) itemList.item(i);
+                final Element itemElement = (Element) itemList.item(i);
+                executorService.submit(() -> {
+                    try {
+                        processItem(dctx, itemElement);
+                    } catch (Exception e) {
+                        // Log the error with item information for debugging
+                        System.err.println("Error processing item: " + e.getMessage());
+                    }
+                });
+            }
 
-                // Extracting data from the XML
-                String baseItemId = getTextContent(itemElement, "BaseItemID");
-                String partNumber = getTextContent(itemElement, "PartNumber");
-                String hazardousMaterialCode = getTextContent(itemElement, "HazardousMaterialCode");
-                String itemEffectiveDate = getTextContent(itemElement, "ItemEffectiveDate");
-                String availableDate = getTextContent(itemElement, "AvailableDate");
-                String quantityPerApplication = getTextContent(itemElement, "QuantityPerApplication");
-                String minimumOrderQuantity = getTextContent(itemElement, "MinimumOrderQuantity");
-
-                Delegator delegator = dctx.getDelegator();
-
-                // Parsing dates to the correct format
-                Timestamp introductionDate = itemEffectiveDate.isEmpty() ? null : Timestamp.valueOf(itemEffectiveDate + " 00:00:00");
-                Timestamp releaseDate = availableDate.isEmpty() ? null : Timestamp.valueOf(availableDate + " 00:00:00");
-
-                // Data injections starts from here..
-
-                //product
-                try {
-                    createItem(delegator, partNumber, introductionDate, releaseDate, quantityPerApplication, minimumOrderQuantity, baseItemId);
-                } catch (GenericEntityException e) {
-                    throw new RuntimeException(e);
+            // Shutdown the executor service
+            executorService.shutdown();
+            try {
+                if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+                    executorService.shutdownNow(); // Force shutdown if tasks did not complete
                 }
-
-                // ID's , Code's and Identifier's
-
-                try {
-                    createIdentifiers(delegator, itemElement, partNumber);
-                } catch (GenericEntityException e) {
-                    throw new RuntimeException(e);
-                }
-
-                // Feature
-                createHazmatFeature(delegator, hazardousMaterialCode, partNumber);
-                try {
-                    saveItemLevelGTIN(delegator, itemElement, partNumber);
-                } catch (GenericEntityException e) {
-                    throw new RuntimeException(e);
-                }
-                // Description
-                try {
-                    storeProductDescriptions(delegator, partNumber, itemElement);
-                } catch (GenericEntityException e) {
-                    throw new RuntimeException(e);
-                }
-
-                // Price
-                try {
-                    storePrices(delegator, partNumber, itemElement);
-                } catch (GenericEntityException e) {
-                    throw new RuntimeException(e);
-                }
-
-                // EXPI
-                try {
-                    storeExtendedProductInformation(delegator, partNumber, itemElement);
-                } catch (GenericEntityException e) {
-                    throw new RuntimeException(e);
-                }
-
-
-                // Product Attributes
-                try {
-                    storeProductAttributes(delegator, partNumber, itemElement);
-                } catch (GenericEntityException e) {
-                    throw new RuntimeException(e);
-                }
-
-                // Digital Asset
-                try {
-                    storeDigitalAssets(delegator, partNumber, itemElement);
-                } catch (GenericEntityException e) {
-                    throw new RuntimeException(e);
-                }
+            } catch (InterruptedException e) {
+                executorService.shutdownNow();
             }
         }
     }
