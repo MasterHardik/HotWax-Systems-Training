@@ -1,6 +1,5 @@
 package com.companyname.HotWax_Systems_Training.services;
 
-import clojure.lang.Obj;
 import org.apache.ofbiz.base.util.*;
 import org.apache.ofbiz.entity.Delegator;
 import org.apache.ofbiz.entity.GenericValue;
@@ -64,7 +63,6 @@ public class ProcessPIESXMLService {
                 "productId", productId,
                 "productFeatureId", productFeatureId,
                 "sequenceNum", (featureSeq = featureSeq + 1),
-                "fromDate", UtilDateTime.nowTimestamp(),
                 "productFeatureApplTypeId", "STANDARD_FEATURE",
                 "userLogin", userLogin
         );
@@ -270,7 +268,6 @@ public class ProcessPIESXMLService {
     }
 
     public static void storeExtendedProductInformation(Delegator delegator, String productId, Element extendedInfoElements, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-        Timestamp nowTimestamp = UtilDateTime.nowTimestamp(); // Current timestamp
         NodeList extendedInfoList = extendedInfoElements.getElementsByTagName("ExtendedProductInformation");
 
         // Check if the ProductFeatureType "EXPI" exists, if not, create it , also we  can comment it if making manually
@@ -315,7 +312,7 @@ public class ProcessPIESXMLService {
         Debug.logInfo("Extended Product Information stored successfully for productId: " + productId, MODULE);
     }
 
-    private static void storeProductAttributes(Delegator delegator, String partNumber, Element itemElement) throws GenericEntityException {
+    private static void storeProductAttributes(Delegator delegator, String partNumber, Element itemElement, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         // Assuming itemElement contains the <ProductAttributes> element
         Element productAttributesElement = UtilXml.firstChildElement(itemElement, "ProductAttributes");
 
@@ -346,11 +343,12 @@ public class ProcessPIESXMLService {
                 GenericValue existingProductAttribute = delegator.findOne("ProductAttribute",
                         UtilMisc.toMap("productId", partNumber, "attrName", attributeId), false);
 
-                if (existingProductAttribute == null) {
-                    // If it does not exist, create and store the new product attribute record
-                    GenericValue productAttribute = delegator.makeValue("ProductAttribute", fields);
-                    delegator.create(productAttribute);
-                    Debug.log("Created new ProductAttribute: " + fields.toString());
+                fields.put("userLogin", userLogin);
+
+                if (UtilValidate.isEmpty(existingProductAttribute)) {
+                    Map<String, Object> result = dctx.getDispatcher().runSync("createProductAttribute", fields);
+                    fields.remove("userLogin");
+                    Debug.log("Created new ProductAttribute: " + fields);
                 } else {
                     Debug.log("ProductAttribute already exists: " + attributeId + " for productId: " + partNumber);
                 }
@@ -361,7 +359,7 @@ public class ProcessPIESXMLService {
     }
 
 
-    private static void storeDigitalAssets(Delegator delegator, String partNumber, Element itemElement) throws GenericEntityException {
+    private static void storeDigitalAssets(Delegator delegator, String partNumber, Element itemElement, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         Element digitalAssetsElement = UtilXml.firstChildElement(itemElement, "DigitalAssets");
         int seqNum = 0;
         if (digitalAssetsElement != null) {
@@ -406,15 +404,17 @@ public class ProcessPIESXMLService {
                 Element assetDatesElement = UtilXml.firstChildElement(digitalFileInfoElement, "AssetDates");
                 Element assetDateElement = UtilXml.firstChildElement(assetDatesElement, "AssetDate");
                 String assetDate = UtilValidate.isNotEmpty(assetDateElement) ? assetDateElement.getTextContent() : "";
-
+                Debug.logInfo(filePath, MODULE);
                 // Create DataResource
                 Map<String, Object> dataResourceFields = UtilMisc.toMap(
                         "dataResourceId", dataResourceId,
                         "mimeTypeId", fileType,
                         "objectInfo", filePath,
-                        "dataResourceName", fileName
+                        "dataResourceName", fileName,
+                        "userLogin", userLogin
                 );
-                delegator.create("DataResource", dataResourceFields);
+
+                Map<String, Object> createDataResourceResult = dctx.getDispatcher().runSync("createDataResource", dataResourceFields);
 
                 // Create Content
                 Map<String, Object> contentFields = UtilMisc.toMap(
@@ -425,9 +425,11 @@ public class ProcessPIESXMLService {
                         "description", uri,
                         "serviceName", assetId,
                         "localeString", languageCode,
-                        "dataResourceId", dataResourceId
+                        "dataResourceId", dataResourceId,
+                        "userLogin", userLogin
                 );
-                delegator.create("Content", contentFields);
+
+                Map<String, Object> createContentResult = dctx.getDispatcher().runSync("createContent", contentFields);
 
                 // Create ProductContent
                 Map<String, Object> productContentFields = UtilMisc.toMap(
@@ -435,9 +437,10 @@ public class ProcessPIESXMLService {
                         "productContentTypeId", "DA", // Assuming "DA" as the product content type
                         "contentId", contentId,
                         "sequenceNum", (seqNum = seqNum + 1),
-                        "fromDate", UtilDateTime.nowTimestamp()
+                        "userLogin", userLogin
                 );
-                delegator.create("ProductContent", productContentFields);
+
+                Map<String, Object> createProductContentResult = dctx.getDispatcher().runSync("createProductContent", productContentFields);
 
                 // Create Content Attributes (Dimensions)
                 if (UtilValidate.isNotEmpty(assetHeight) && UtilValidate.isNotEmpty(assetWidth)) {
@@ -445,17 +448,22 @@ public class ProcessPIESXMLService {
                             "contentId", contentId,
                             "attrName", "AssetHeight",
                             "attrValue", assetHeight,
-                            "attrDescription", uom
+                            "attrDescription", uom,
+                            "userLogin", userLogin
                     );
-                    delegator.create("ContentAttribute", contentAttrHeightFields);
+
+                    dctx.getDispatcher().runSync("createContentAttribute", contentAttrHeightFields);
 
                     Map<String, Object> contentAttrWidthFields = UtilMisc.toMap(
                             "contentId", contentId,
                             "attrName", "AssetWidth",
                             "attrValue", assetWidth,
-                            "attrDescription", uom
+                            "attrDescription", uom,
+                            "userLogin", userLogin
                     );
-                    delegator.create("ContentAttribute", contentAttrWidthFields);
+
+                    dctx.getDispatcher().runSync("createContentAttribute", contentAttrWidthFields);
+
                 }
 
                 // Create DataResourceMetadata for additional fields
@@ -516,9 +524,10 @@ public class ProcessPIESXMLService {
                         Map<String, Object> dataResourceMetaFields = UtilMisc.toMap(
                                 "dataResourceId", dataResourceId, // Use of generated dataResourceId
                                 "metaDataPredicateId", metaDataPredicateId,
-                                "metaDataValue", metaDataValue
+                                "metaDataValue", metaDataValue,
+                                "userLogin", userLogin
                         );
-                        delegator.create("DataResourceMetaData", dataResourceMetaFields);
+                        Map<String, Object> createDataResourceMetaDataResult = dctx.getDispatcher().runSync("createDataResourceMetaData", dataResourceMetaFields);
                     }
                 }
 
@@ -526,7 +535,7 @@ public class ProcessPIESXMLService {
         }
     }
 
-    private static void createProductCategory(Delegator delegator, String productCategoryId, String productCategoryTypeId, String description) throws GenericEntityException {
+    private static void createProductCategory(Delegator delegator, String productCategoryId, String productCategoryTypeId, String description, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         // Check if the product category already exists
         GenericValue existingCategory = delegator.findOne("ProductCategory", UtilMisc.toMap("productCategoryId", productCategoryId), false);
         if (UtilValidate.isNotEmpty(existingCategory)) {
@@ -539,36 +548,39 @@ public class ProcessPIESXMLService {
         Map<String, Object> categoryMap = UtilMisc.toMap(
                 "productCategoryId", productCategoryId,
                 "productCategoryTypeId", productCategoryTypeId,
-                "description", description
+                "description", description,
+                "userLogin", userLogin
         );
-        delegator.create("ProductCategory", categoryMap);
+        Map<String, Object> createProductCategoryResult = dctx.getDispatcher().runSync("createProductCategory", categoryMap);
     }
 
 
     // Helper method to link a product to a category (ProductCategoryMember)
-    private static void linkProductToCategory(Delegator delegator, String productId, String productCategoryId) throws GenericEntityException {
+    private static void linkProductToCategory(Delegator delegator, String productId, String productCategoryId, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         Map<String, Object> categoryMemberMap = UtilMisc.toMap(
                 "productCategoryId", productCategoryId,
                 "productId", productId,
-                "fromDate", UtilDateTime.nowTimestamp()
+                "userLogin", userLogin
         );
-        delegator.create("ProductCategoryMember", categoryMemberMap);
+
+        Map<String, Object> addProductToCategoryResult = dctx.getDispatcher().runSync("addProductToCategory", categoryMemberMap);
     }
 
     // Helper method to add or update a ProductAttribute
-    private static void createOrUpdateProductAttribute(Delegator delegator, String productId, String attrName, String attrValue) throws GenericEntityException {
+    private static void createOrUpdateProductAttribute(Delegator delegator, String productId, String attrName, String attrValue, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         GenericValue productAttr = delegator.findOne("ProductAttribute", UtilMisc.toMap("productId", productId, "attrName", attrName), false);
-        if (productAttr == null) {
+        if (UtilValidate.isEmpty(productAttr)) {
             Map<String, Object> attrMap = UtilMisc.toMap(
                     "productId", productId,
                     "attrName", attrName,
-                    "attrValue", attrValue
+                    "attrValue", attrValue,
+                    "userLogin", userLogin
             );
-            delegator.create("ProductAttribute", attrMap);
+            Map<String, Object> createProductAttributeResult = dctx.getDispatcher().runSync("createProductAttribute", attrMap);
         }
     }
 
-    private static void createIdentifiers(Delegator delegator, Element itemElement, String productId) throws GenericEntityException {
+    private static void createIdentifiers(Delegator delegator, Element itemElement, String productId, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         String brandAAIAID = getTextContent(itemElement, "BrandAAIAID");
         String brandLabel = getTextContent(itemElement, "BrandLabel");
         String vmrsBrandId = getTextContent(itemElement, "VMRSBrandID");
@@ -581,46 +593,46 @@ public class ProcessPIESXMLService {
 
         // Create Product Category for BrandAAIAID
         if (UtilValidate.isNotEmpty(brandAAIAID)) {
-            createProductCategory(delegator, brandAAIAID, "BRAND", brandLabel); // Using BrandLabel as description
+            createProductCategory(delegator, brandAAIAID, "BRAND", brandLabel, dctx, userLogin); // Using BrandLabel as description
             // Link the product to the BrandAAIAID category
-            linkProductToCategory(delegator, productId, brandAAIAID);
+            linkProductToCategory(delegator, productId, brandAAIAID, dctx, userLogin);
         }
 
         // Always create the product category for VMRSBrandID
         if (UtilValidate.isNotEmpty(vmrsBrandId)) {
-            createProductCategory(delegator, vmrsBrandId, "VMRS", "VMRS Brand");
+            createProductCategory(delegator, vmrsBrandId, "VMRS", "VMRS Brand", dctx, userLogin);
             // Link the product to the VMRSBrand category
-            linkProductToCategory(delegator, productId, vmrsBrandId);
+            linkProductToCategory(delegator, productId, vmrsBrandId, dctx, userLogin);
         }
 
         // Create and link the product category for AAIAProductCategoryCode
         if (UtilValidate.isNotEmpty(aaiaProductCategoryCode)) {
-            createProductCategory(delegator, aaiaProductCategoryCode, "AAIA", "AAIA Product Category");
+            createProductCategory(delegator, aaiaProductCategoryCode, "AAIA", "AAIA Product Category", dctx, userLogin);
             // Link the product to the AAIA category
-            linkProductToCategory(delegator, productId, aaiaProductCategoryCode);
+            linkProductToCategory(delegator, productId, aaiaProductCategoryCode, dctx, userLogin);
         }
 
         // Add VMRSCode as a Product Attribute, if vmrsCode is not null or empty
         if (UtilValidate.isNotEmpty(vmrsCode)) {
-            createOrUpdateProductAttribute(delegator, productId, "VMRSCode", vmrsCode);
+            createOrUpdateProductAttribute(delegator, productId, "VMRSCode", vmrsCode, dctx, userLogin);
         }
 
         // Add UNSPSC as a Product Attribute, if UNSPSC is not null or empty
         if (UtilValidate.isNotEmpty(UNSPSC)) {
-            createOrUpdateProductAttribute(delegator, productId, "UNSPSC", UNSPSC);
+            createOrUpdateProductAttribute(delegator, productId, "UNSPSC", UNSPSC, dctx, userLogin);
         }
 
         // Add Manufacturer Group and SubGroup as Product Attributes, if they are not null or empty
         if (UtilValidate.isNotEmpty(manufacturerGroup)) {
-            createOrUpdateProductAttribute(delegator, productId, "ManufacturerGroup", manufacturerGroup);
+            createOrUpdateProductAttribute(delegator, productId, "ManufacturerGroup", manufacturerGroup, dctx, userLogin);
         }
         if (UtilValidate.isNotEmpty(manufacturerSubGroup)) {
-            createOrUpdateProductAttribute(delegator, productId, "ManufacturerSubGroup", manufacturerSubGroup);
+            createOrUpdateProductAttribute(delegator, productId, "ManufacturerSubGroup", manufacturerSubGroup, dctx, userLogin);
         }
 
         // Add PartTerminologyID as a Product Attribute, if it's not null or empty
         if (UtilValidate.isNotEmpty(partTerminologyId)) {
-            createOrUpdateProductAttribute(delegator, productId, "PartTerminologyID", partTerminologyId);
+            createOrUpdateProductAttribute(delegator, productId, "PartTerminologyID", partTerminologyId, dctx, userLogin);
         }
         Debug.log(brandAAIAID, brandLabel, vmrsBrandId, UNSPSC, vmrsCode, manufacturerGroup, manufacturerSubGroup, partTerminologyId, aaiaProductCategoryCode);
     }
@@ -664,7 +676,7 @@ public class ProcessPIESXMLService {
                 // ID's , Code's and Identifier's
 
                 try {
-                    createIdentifiers(delegator, itemElement, partNumber);
+                    createIdentifiers(delegator, itemElement, partNumber, dctx, userLogin);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
@@ -706,14 +718,14 @@ public class ProcessPIESXMLService {
 
                 // Product Attributes
                 try {
-                    storeProductAttributes(delegator, partNumber, itemElement);
+                    storeProductAttributes(delegator, partNumber, itemElement, dctx, userLogin);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
 
                 // Digital Asset
                 try {
-                    storeDigitalAssets(delegator, partNumber, itemElement);
+                    storeDigitalAssets(delegator, partNumber, itemElement, dctx, userLogin);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
