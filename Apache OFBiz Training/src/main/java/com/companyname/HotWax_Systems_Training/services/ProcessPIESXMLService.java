@@ -1,5 +1,6 @@
 package com.companyname.HotWax_Systems_Training.services;
 
+import clojure.lang.Obj;
 import org.apache.ofbiz.base.util.*;
 import org.apache.ofbiz.entity.Delegator;
 import org.apache.ofbiz.entity.GenericValue;
@@ -59,48 +60,37 @@ public class ProcessPIESXMLService {
 
     //Associate feature with product
     private static void associateFeatureWithProduct(DispatchContext dctx, String productId, String productFeatureId, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-        Map <String,Object> serviceParams = UtilMisc.toMap(
-                "productId",productId,
-                "productFeatureId",productFeatureId,
-                "sequenceNum",(featureSeq = featureSeq+1),
-                "fromDate" ,UtilDateTime.nowTimestamp(),
-                "productFeatureApplTypeId","STANDARD_FEATURE",
+        Map<String, Object> serviceParams = UtilMisc.toMap(
+                "productId", productId,
+                "productFeatureId", productFeatureId,
+                "sequenceNum", (featureSeq = featureSeq + 1),
+                "fromDate", UtilDateTime.nowTimestamp(),
+                "productFeatureApplTypeId", "STANDARD_FEATURE",
                 "userLogin", userLogin
         );
-        Map<String,Object> result = dctx.getDispatcher().runSync("applyFeatureToProduct",serviceParams);
-        Debug.logInfo("Associated : "+productId + "<==to==>"+productFeatureId,MODULE);
+        Map<String, Object> result = dctx.getDispatcher().runSync("applyFeatureToProduct", serviceParams);
+        Debug.logInfo("Associated : " + productId + "<==to==>" + productFeatureId, MODULE);
     }
 
 
     private static void createHazmatFeature(Delegator delegator, String hazardousMaterialCode, String productId, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-        // Generate a unique ID for the ProductFeature
-        String productFeatureId = delegator.getNextSeqId("ProductFeature");
+        Map<String, Object> productFeatureParams = UtilMisc.toMap(
+                "productFeatureTypeId", "HAZMAT",
+                "description", hazardousMaterialCode,
+                "userLogin", userLogin
+        );
 
-        // Create a new ProductFeature record
-        GenericValue productFeature = delegator.makeValue("ProductFeature");
+        Map<String, Object> result = dctx.getDispatcher().runSync("createProductFeature", productFeatureParams);
 
-        // Set the primary key field
-        productFeature.set("productFeatureId", productFeatureId);
-        productFeature.set("productFeatureTypeId", "HAZMAT");
-        productFeature.set("description", hazardousMaterialCode);
-        Timestamp nowTimestamp = UtilDateTime.nowTimestamp();
-        productFeature.set("createdStamp", nowTimestamp);
-        productFeature.set("lastUpdatedTxStamp", nowTimestamp);
+        String productFeatureId = (String) result.get("productFeatureId");
 
-        // Save the record to the database
-        try {
-            delegator.create(productFeature);
-            Debug.log("Successfully created ProductFeature with ID: " + productFeatureId);
-        } catch (GenericEntityException e) {
-            throw new RuntimeException(e);
-        }
+        Debug.log("Successfully created ProductFeature with ID: " + productFeatureId);
 
         associateFeatureWithProduct(dctx, productId, productFeatureId, userLogin);
-
     }
 
 
-    public static void saveItemLevelGTIN(Delegator delegator, Element itemElement, String productId) throws GenericEntityException {
+    public static void saveItemLevelGTIN(Delegator delegator, Element itemElement, String productId, GenericValue userLogin, DispatchContext dctx) throws GenericEntityException, GenericServiceException {
 
         // Parsing 'ItemLevelGTIN' with 'GTINQualifier' attribute
         Element itemLevelGTINElement = (Element) itemElement.getElementsByTagName("ItemLevelGTIN").item(0);
@@ -122,22 +112,22 @@ public class ProcessPIESXMLService {
                 .where("goodIdentificationTypeId", gtinQualifier, "productId", productId)
                 .queryOne();
 
-        if (goodIdentification == null) {
+        if (UtilValidate.isEmpty(goodIdentification)) {
             // Create new GoodIdentification for the product
-            goodIdentification = delegator.makeValue("GoodIdentification");
-            goodIdentification.set("goodIdentificationTypeId", gtinQualifier);
-            goodIdentification.set("productId", productId);
-            goodIdentification.set("idValue", itemLevelGTIN);
-            Timestamp nowTimestamp = UtilDateTime.nowTimestamp();
-            goodIdentification.set("createdStamp", nowTimestamp);
-            goodIdentification.create();
-            Debug.logInfo("Created new GoodIdentification for productId: " + productId + " with GTIN: " + itemLevelGTIN, MODULE);
+            Map<String, Object> goodIdentificationParams = UtilMisc.toMap(
+                    "goodIdentificationTypeId", gtinQualifier,
+                    "productId", productId,
+                    "idValue", itemLevelGTIN,
+                    "userLogin", userLogin
+            );
+            Map<String, Object> result = dctx.getDispatcher().runSync("createGoodIdentification", goodIdentificationParams);
+            Debug.logInfo("Created new GoodIdentification for productId: " + productId + " with GTIN: " + itemLevelGTIN + "with s message  :" + result.get("successMessage"), MODULE);
         } else {
             Debug.logInfo("GoodIdentification already exists for productId: " + productId + " and GTIN: " + itemLevelGTIN, MODULE);
         }
     }
 
-    public static void createItem(Delegator delegator, String productId, Timestamp introductionDate, Timestamp releaseDate, String quantityPerApplication, String minimumOrderQuantity, String baseItemId) throws GenericEntityException {
+    public static void createItem(Delegator delegator, String productId, Timestamp introductionDate, Timestamp releaseDate, String quantityPerApplication, String minimumOrderQuantity, String baseItemId, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         // Checking if the product already exists
         GenericValue existingProduct = EntityQuery.use(delegator).from("Product").where("productId", productId).queryOne();
 
@@ -146,24 +136,20 @@ public class ProcessPIESXMLService {
             return;
         }
 
-        // Create new product
-        GenericValue product = delegator.makeValue("Product");
-        product.set("productId", productId);
-        product.set("introductionDate", introductionDate);
-        product.set("quantityIncluded", quantityPerApplication);
-        product.set("releaseDate", releaseDate);
-        product.set("internalName", baseItemId);
-        product.set("requireAmount", minimumOrderQuantity);
+        Map<String, Object> productParams = UtilMisc.toMap(
+                "productId", productId,
+                "introductionDate", introductionDate,
+                "quantityIncluded", quantityPerApplication,
+                "releaseDate", releaseDate,
+                "internalName", baseItemId,
+                "requireAmount", minimumOrderQuantity,
+                "userLogin", userLogin
+        );
 
-        // Setting the current timestamp as createdStamp
-        Timestamp nowTimestamp = UtilDateTime.nowTimestamp();
-        product.set("createdStamp", nowTimestamp);
-
-        // Save the product to the database
-        delegator.create(product);
+        Map<String, Object> result = dctx.getDispatcher().runSync("createProduct", productParams);
 
         // Log product creation
-        Debug.logInfo("Product created successfully with productId: " + productId, MODULE);
+        Debug.logInfo("Product created successfully with productId: " + result.get("productId"), MODULE);
     }
 
     public static void storeProductDescriptions(String productId, Element descriptionElements, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
@@ -177,64 +163,65 @@ public class ProcessPIESXMLService {
             String sequenceAttr = descriptionElement.getAttribute("Sequence");
             String descriptionText = descriptionElement.getTextContent();
 
-            Map<String,Object> contentParams = UtilMisc.toMap(
-                    "contentName",descriptionCode,
+            Map<String, Object> contentParams = UtilMisc.toMap(
+                    "contentName", descriptionCode,
                     "description", descriptionText,
-                    "localeString" , languageCode,
+                    "localeString", languageCode,
                     "userLogin", userLogin
             );
 
-            Map<String,Object> result = dctx.getDispatcher().runSync("createContent",contentParams);
+            Map<String, Object> result = dctx.getDispatcher().runSync("createContent", contentParams);
 
             String contentId = String.valueOf(result.get("contentId"));
 
             // Now associate this content with the product in the ProductContent table
-            Map<String,Object> productContentParams = UtilMisc.toMap(
-                "contentId" , contentId,
-                    "productContentTypeId" , "DESCRIPTION",
-                    "productId",productId,
-                    "sequenceNum" , sequenceAttr,
+            Map<String, Object> productContentParams = UtilMisc.toMap(
+                    "contentId", contentId,
+                    "productContentTypeId", "DESCRIPTION",
+                    "productId", productId,
+                    "sequenceNum", sequenceAttr,
                     "userLogin", userLogin
             );
 
-            Map<String,Object> prodContentResult = dctx.getDispatcher().runSync("createProductContent",productContentParams);
+            Map<String, Object> prodContentResult = dctx.getDispatcher().runSync("createProductContent", productContentParams);
             Debug.logInfo("Descriptions stored successfully with contentId: " + prodContentResult.get("contentId"), MODULE);
         }
 
         Debug.logInfo("Descriptions stored successfully for productId: " + productId, MODULE);
     }
 
-    public static void createProductPriceType(Delegator delegator, String priceTypeId, String description) throws GenericEntityException {
+    public static String createProductPriceType(Delegator delegator, String priceTypeId, String description, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         // Check if the ProductPriceType already exists
         GenericValue existingProductPriceType = EntityQuery.use(delegator)
                 .from("ProductPriceType")
                 .where("productPriceTypeId", priceTypeId)
                 .queryOne();
 
-        if (existingProductPriceType == null) {
+        if (UtilValidate.isEmpty(existingProductPriceType)) {
             // Create a new ProductPriceType record
-            GenericValue productPriceType = delegator.makeValue("ProductPriceType");
-            productPriceType.set("productPriceTypeId", priceTypeId);
-            productPriceType.set("description", description);
-            productPriceType.set("createdStamp", UtilDateTime.nowTimestamp());
-            productPriceType.set("lastUpdatedStamp", UtilDateTime.nowTimestamp());
-
-            // Save the new ProductPriceType
-            delegator.create(productPriceType);
-            Debug.logInfo("ProductPriceType created successfully with productPriceTypeId: " + priceTypeId, MODULE);
+            Map<String, Object> productPriceTypeParams = UtilMisc.toMap(
+                    "productPriceTypeId", priceTypeId,
+                    "description", description,
+                    "userLogin", userLogin
+            );
+            Map<String, Object> result = dctx.getDispatcher().runSync("createProductPriceType", productPriceTypeParams);
+            Debug.logInfo("ProductPriceType created successfully with productPriceTypeId: " + result.get("productPriceTypeId"), MODULE);
+            return (String) result.get("ProductPriceType");
         } else {
             Debug.logInfo("ProductPriceType already exists with productPriceTypeId: " + priceTypeId, MODULE);
         }
+        return priceTypeId;
     }
 
-    public static void storePrices(Delegator delegator, String productId, Element priceElements) throws GenericEntityException {
-        Timestamp nowTimestamp = UtilDateTime.nowTimestamp(); // Current timestamp
+    public static void storePrices(Delegator delegator, String productId, Element priceElements, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+
         NodeList pricingList = priceElements.getElementsByTagName("Pricing");
 
         for (int i = 0; i < pricingList.getLength(); i++) {
+
             // Extract data from each Pricing element
             Element pricingElement = (Element) pricingList.item(i);
-            String priceType = pricingElement.getAttribute("PriceType");
+            String priceTypeId = pricingElement.getAttribute("PriceType");
             String priceSheetNumber = pricingElement.getElementsByTagName("PriceSheetNumber").item(0).getTextContent();
             String currencyCode = pricingElement.getElementsByTagName("CurrencyCode").item(0).getTextContent();
             String effectiveDateStr = pricingElement.getElementsByTagName("EffectiveDate").item(0).getTextContent();
@@ -253,57 +240,53 @@ public class ProcessPIESXMLService {
             boolean priceExists = EntityQuery.use(delegator)
                     .from("ProductPrice")
                     .where("productId", productId,
-                            "productPriceTypeId", priceType,
+                            "productPriceTypeId", priceTypeId,
                             "currencyUomId", currencyCode,
                             "productPricePurposeId", "PURCHASE")
                     .queryCount() > 0;
 
             if (!priceExists) {
-                // Generate a random PriceId
-                String priceId = delegator.getNextSeqId("ProductPrice");
 
-                // Create a new record in the ProductPrice table
-                GenericValue price = delegator.makeValue("ProductPrice");
-                price.set("productId", productId);
-                createProductPriceType(delegator, priceType, ""); // Ensure the price type is valid
-                price.set("productPriceTypeId", priceType);
-                price.set("currencyUomId", currencyCode);
-                price.set("fromDate", UtilValidate.isNotEmpty(effectiveDateStr) ? effectiveDateStr : UtilDateTime.nowTimestamp());
-                price.set("thruDate", expirationDateStr);
-                price.set("productPricePurposeId", "PURCHASE");
-                price.set("productStoreGroupId", "_NA_"); // Default value for store group
-                price.set("price", priceValue);
-                price.set("createdStamp", nowTimestamp);
-                price.set("lastUpdatedStamp", nowTimestamp);
+                priceTypeId = createProductPriceType(delegator, priceTypeId, "", dctx, userLogin);
 
-                // Save the ProductPrice record
-                delegator.create(price);
-                Debug.logInfo("Price stored successfully with productId+(PriceTypeId): " + priceId + ":" + priceType, MODULE);
+                Map<String, Object> priceParams = UtilMisc.toMap(
+                        "productId", productId,
+                        "productPriceTypeId", priceTypeId,
+                        "currencyUomId", currencyCode,
+                        "fromDate", UtilValidate.isNotEmpty(effectiveDateStr) ? effectiveDateStr : UtilDateTime.nowTimestamp(),
+                        "thruDate", expirationDateStr,
+                        "productPricePurposeId", "PURCHASE",
+                        "productStoreGroupId", "_NA_",
+                        "price", priceValue,
+                        "userLogin", userLogin
+                );
+                Map<String, Object> result = dctx.getDispatcher().runSync("createProductPrice", priceParams);
+                Debug.logInfo("Price stored successfully with productId+(PriceTypeId): " + priceValue + ":" + priceTypeId + ", Success Message : " + result.get("successMessage"), MODULE);
             } else {
-                Debug.logInfo("Price already exists for productId: " + productId + " with priceTypeId: " + priceType + " and currencyUomId: " + currencyCode, MODULE);
+                Debug.logInfo("Price already exists for productId: " + productId + " with priceTypeId: " + priceTypeId + " and currencyUomId: " + currencyCode, MODULE);
             }
         }
-
         Debug.logInfo("Prices stored successfully for productId: " + productId, MODULE);
     }
 
-    public static void storeExtendedProductInformation(Delegator delegator, String productId, Element extendedInfoElements , DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+    public static void storeExtendedProductInformation(Delegator delegator, String productId, Element extendedInfoElements, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         Timestamp nowTimestamp = UtilDateTime.nowTimestamp(); // Current timestamp
         NodeList extendedInfoList = extendedInfoElements.getElementsByTagName("ExtendedProductInformation");
 
-        // Check if the ProductFeatureType "EXPI" exists, if not, create it
-        if (EntityQuery.use(delegator)
+        // Check if the ProductFeatureType "EXPI" exists, if not, create it , also we  can comment it if making manually
+        boolean productFeatureTypeEntityExist = EntityQuery.use(delegator)
                 .from("ProductFeatureType")
                 .where("productFeatureTypeId", "EXPI")
-                .queryCount() == 0) {
-            GenericValue productFeatureType = delegator.makeValue("ProductFeatureType");
-            productFeatureType.set("productFeatureTypeId", "EXPI");
-            productFeatureType.set("description", "Extended Product Information");
-            productFeatureType.set("createdStamp", nowTimestamp);
-            productFeatureType.set("lastUpdatedStamp", nowTimestamp);
-            delegator.create(productFeatureType);
+                .queryCount() == 0;
 
-            Debug.logInfo("ProductFeatureType 'EXPI' created with description: Extended Product Information", MODULE);
+        if (productFeatureTypeEntityExist) {
+            Map<String, Object> productFeatureTypeParams = UtilMisc.toMap(
+                    "productFeatureTypeId", "EXPI",
+                    "description", "Extended Product Information",
+                    "userLogin", userLogin
+            );
+            Map<String, Object> result = dctx.getDispatcher().runSync("createProductFeatureType", productFeatureTypeParams);
+            Debug.logInfo("ProductFeatureType 'EXPI' created with description: Extended Product Information | " + result.get("successMessage"), MODULE);
         }
 
         for (int i = 0; i < extendedInfoList.getLength(); i++) {
@@ -313,25 +296,21 @@ public class ProcessPIESXMLService {
             String languageCode = extendedInfoElement.getAttribute("LanguageCode");
             String description = extendedInfoElement.getTextContent(); // Value inside the element
 
-            // Generate a random ProductFeatureId
-            String productFeatureId = delegator.getNextSeqId("ProductFeature");
+            Map<String, Object> productFeatureParams = UtilMisc.toMap(
+                    "productFeatureTypeId", "EXPI",
+                    "idCode", expiCode,
+                    "description", description,
+                    "userLogin", userLogin
+            );
 
-            // Create a new record in the ProductFeature table
-            GenericValue productFeature = delegator.makeValue("ProductFeature");
-            productFeature.set("productFeatureId", productFeatureId);
-            productFeature.set("productFeatureTypeId", "EXPI");
-            productFeature.set("idCode", expiCode);
-            productFeature.set("description", description);
-            productFeature.set("createdStamp", nowTimestamp);
-            productFeature.set("lastUpdatedStamp", nowTimestamp);
+            Map<String, Object> result = dctx.getDispatcher().runSync("createProductFeature", productFeatureParams);
 
-            // Save ProductFeature record
-            delegator.create(productFeature);
+            String productFeatureId = (String) result.get("productFeatureId");
 
             // Create a new record in the ProductFeatureAppl table
             associateFeatureWithProduct(dctx, productId, productFeatureId, userLogin);
 
-            Debug.logInfo("Product Feature stored successfully with productId: " + productId + ", productFeatureId: " + productFeatureId + ", expiCode: " + expiCode, MODULE);
+            Debug.logInfo("Product Feature stored successfully with productId: " + productId + ", productFeatureId: " + result.get("productFeatureId") + ", expiCode: " + expiCode, MODULE);
         }
         Debug.logInfo("Extended Product Information stored successfully for productId: " + productId, MODULE);
     }
@@ -677,7 +656,7 @@ public class ProcessPIESXMLService {
 
                 //product
                 try {
-                    createItem(delegator, partNumber, introductionDate, releaseDate, quantityPerApplication, minimumOrderQuantity, baseItemId);
+                    createItem(delegator, partNumber, introductionDate, releaseDate, quantityPerApplication, minimumOrderQuantity, baseItemId, dctx, userLogin);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
@@ -692,27 +671,27 @@ public class ProcessPIESXMLService {
 
                 // Feature
                 try {
-                    createHazmatFeature(delegator, hazardousMaterialCode, partNumber,dctx, userLogin);
+                    createHazmatFeature(delegator, hazardousMaterialCode, partNumber, dctx, userLogin);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 } catch (GenericServiceException e) {
                     throw new RuntimeException(e);
                 }
                 try {
-                    saveItemLevelGTIN(delegator, itemElement, partNumber);
+                    saveItemLevelGTIN(delegator, itemElement, partNumber, userLogin, dctx);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
                 // Description
                 try {
-                    storeProductDescriptions(partNumber, itemElement,dctx,userLogin);
+                    storeProductDescriptions(partNumber, itemElement, dctx, userLogin);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
 
                 // Price
                 try {
-                    storePrices(delegator, partNumber, itemElement);
+                    storePrices(delegator, partNumber, itemElement, dctx, userLogin);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
@@ -767,7 +746,7 @@ public class ProcessPIESXMLService {
 
         Debug.log("========Extracting Data from the XML==================");
 
-        extractDataFromXML(dctx, document , context);
+        extractDataFromXML(dctx, document, context);
 
         Debug.log("========Returned success message==================");
 
