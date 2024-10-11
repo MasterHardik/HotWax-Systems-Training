@@ -14,7 +14,9 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -26,7 +28,6 @@ import org.apache.ofbiz.entity.util.EntityQuery;
 
 public class ProcessPIESXMLService {
 
-    private static int featureSeq = 0;
     private static final String MODULE = ProcessPIESXMLService.class.getName();
 
     private static String getTextContent(Element element, String tagName) {
@@ -62,7 +63,6 @@ public class ProcessPIESXMLService {
         Map<String, Object> serviceParams = UtilMisc.toMap(
                 "productId", productId,
                 "productFeatureId", productFeatureId,
-                "sequenceNum", (featureSeq = featureSeq + 1),
                 "productFeatureApplTypeId", "STANDARD_FEATURE",
                 "userLogin", userLogin
         );
@@ -88,11 +88,10 @@ public class ProcessPIESXMLService {
     }
 
 
-    public static void saveItemLevelGTIN(Delegator delegator, Element itemElement, String productId, GenericValue userLogin, DispatchContext dctx) throws GenericEntityException, GenericServiceException {
+    public static void saveItemLevelGTIN(Delegator delegator, Element itemLevelGTINElement, String productId, GenericValue userLogin, DispatchContext dctx) throws GenericEntityException, GenericServiceException {
 
         // Parsing 'ItemLevelGTIN' with 'GTINQualifier' attribute
-        Element itemLevelGTINElement = (Element) itemElement.getElementsByTagName("ItemLevelGTIN").item(0);
-        if (itemLevelGTINElement == null) {
+        if (UtilValidate.isEmpty(itemLevelGTINElement)) {
             Debug.logWarning("ItemLevelGTIN element not found", MODULE);
             return;
         }
@@ -150,8 +149,7 @@ public class ProcessPIESXMLService {
         Debug.logInfo("Product created successfully with productId: " + result.get("productId"), MODULE);
     }
 
-    public static void storeProductDescriptions(String productId, Element descriptionElements, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-        NodeList descriptionList = descriptionElements.getElementsByTagName("Description");
+    public static void storeProductDescriptions(String productId, NodeList descriptionList, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
 
         for (int i = 0; i < descriptionList.getLength(); i++) {
             // Extract data from each Description element
@@ -211,9 +209,7 @@ public class ProcessPIESXMLService {
         return priceTypeId;
     }
 
-    public static void storePrices(Delegator delegator, String productId, Element priceElements, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-
-        NodeList pricingList = priceElements.getElementsByTagName("Pricing");
+    public static void storePrices(Delegator delegator, String productId, NodeList pricingList, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
 
         for (int i = 0; i < pricingList.getLength(); i++) {
 
@@ -267,9 +263,7 @@ public class ProcessPIESXMLService {
         Debug.logInfo("Prices stored successfully for productId: " + productId, MODULE);
     }
 
-    public static void storeExtendedProductInformation(Delegator delegator, String productId, Element extendedInfoElements, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-        NodeList extendedInfoList = extendedInfoElements.getElementsByTagName("ExtendedProductInformation");
-
+    public static void storeExtendedProductInformation(Delegator delegator, String productId, NodeList extendedInfoList, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         // Check if the ProductFeatureType "EXPI" exists, if not, create it , also we  can comment it if making manually
         boolean productFeatureTypeEntityExist = EntityQuery.use(delegator)
                 .from("ProductFeatureType")
@@ -312,9 +306,7 @@ public class ProcessPIESXMLService {
         Debug.logInfo("Extended Product Information stored successfully for productId: " + productId, MODULE);
     }
 
-    private static void storeProductAttributes(Delegator delegator, String partNumber, Element itemElement, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-        // Assuming itemElement contains the <ProductAttributes> element
-        Element productAttributesElement = UtilXml.firstChildElement(itemElement, "ProductAttributes");
+    private static void storeProductAttributes(Delegator delegator, String partNumber, Element productAttributesElement, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
 
         if (productAttributesElement != null) {
             List<? extends Element> productAttributeList = UtilXml.childElementList(productAttributesElement, "ProductAttribute");
@@ -359,8 +351,7 @@ public class ProcessPIESXMLService {
     }
 
 
-    private static void storeDigitalAssets(Delegator delegator, String partNumber, Element itemElement, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-        Element digitalAssetsElement = UtilXml.firstChildElement(itemElement, "DigitalAssets");
+    private static void storeDigitalAssets(Delegator delegator, String partNumber, Element digitalAssetsElement, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         int seqNum = 0;
         if (digitalAssetsElement != null) {
             List<? extends Element> digitalFileInfoList = UtilXml.childElementList(digitalAssetsElement, "DigitalFileInformation");
@@ -690,27 +681,31 @@ public class ProcessPIESXMLService {
                     throw new RuntimeException(e);
                 }
                 try {
-                    saveItemLevelGTIN(delegator, itemElement, partNumber, userLogin, dctx);
+                    Element itemLevelGTINElement = (Element) itemElement.getElementsByTagName("ItemLevelGTIN").item(0);
+                    saveItemLevelGTIN(delegator, itemLevelGTINElement, partNumber, userLogin, dctx);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
                 // Description
                 try {
-                    storeProductDescriptions(partNumber, itemElement, dctx, userLogin);
+                    NodeList descriptionList = itemElement.getElementsByTagName("Description");
+                    storeProductDescriptions(partNumber, descriptionList, dctx, userLogin);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
 
                 // Price
                 try {
-                    storePrices(delegator, partNumber, itemElement, dctx, userLogin);
+                    NodeList pricingList = itemElement.getElementsByTagName("Pricing");
+                    storePrices(delegator, partNumber, pricingList, dctx, userLogin);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
 
                 // EXPI
                 try {
-                    storeExtendedProductInformation(delegator, partNumber, itemElement, dctx, userLogin);
+                    NodeList extendedInfoList = itemElement.getElementsByTagName("ExtendedProductInformation");
+                    storeExtendedProductInformation(delegator, partNumber, extendedInfoList, dctx, userLogin);
                 } catch (GenericEntityException | GenericServiceException e) {
                     throw new RuntimeException(e);
                 }
@@ -718,14 +713,17 @@ public class ProcessPIESXMLService {
 
                 // Product Attributes
                 try {
-                    storeProductAttributes(delegator, partNumber, itemElement, dctx, userLogin);
+                    // Assuming itemElement contains the <ProductAttributes> element
+                    Element productAttributesElement = UtilXml.firstChildElement(itemElement, "ProductAttributes");
+                    storeProductAttributes(delegator, partNumber, productAttributesElement, dctx, userLogin);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
 
                 // Digital Asset
                 try {
-                    storeDigitalAssets(delegator, partNumber, itemElement, dctx, userLogin);
+                    Element digitalAssetsElement = UtilXml.firstChildElement(itemElement, "DigitalAssets");
+                    storeDigitalAssets(delegator, partNumber, digitalAssetsElement, dctx, userLogin);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
