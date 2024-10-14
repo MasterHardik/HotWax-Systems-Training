@@ -135,6 +135,7 @@ public class ProcessPIESXMLService {
 
         Map<String, Object> productParams = UtilMisc.toMap(
                 "productId", productId,
+                "productTypeId", "FINISHED_GOOD",
                 "introductionDate", introductionDate,
                 "quantityIncluded", quantityPerApplication,
                 "releaseDate", releaseDate,
@@ -352,14 +353,10 @@ public class ProcessPIESXMLService {
 
 
     private static void storeDigitalAssets(Delegator delegator, String partNumber, Element digitalAssetsElement, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-        int seqNum = 0;
         if (digitalAssetsElement != null) {
             List<? extends Element> digitalFileInfoList = UtilXml.childElementList(digitalAssetsElement, "DigitalFileInformation");
 
             for (Element digitalFileInfoElement : digitalFileInfoList) {
-                // Generate unique IDs for content and data resource
-                String dataResourceId = delegator.getNextSeqId("DataResource");
-                String contentId = delegator.getNextSeqId("Content");
 
                 // Extract values from XML
                 String assetId = digitalFileInfoElement.getAttribute("AssetID");
@@ -398,7 +395,6 @@ public class ProcessPIESXMLService {
                 Debug.logInfo(filePath, MODULE);
                 // Create DataResource
                 Map<String, Object> dataResourceFields = UtilMisc.toMap(
-                        "dataResourceId", dataResourceId,
                         "mimeTypeId", fileType,
                         "objectInfo", filePath,
                         "dataResourceName", fileName,
@@ -409,14 +405,13 @@ public class ProcessPIESXMLService {
 
                 // Create Content
                 Map<String, Object> contentFields = UtilMisc.toMap(
-                        "contentId", contentId,
                         "contentTypeId", "DFI", // Assuming "DFI" as the content type
                         "mimeTypeId", fileType,
                         "contentName", fileName,
                         "description", uri,
                         "serviceName", assetId,
                         "localeString", languageCode,
-                        "dataResourceId", dataResourceId,
+                        "dataResourceId", createDataResourceResult.get("dataResourceId"),
                         "userLogin", userLogin
                 );
 
@@ -426,8 +421,7 @@ public class ProcessPIESXMLService {
                 Map<String, Object> productContentFields = UtilMisc.toMap(
                         "productId", partNumber,
                         "productContentTypeId", "DA", // Assuming "DA" as the product content type
-                        "contentId", contentId,
-                        "sequenceNum", (seqNum = seqNum + 1),
+                        "contentId", createContentResult.get("contentId"),
                         "userLogin", userLogin
                 );
 
@@ -436,7 +430,7 @@ public class ProcessPIESXMLService {
                 // Create Content Attributes (Dimensions)
                 if (UtilValidate.isNotEmpty(assetHeight) && UtilValidate.isNotEmpty(assetWidth)) {
                     Map<String, Object> contentAttrHeightFields = UtilMisc.toMap(
-                            "contentId", contentId,
+                            "contentId", createContentResult.get("contentId"),
                             "attrName", "AssetHeight",
                             "attrValue", assetHeight,
                             "attrDescription", uom,
@@ -446,7 +440,7 @@ public class ProcessPIESXMLService {
                     dctx.getDispatcher().runSync("createContentAttribute", contentAttrHeightFields);
 
                     Map<String, Object> contentAttrWidthFields = UtilMisc.toMap(
-                            "contentId", contentId,
+                            "contentId", createContentResult.get("contentId"),
                             "attrName", "AssetWidth",
                             "attrValue", assetWidth,
                             "attrDescription", uom,
@@ -513,7 +507,7 @@ public class ProcessPIESXMLService {
 
                     if (UtilValidate.isNotEmpty(metaDataPredicateId) && UtilValidate.isNotEmpty(metaDataValue)) {
                         Map<String, Object> dataResourceMetaFields = UtilMisc.toMap(
-                                "dataResourceId", dataResourceId, // Use of generated dataResourceId
+                                "dataResourceId", createDataResourceResult.get("dataResourceId"), // Use of generated dataResourceId
                                 "metaDataPredicateId", metaDataPredicateId,
                                 "metaDataValue", metaDataValue,
                                 "userLogin", userLogin
