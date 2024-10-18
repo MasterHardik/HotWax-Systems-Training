@@ -23,9 +23,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.util.ArrayList;
@@ -782,18 +784,42 @@ public class ProcessPIESXMLService {
 
     static class ItemHandler extends DefaultHandler {
         private boolean insideDescriptionElement = false; // Flag to know when you're inside the <Description> element
-        private String currentDescription = null;
+
+        private boolean insideEXPIElement = false; // Flag to know when you're inside the <Description> element
+        private boolean insidePAElement = false; // Flag to know when you're inside the <Description> element
+        private boolean insideItemLevelGTIN = false; // Flag to know when you're inside the <Description> element
+        private boolean insideHazardousMaterialCode = false; // Flag for <HazardousMaterialCode>
+        private boolean insideBaseItemID = false; // Flag for <BaseItemID>
+        private boolean insidePartNumber = false; // Flag for <PartNumber>
+        private boolean insideBrandAAIAID = false; // Flag for <BrandAAIAID>
+        private boolean insideBrandLabel = false; // Flag for <BrandLabel>
+        private boolean insideVMRSBrandID = false; // Flag for <VMRSBrandID>
+        private boolean insideQuantityPerApplication = false; // Flag for <QuantityPerApplication>
+
+        private boolean insideAvailableDate = false; // Flag for <AvailableDate>
+        private boolean insideMinimumOrderQuantity = false; // Flag for <MinimumOrderQuantity>
+        private boolean isGroup = false;
+        private boolean isSubGroup = false;
+        private boolean isAAIAProductCategoryCode = false;
+        private boolean isUNSPSC = false;
+        private boolean isPartTerminologyID = false;
+        private boolean isVMRSCode = false;
+        private String minOrderUOM = ""; // To store UOM for <MinimumOrderQuantity>
+
         private StringBuilder characterBuffer = new StringBuilder();
         private StringBuilder content = new StringBuilder();
         private Item currentItem;
         private List<Item> items = new ArrayList<>();
+        private String uomValue = "";
+        private boolean insideItemEffectiveDate = false;
 
         // Inner class to represent Item data
         class Item {
+            public String uom;
+            public String minOrderUOM;
             String maintenanceType;
             String hazardousMaterialCode;
             String baseItemID;
-            String itemLevelGTIN;
             String partNumber;
             String brandAAIAID;
             String brandLabel;
@@ -802,7 +828,11 @@ public class ProcessPIESXMLService {
             String itemEffectiveDate;
             String availableDate;
             String minimumOrderQuantity;
+
+            ItemLevelGTIN gtin;
+
             List<Description> descriptions = new ArrayList<>();
+            List<ExtendedProductInformation> ExtendedInformation = new ArrayList<>();
             List<Price> prices = new ArrayList<>();
             List<ProductAttribute> productAttributes = new ArrayList<>();
             List<PartInterchange> partInterchanges = new ArrayList<>();
@@ -814,7 +844,7 @@ public class ProcessPIESXMLService {
             String languageCode;
             String maintenanceType;
             String descriptionCode;
-            int sequence;
+            String sequence;
             String descriptionText; // This will store the actual content
 
             @Override
@@ -825,9 +855,80 @@ public class ProcessPIESXMLService {
             }
         }
 
+        public class ItemLevelGTIN {
+            String GTINQualifier;
+            String value;
+
+            @Override
+            public String toString() {
+                return "ItemLevelGTIN [GTINQualifier=" + GTINQualifier + ", value=" + value + "]";
+            }
+        }
+
+        class Price {
+            String priceType;
+            String currencyCode;
+            String effectiveDate;
+            String expirationDate;
+            String price;
+
+            // Constructor, getters, and setters
+        }
+
+        public class ProductAttribute {
+            String attributeID;
+            String attributeUOM;
+            String RecordNumber;
+            String PADBAttribute;
+            String value;
+
+            @Override
+            public String toString() {
+                return "ProductAttribute [attributeID=" + attributeID + ", attributeID=" + attributeUOM
+                        + ", RecordNumber=" + RecordNumber + " value=" + value + "PADBAttribute" + PADBAttribute + "]";
+            }
+        }
+
+        class PartInterchange {
+            String brandAAIAID;
+            String brandLabel;
+            String qualityGradeLevel;
+            String partNumber;
+
+            // Constructor, getters, and setters
+        }
+
+        public class ExtendedProductInformation {
+            String maintenanceType;
+            String languageCode;
+            String expiCode;
+            String content; // This will store the actual text content
+
+            @Override
+            public String toString() {
+                return "ExtendedProductInformation [maintenanceType=" + maintenanceType + ", languageCode="
+                        + languageCode
+                        + ", expiCode=" + expiCode + ", content=" + content + "]";
+            }
+        }
+
+        class DigitalAsset {
+            String assetID;
+            String fileName;
+            // Add other digital asset properties
+
+            // Constructor, getters, and setters
+        }
+
+        @Override
+        public void startDocument() {
+            Debug.logInfo("==== At Start of the Document ====", MODULE);
+        }
+
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes)
                 throws SAXException {
+            // System.out.println("==>" + qName);
             content.setLength(0); // Reset content buffer
             if (qName.equals("Item")) {
                 currentItem = new Item();
@@ -840,7 +941,7 @@ public class ProcessPIESXMLService {
                 desc.languageCode = attributes.getValue("LanguageCode");
                 desc.maintenanceType = attributes.getValue("MaintenanceType");
                 desc.descriptionCode = attributes.getValue("DescriptionCode");
-                desc.sequence = Integer.parseInt(attributes.getValue("Sequence"));
+                desc.sequence = attributes.getValue("Sequence");
                 // Set the flag to true indicating you're inside a <Description> element
                 insideDescriptionElement = true;
                 // Clear the buffer in case there was any previous text
@@ -848,17 +949,105 @@ public class ProcessPIESXMLService {
                 currentItem.descriptions.add(desc);
             }
 
-            if (qName.equals("ItemLevelGTIN")) {
-                System.out.println("ItemLevelGTIN element found");
+            if (qName.equals("ExtendedProductInformation")) {
+                ExtendedProductInformation expi = new ExtendedProductInformation();
+                expi.maintenanceType = attributes.getValue("MaintenanceType");
+                expi.languageCode = attributes.getValue("LanguageCode");
+                expi.expiCode = attributes.getValue("EXPICode");
+                insideEXPIElement = true;
+                // Clear the buffer in case there was any previous text
+                characterBuffer.setLength(0);
+                currentItem.ExtendedInformation.add(expi);
             }
 
-            if (qName.equals("Prices")) {
-                System.out.println("Prices element found");
+            if (qName.equals("ProductAttribute")) {
+                ProductAttribute pa = new ProductAttribute();
+                pa.attributeID = attributes.getValue("AttributeID");
+                pa.attributeUOM = attributes.getValue("AttributeUOM");
+                pa.RecordNumber = attributes.getValue("RecordNumber");
+                pa.PADBAttribute = attributes.getValue("PADBAttribute");
+                insideEXPIElement = true;
+                characterBuffer.setLength(0);
+                currentItem.productAttributes.add(pa);
             }
+
+            if (qName.equals("ItemLevelGTIN")) {
+                currentItem.gtin = new ItemLevelGTIN();
+                currentItem.gtin.GTINQualifier = attributes.getValue("GTINQualifier");
+                insideItemLevelGTIN = true;
+                characterBuffer.setLength(0); // Clear buffer for GTIN value
+            }
+
+            if (qName.equals("HazardousMaterialCode")) {
+                insideHazardousMaterialCode = true;
+                characterBuffer.setLength(0); // Clear buffer for HazardousMaterialCode
+            }
+
+            if (qName.equals("BaseItemID")) {
+                insideBaseItemID = true;
+                characterBuffer.setLength(0); // Clear buffer for BaseItemID
+            }
+
+            if (qName.equals("PartNumber")) {
+                insidePartNumber = true;
+                characterBuffer.setLength(0); // Clear buffer for PartNumber
+            }
+
+            if (qName.equals("BrandAAIAID")) {
+                insideBrandAAIAID = true;
+                characterBuffer.setLength(0); // Clear buffer for BrandAAIAID
+            }
+
+            if (qName.equals("BrandLabel")) {
+                insideBrandLabel = true;
+                characterBuffer.setLength(0); // Clear buffer for BrandLabel
+            }
+
+            if (qName.equals("VMRSBrandID")) {
+                insideVMRSBrandID = true;
+                characterBuffer.setLength(0); // Clear buffer for VMRSBrandID
+            }
+
+            if (qName.equals("QuantityPerApplication")) {
+                insideQuantityPerApplication = true;
+                uomValue = attributes.getValue("UOM"); // Capture UOM attribute value
+                characterBuffer.setLength(0); // Clear buffer for QuantityPerApplication
+            }
+
+            if (qName.equals("ItemEffectiveDate")) {
+                insideItemEffectiveDate = true; // Set flag when entering <ItemEffectiveDate>
+                characterBuffer.setLength(0); // Clear buffer for ItemEffectiveDate value
+            }
+
+            if (qName.equals("AvailableDate")) {
+                insideAvailableDate = true; // Set flag when entering <AvailableDate>
+                characterBuffer.setLength(0); // Clear buffer for AvailableDate value
+            }
+
+            if (qName.equals("MinimumOrderQuantity")) {
+                insideMinimumOrderQuantity = true; // Set flag for <MinimumOrderQuantity>
+                minOrderUOM = attributes.getValue("UOM"); // Capture UOM attribute
+                characterBuffer.setLength(0); // Clear buffer for quantity value
+            }
+            if (qName.equalsIgnoreCase("Group")) {
+                isGroup = true;
+            } else if (qName.equalsIgnoreCase("SubGroup")) {
+                isSubGroup = true;
+            } else if (qName.equalsIgnoreCase("AAIAProductCategoryCode")) {
+                isAAIAProductCategoryCode = true;
+            } else if (qName.equalsIgnoreCase("UNSPSC")) {
+                isUNSPSC = true;
+            } else if (qName.equalsIgnoreCase("PartTerminologyID")) {
+                isPartTerminologyID = true;
+            } else if (qName.equalsIgnoreCase("VMRSCode")) {
+                isVMRSCode = true;
+            }
+
         }
 
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
+
             if (qName.equals("Description")) {
                 // Assign the accumulated text to descriptionText for the last added Description
                 // object
@@ -870,13 +1059,136 @@ public class ProcessPIESXMLService {
                 // Reset the flag as we've exited the <Description> element
                 insideDescriptionElement = false;
             }
+
+            if (qName.equals("ExtendedProductInformation")) {
+                ExtendedProductInformation expi = currentItem.ExtendedInformation
+                        .get(currentItem.ExtendedInformation.size() - 1);
+                expi.content = characterBuffer.toString().trim();
+
+                System.out.println("Completed ExtendedProductInformation Element: " + expi);
+
+                // Reset the current reference
+                insideEXPIElement = false;
+            }
+
+            if (qName.equals("ProductAttribute")) {
+                ProductAttribute pa = currentItem.productAttributes.get(currentItem.productAttributes.size() - 1);
+                pa.value = characterBuffer.toString().trim();
+
+                System.out.println("Completed ExtendedProductInformation Element: " + pa);
+
+                // Reset the current reference
+                insidePAElement = false;
+            }
+
+            if (qName.equals("ItemLevelGTIN")) {
+                currentItem.gtin.value = characterBuffer.toString().trim();
+                System.out.println("ItemLevelGTIN: " + currentItem.gtin);
+                insideItemLevelGTIN = false;
+            }
+
+            if (qName.equals("HazardousMaterialCode")) {
+                currentItem.hazardousMaterialCode = characterBuffer.toString().trim();
+                System.out.println("HazardousMaterialCode: " + currentItem.hazardousMaterialCode);
+                insideHazardousMaterialCode = false;
+            }
+
+            if (qName.equals("BaseItemID")) {
+                currentItem.baseItemID = characterBuffer.toString().trim();
+                System.out.println("BaseItemID: " + currentItem.baseItemID);
+                insideBaseItemID = false;
+            }
+            if (qName.equals("PartNumber")) {
+                currentItem.partNumber = characterBuffer.toString().trim();
+                System.out.println("PartNumber: " + currentItem.partNumber);
+                insidePartNumber = false;
+            }
+
+            if (qName.equals("BrandAAIAID")) {
+                currentItem.brandAAIAID = characterBuffer.toString().trim();
+                System.out.println("BrandAAIAID: " + currentItem.brandAAIAID);
+                insideBrandAAIAID = false;
+            }
+
+            if (qName.equals("BrandLabel")) {
+                currentItem.brandLabel = characterBuffer.toString().trim();
+                System.out.println("BrandLabel: " + currentItem.brandLabel);
+                insideBrandLabel = false;
+            }
+
+            if (qName.equals("VMRSBrandID")) {
+                currentItem.vmrsBrandID = characterBuffer.toString().trim();
+                System.out.println("VMRSBrandID: " + currentItem.vmrsBrandID);
+                insideVMRSBrandID = false;
+            }
+
+            if (qName.equals("QuantityPerApplication")) {
+                currentItem.quantityPerApplication = String
+                        .valueOf(Integer.parseInt(characterBuffer.toString().trim()));
+                currentItem.uom = uomValue; // Assign UOM attribute
+                System.out.println(
+                        "QuantityPerApplication: " + currentItem.quantityPerApplication + " " + currentItem.uom);
+                insideQuantityPerApplication = false;
+            }
+            if (qName.equals("ItemEffectiveDate")) {
+                currentItem.itemEffectiveDate = characterBuffer.toString().trim(); // Capture the date value
+                System.out.println("ItemEffectiveDate: " + currentItem.itemEffectiveDate);
+                insideItemEffectiveDate = false;
+            }
+
+            if (qName.equals("AvailableDate")) {
+                currentItem.availableDate = characterBuffer.toString().trim(); // Capture AvailableDate value
+                System.out.println("AvailableDate: " + currentItem.availableDate);
+                insideAvailableDate = false;
+            }
+
+            if (qName.equals("MinimumOrderQuantity")) {
+                currentItem.minimumOrderQuantity = characterBuffer.toString().trim(); // Capture quantity value
+                currentItem.minOrderUOM = minOrderUOM; // Capture UOM value
+                System.out.println("MinimumOrderQuantity: " + currentItem.minimumOrderQuantity + " UOM: "
+                        + currentItem.minOrderUOM);
+                insideMinimumOrderQuantity = false;
+            }
         }
 
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
-            if (insideDescriptionElement) {
+            if (insideDescriptionElement || insideEXPIElement || insidePAElement || insideItemLevelGTIN
+                    || insideHazardousMaterialCode || insideBaseItemID || insidePartNumber || insideBrandAAIAID
+                    || insideBrandLabel || insideVMRSBrandID || insideQuantityPerApplication || insideItemEffectiveDate
+                    || insideAvailableDate || insideMinimumOrderQuantity) {
                 // Append characters to the buffer while inside <Description>
                 characterBuffer.append(new String(ch, start, length));
+            }
+
+            if (isGroup) {
+                System.out.println("Manufacturer Group: " + new String(ch, start, length));
+                isGroup = false;
+            }
+
+            if (isSubGroup) {
+                System.out.println("Manufacturer SubGroup: " + new String(ch, start, length));
+                isSubGroup = false;
+            }
+
+            if (isAAIAProductCategoryCode) {
+                System.out.println("AAIA Product Category Code: " + new String(ch, start, length));
+                isAAIAProductCategoryCode = false;
+            }
+
+            if (isUNSPSC) {
+                System.out.println("UNSPSC: " + new String(ch, start, length));
+                isUNSPSC = false;
+            }
+
+            if (isPartTerminologyID) {
+                System.out.println("Part Terminology ID: " + new String(ch, start, length));
+                isPartTerminologyID = false;
+            }
+
+            if (isVMRSCode) {
+                System.out.println("VMRS Code: " + new String(ch, start, length));
+                isVMRSCode = false;
             }
             content.append(ch, start, length);
         }
@@ -884,13 +1196,17 @@ public class ProcessPIESXMLService {
         public List<Item> getItems() {
             return items;
         }
+
+        @Override
+        public void endDocument() {
+            Debug.logInfo("==== End of the Document ====", MODULE);
+        }
     }
 
     public static Map<String, Object> processPIESXML(DispatchContext dctx, Map<String, Object> context)
             throws GenericServiceException, ParserConfigurationException, IOException, SAXException {
-        Debug.log("========Started processing the ByteBuffer==================", MODULE);
 
-        String successMessage = "Successfully parsed the XML";
+        Debug.log("======== Inside processPIESXML service ==================", MODULE);
 
         // String filePath =
         // "/home/hardik/Desktop/OFBiz_Training/ofbiz-framework/plugins/HotWax-Systems-Training/src/main/java/com/companyname/HotWax_Systems_Training/services/ZF_Sachs_Drivetrain_PIES_2024-09-27_FULL_2024-09-30_17_15_59.848.xml";
@@ -898,7 +1214,9 @@ public class ProcessPIESXMLService {
         // "/home/hardik/Desktop/OFBiz_Training/ofbiz-framework/plugins/HotWax-Systems-Training/src/main/java/com/companyname/HotWax_Systems_Training/services/testXMLFile004.xml";
         String filePath = "/home/hardik/Desktop/OFBiz_Training/ofbiz-framework/plugins/HotWax-Systems-Training/src/main/java/com/companyname/HotWax_Systems_Training/services/Items.xml";
 
-        Debug.log("========...Using SAX Parser...==================", MODULE);
+        Debug.log("======== Parsing XML using SAX Parser ==================", MODULE);
+
+        // extractDataFromXML(dctx, document, context);
 
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -909,10 +1227,14 @@ public class ProcessPIESXMLService {
             e.printStackTrace();
         }
 
-        Debug.log("========...Comepleted Parsing... :()|< ==================", MODULE);
+        Debug.log("======== Successfully Parsed XML ==================", MODULE);
 
-        return ServiceUtil.returnSuccess(successMessage);
+        return ServiceUtil.returnSuccess("Parsed XML : " + filePath);
 
     }
 
 }
+
+// The buffer get's depleted (or "Consumed" ) when you read from it.
+// when trying to delete the content I first need to delete it's 3 reference in
+// contenKeyword table.
