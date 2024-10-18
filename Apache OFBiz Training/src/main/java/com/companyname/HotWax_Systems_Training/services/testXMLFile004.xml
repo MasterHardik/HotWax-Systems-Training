@@ -1,0 +1,1315 @@
+<Items>
+ <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609262064</ItemLevelGTIN>
+            <PartNumber>K0016-01</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">KR</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">N</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">228.6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">10</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">26.9</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="479" PADBAttribute="Y">6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">Yes</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609262064</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>4.0000</MerchandisingHeight>
+                        <MerchandisingWidth>13.3750</MerchandisingWidth>
+                        <MerchandisingLength>13.3750</MerchandisingLength>
+                        <ShippingHeight>4.0000</ShippingHeight>
+                        <ShippingWidth>13.3750</ShippingWidth>
+                        <ShippingLength>13.3750</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>42.3510</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0016-01.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609007146</ItemLevelGTIN>
+            <PartNumber>K0028-03</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">SK</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Text" PADBAttribute="N">WARNING: Cancer and Reproductive Harm - www.p65warnings.ca.gov</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">Y</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">203.2</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">24</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">20.6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">No</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609007146</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>3.8750</MerchandisingHeight>
+                        <MerchandisingWidth>12.7500</MerchandisingWidth>
+                        <MerchandisingLength>11.7500</MerchandisingLength>
+                        <ShippingHeight>3.8750</ShippingHeight>
+                        <ShippingWidth>12.7500</ShippingWidth>
+                        <ShippingLength>11.7500</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>10.5000</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0028-03.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609083546</ItemLevelGTIN>
+            <PartNumber>K0028-07</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">SK</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Text" PADBAttribute="N">WARNING: Cancer and Reproductive Harm - www.p65warnings.ca.gov</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">Y</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">200.1</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">24</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">20.6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="479" PADBAttribute="Y">6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">No</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609083546</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>3.2500</MerchandisingHeight>
+                        <MerchandisingWidth>11.5000</MerchandisingWidth>
+                        <MerchandisingLength>11.5000</MerchandisingLength>
+                        <ShippingHeight>3.2500</ShippingHeight>
+                        <ShippingWidth>11.5000</ShippingWidth>
+                        <ShippingLength>11.5000</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>5.2450</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0028-07.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609007160</ItemLevelGTIN>
+            <PartNumber>K0030-02</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">KR</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">N</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">254</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">10</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">26.9</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="479" PADBAttribute="Y">6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">Yes</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609007160</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>4.0000</MerchandisingHeight>
+                        <MerchandisingWidth>13.3750</MerchandisingWidth>
+                        <MerchandisingLength>13.3750</MerchandisingLength>
+                        <ShippingHeight>4.0000</ShippingHeight>
+                        <ShippingWidth>13.3750</ShippingWidth>
+                        <ShippingLength>13.3750</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>12.2600</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0030-02.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609007177</ItemLevelGTIN>
+            <PartNumber>K0030-03</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">KR</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">N</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">254</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">10</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">26.9</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="479" PADBAttribute="Y">6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">Yes</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609007177</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>4.0000</MerchandisingHeight>
+                        <MerchandisingWidth>13.3750</MerchandisingWidth>
+                        <MerchandisingLength>13.3750</MerchandisingLength>
+                        <ShippingHeight>4.0000</ShippingHeight>
+                        <ShippingWidth>13.3750</ShippingWidth>
+                        <ShippingLength>13.3750</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>6.7920</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0030-03.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609007184</ItemLevelGTIN>
+            <PartNumber>K0030-04</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">KR</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">N</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">254</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">10</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">26.9</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="479" PADBAttribute="Y">6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">Yes</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609007184</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>4.0000</MerchandisingHeight>
+                        <MerchandisingWidth>13.3750</MerchandisingWidth>
+                        <MerchandisingLength>13.3750</MerchandisingLength>
+                        <ShippingHeight>4.0000</ShippingHeight>
+                        <ShippingWidth>13.3750</ShippingWidth>
+                        <ShippingLength>13.3750</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>8.6660</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0030-04.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609007191</ItemLevelGTIN>
+            <PartNumber>K0030-05</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">KR</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">N</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">254</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">10</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">26.9</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="479" PADBAttribute="Y">6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">Yes</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609007191</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>4.0000</MerchandisingHeight>
+                        <MerchandisingWidth>13.3750</MerchandisingWidth>
+                        <MerchandisingLength>13.3750</MerchandisingLength>
+                        <ShippingHeight>4.0000</ShippingHeight>
+                        <ShippingWidth>13.3750</ShippingWidth>
+                        <ShippingLength>13.3750</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>2.9120</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0030-05.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609007221</ItemLevelGTIN>
+            <PartNumber>K0033-01</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">KR</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">N</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">279.4</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">10</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">26.9</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="479" PADBAttribute="Y">6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">Yes</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609007221</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>4.3750</MerchandisingHeight>
+                        <MerchandisingWidth>15.0000</MerchandisingWidth>
+                        <MerchandisingLength>15.0000</MerchandisingLength>
+                        <ShippingHeight>4.3750</ShippingHeight>
+                        <ShippingWidth>15.0000</ShippingWidth>
+                        <ShippingLength>15.0000</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>0.7630</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0033-01.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609007238</ItemLevelGTIN>
+            <PartNumber>K0033-02</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">KR</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">N</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">279.4</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">10</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">26.9</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="479" PADBAttribute="Y">6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">No</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609007238</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>4.0000</MerchandisingHeight>
+                        <MerchandisingWidth>13.3750</MerchandisingWidth>
+                        <MerchandisingLength>13.3750</MerchandisingLength>
+                        <ShippingHeight>4.0000</ShippingHeight>
+                        <ShippingWidth>13.3750</ShippingWidth>
+                        <ShippingLength>13.3750</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>1.0270</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0033-02.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609007290</ItemLevelGTIN>
+            <PartNumber>K0036-03</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">KR</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">N</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">215.9</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">20</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">22.2</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="479" PADBAttribute="Y">6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">Yes</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609007290</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>3.2500</MerchandisingHeight>
+                        <MerchandisingWidth>11.5000</MerchandisingWidth>
+                        <MerchandisingLength>11.5000</MerchandisingLength>
+                        <ShippingHeight>3.2500</ShippingHeight>
+                        <ShippingWidth>11.5000</ShippingWidth>
+                        <ShippingLength>11.5000</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>0.7850</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0036-03.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609007351</ItemLevelGTIN>
+            <PartNumber>K0043-01</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">KR</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">N</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">158.7</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">18</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">19.1</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="479" PADBAttribute="Y">6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">No</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609007351</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>3.2500</MerchandisingHeight>
+                        <MerchandisingWidth>11.5000</MerchandisingWidth>
+                        <MerchandisingLength>11.5000</MerchandisingLength>
+                        <ShippingHeight>3.2500</ShippingHeight>
+                        <ShippingWidth>11.5000</ShippingWidth>
+                        <ShippingLength>11.5000</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>0.7410</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0043-01.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609007368</ItemLevelGTIN>
+            <PartNumber>K0044-01</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">JP</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">N</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">184.1</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">14</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">25.4</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="479" PADBAttribute="Y">6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">No</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609007368</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>3.2500</MerchandisingHeight>
+                        <MerchandisingWidth>11.5000</MerchandisingWidth>
+                        <MerchandisingLength>11.5000</MerchandisingLength>
+                        <ShippingHeight>3.2500</ShippingHeight>
+                        <ShippingWidth>11.5000</ShippingWidth>
+                        <ShippingLength>11.5000</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>0.8290</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0044-01.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609007382</ItemLevelGTIN>
+            <PartNumber>K0047-04</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">KR</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">N</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">225.4</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">23</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">25.4</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="479" PADBAttribute="Y">6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">Yes</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609007382</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>3.2500</MerchandisingHeight>
+                        <MerchandisingWidth>11.5000</MerchandisingWidth>
+                        <MerchandisingLength>11.5000</MerchandisingLength>
+                        <ShippingHeight>3.2500</ShippingHeight>
+                        <ShippingWidth>11.5000</ShippingWidth>
+                        <ShippingLength>11.5000</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>1.0930</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0047-04.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609007399</ItemLevelGTIN>
+            <PartNumber>K0047-05</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">KR</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">N</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">225.4</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">23</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">25.4</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="479" PADBAttribute="Y">6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">No</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609007399</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>3.2500</MerchandisingHeight>
+                        <MerchandisingWidth>11.5000</MerchandisingWidth>
+                        <MerchandisingLength>11.5000</MerchandisingLength>
+                        <ShippingHeight>3.2500</ShippingHeight>
+                        <ShippingWidth>11.5000</ShippingWidth>
+                        <ShippingLength>11.5000</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>0.9170</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0047-05.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609007405</ItemLevelGTIN>
+            <PartNumber>K0047-06</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">KR</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">N</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">225.4</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">23</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">25.4</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="479" PADBAttribute="Y">6</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">No</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609007405</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>3.2500</MerchandisingHeight>
+                        <MerchandisingWidth>11.5000</MerchandisingWidth>
+                        <MerchandisingLength>11.5000</MerchandisingLength>
+                        <ShippingHeight>3.2500</ShippingHeight>
+                        <ShippingWidth>11.5000</ShippingWidth>
+                        <ShippingLength>11.5000</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>32.1920</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0047-06.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>N</HazardousMaterialCode>
+            <ItemLevelGTIN GTINQualifier="UP">00708609007412</ItemLevelGTIN>
+            <PartNumber>K0047-07</PartNumber>
+            <BrandAAIAID>BCLZ</BrandAAIAID>
+            <BrandLabel>Sachs</BrandLabel>
+            <MinimumOrderQuantity UOM="EA">1</MinimumOrderQuantity>
+            <PartTerminologyID>1993</PartTerminologyID>
+            <Descriptions>
+                <Description MaintenanceType="A" DescriptionCode="SHO" LanguageCode="EN">Trans Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="DES" LanguageCode="EN">Sachs Transmission Clutch Kit</Description>
+                <Description MaintenanceType="A" DescriptionCode="MKT" LanguageCode="EN">SACHS OE Quality Clutch Kit Application Matched for OE Form, Fit, and Function</Description>
+            </Descriptions>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="PRC" LanguageCode="EN">NEW</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="EMS" LanguageCode="EN">1</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="HTS" LanguageCode="EN">8708936000</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="CTO" LanguageCode="EN">KR</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIF">2</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" EXPICode="LIS">Available to Order</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="California Proposition 65 Required" PADBAttribute="N">N</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="10022" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="30" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="3377" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="452" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="458" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="459" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="460" PADBAttribute="Y">Diaphragm</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="461" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="462" PADBAttribute="Y" AttributeUOM="MM">225.4</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="463" PADBAttribute="Y">Organic</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="464" PADBAttribute="Y">23</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="465" PADBAttribute="Y" AttributeUOM="MM">25.4</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="466" PADBAttribute="Y">Yes</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="467" PADBAttribute="Y">Sprung</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="475" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="479" PADBAttribute="Y">9</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="7453" PADBAttribute="Y">New</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="874" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9396" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9414" PADBAttribute="Y">No</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9505" PADBAttribute="Y">Stock</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="9785" PADBAttribute="Y">No</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>00708609007412</PackageLevelGTIN>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <InnerQuantity InnerQuantityUOM="EA">1.0</InnerQuantity>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>3.2500</MerchandisingHeight>
+                        <MerchandisingWidth>11.5000</MerchandisingWidth>
+                        <MerchandisingLength>11.5000</MerchandisingLength>
+                        <ShippingHeight>3.2500</ShippingHeight>
+                        <ShippingWidth>11.5000</ShippingWidth>
+                        <ShippingLength>11.5000</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>0.8840</Weight>
+                    </Weights>
+                </Package>
+            </Packages>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                    <FileName>K0047-07.jpg</FileName>
+                    <AssetType>P04</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <Resolution>300</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>1500</AssetHeight>
+                        <AssetWidth>1500</AssetWidth>
+                    </AssetDimensions>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+</Items>

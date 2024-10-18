@@ -13,7 +13,9 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -21,6 +23,13 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.ofbiz.entity.GenericEntityException;
 import org.apache.ofbiz.entity.util.EntityQuery;
@@ -40,7 +49,6 @@ public class ProcessPIESXMLService {
         return new ByteArrayInputStream(bytes);
     }
 
-
     public static Document parseXML(InputStream inputStream) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
@@ -52,18 +60,19 @@ public class ProcessPIESXMLService {
         }
     }
 
-    /* Small functions for the injecting the data into the fields for our PIES*/
+    /* Small functions for the injecting the data into the fields for our PIES */
 
-    private static void createHazmatFeature(String hazardousMaterialCode, String productId, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+    private static void createHazmatFeature(String hazardousMaterialCode, String productId, DispatchContext dctx,
+            GenericValue userLogin) throws GenericEntityException, GenericServiceException {
 
-        boolean exist = EntityQuery.use(dctx.getDelegator()).from("ProductFeature").where("description",hazardousMaterialCode,"productFeatureTypeId","HAZMAT").queryCount()>0;
-        if(!exist) {
+        boolean exist = EntityQuery.use(dctx.getDelegator()).from("ProductFeature")
+                .where("description", hazardousMaterialCode, "productFeatureTypeId", "HAZMAT").queryCount() > 0;
+        if (!exist) {
 
             Map<String, Object> productFeatureParams = UtilMisc.toMap(
                     "productFeatureTypeId", "HAZMAT",
                     "description", hazardousMaterialCode,
-                    "userLogin", userLogin
-            );
+                    "userLogin", userLogin);
 
             Map<String, Object> result = dctx.getDispatcher().runSync("createProductFeature", productFeatureParams);
 
@@ -75,15 +84,14 @@ public class ProcessPIESXMLService {
                     "productId", productId,
                     "productFeatureId", productFeatureId,
                     "productFeatureApplTypeId", "STANDARD_FEATURE",
-                    "userLogin", userLogin
-            );
+                    "userLogin", userLogin);
             dctx.getDispatcher().runSync("applyFeatureToProduct", addFeatureToProdParams);
             Debug.logInfo("Associated : " + productId + "<==to==>" + productFeatureId, MODULE);
         }
     }
 
-
-    public static void saveItemLevelGTIN(Element itemLevelGTINElement, String productId, GenericValue userLogin, DispatchContext dctx) throws GenericEntityException, GenericServiceException {
+    public static void saveItemLevelGTIN(Element itemLevelGTINElement, String productId, GenericValue userLogin,
+            DispatchContext dctx) throws GenericEntityException, GenericServiceException {
 
         // Parsing 'ItemLevelGTIN' with 'GTINQualifier' attribute
         if (UtilValidate.isEmpty(itemLevelGTINElement)) {
@@ -97,8 +105,8 @@ public class ProcessPIESXMLService {
         // Logging or processing the GTIN data
         Debug.logInfo("GTINQualifier: " + gtinQualifier + ", ItemLevelGTIN: " + itemLevelGTIN, MODULE);
 
-
-        // Check if a GoodIdentification entry already exists for this product and gtinQualifier
+        // Check if a GoodIdentification entry already exists for this product and
+        // gtinQualifier
         GenericValue goodIdentification = EntityQuery.use(dctx.getDelegator())
                 .from("GoodIdentification")
                 .where("goodIdentificationTypeId", gtinQualifier, "productId", productId)
@@ -110,18 +118,24 @@ public class ProcessPIESXMLService {
                     "goodIdentificationTypeId", gtinQualifier,
                     "productId", productId,
                     "idValue", itemLevelGTIN,
-                    "userLogin", userLogin
-            );
-            Map<String, Object> result = dctx.getDispatcher().runSync("createGoodIdentification", goodIdentificationParams);
-            Debug.logInfo("Created new GoodIdentification for productId: " + productId + " with GTIN: " + itemLevelGTIN + "with s message  :" + result.get("successMessage"), MODULE);
+                    "userLogin", userLogin);
+            Map<String, Object> result = dctx.getDispatcher().runSync("createGoodIdentification",
+                    goodIdentificationParams);
+            Debug.logInfo("Created new GoodIdentification for productId: " + productId + " with GTIN: " + itemLevelGTIN
+                    + "with s message  :" + result.get("successMessage"), MODULE);
         } else {
-            Debug.logInfo("GoodIdentification already exists for productId: " + productId + " and GTIN: " + itemLevelGTIN, MODULE);
+            Debug.logInfo(
+                    "GoodIdentification already exists for productId: " + productId + " and GTIN: " + itemLevelGTIN,
+                    MODULE);
         }
     }
 
-    public static void createItem(String productId, Timestamp introductionDate, Timestamp releaseDate, String quantityPerApplication, String minimumOrderQuantity, String baseItemId, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+    public static void createItem(String productId, Timestamp introductionDate, Timestamp releaseDate,
+            String quantityPerApplication, String minimumOrderQuantity, String baseItemId, DispatchContext dctx,
+            GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         // Checking if the product already exists
-        GenericValue existingProduct = EntityQuery.use(dctx.getDelegator()).from("Product").where("productId", productId).queryOne();
+        GenericValue existingProduct = EntityQuery.use(dctx.getDelegator()).from("Product")
+                .where("productId", productId).queryOne();
 
         if (existingProduct != null) {
             Debug.logWarning("Product with productId: " + productId + " already exists.", MODULE);
@@ -136,8 +150,7 @@ public class ProcessPIESXMLService {
                 "releaseDate", releaseDate,
                 "internalName", baseItemId,
                 "quantityIncluded", minimumOrderQuantity,
-                "userLogin", userLogin
-        );
+                "userLogin", userLogin);
 
         Map<String, Object> result = dctx.getDispatcher().runSync("createProduct", productParams);
 
@@ -145,7 +158,8 @@ public class ProcessPIESXMLService {
         Debug.logInfo("Product created successfully with productId: " + result.get("productId"), MODULE);
     }
 
-    public static void storeProductDescriptions(String productId, NodeList descriptionList, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+    public static void storeProductDescriptions(String productId, NodeList descriptionList, DispatchContext dctx,
+            GenericValue userLogin) throws GenericEntityException, GenericServiceException {
 
         for (int i = 0; i < descriptionList.getLength(); i++) {
             // Extract data from each Description element
@@ -155,7 +169,9 @@ public class ProcessPIESXMLService {
             String sequenceAttr = descriptionElement.getAttribute("Sequence");
             String descriptionText = descriptionElement.getTextContent();
             String contentId = dctx.getDelegator().getNextSeqId("contentId");
-            descriptionText = (descriptionText != null && descriptionText.length() > 255) ? descriptionText.substring(0, 255) : descriptionText;
+            descriptionText = (descriptionText != null && descriptionText.length() > 255)
+                    ? descriptionText.substring(0, 255)
+                    : descriptionText;
 
             Debug.logInfo("=========" + descriptionText + "=============", MODULE);
             Map<String, Object> contentParams = UtilMisc.toMap(
@@ -163,8 +179,7 @@ public class ProcessPIESXMLService {
                     "contentName", descriptionCode,
                     "description", descriptionText,
                     "localeString", languageCode,
-                    "userLogin", userLogin
-            );
+                    "userLogin", userLogin);
 
             Map<String, Object> result = dctx.getDispatcher().runSync("createContent", contentParams);
 
@@ -174,17 +189,19 @@ public class ProcessPIESXMLService {
                     "productContentTypeId", "DESCRIPTION",
                     "productId", productId,
                     "sequenceNum", sequenceAttr,
-                    "userLogin", userLogin
-            );
+                    "userLogin", userLogin);
 
-            Map<String, Object> prodContentResult = dctx.getDispatcher().runSync("createProductContent", productContentParams);
-            Debug.logInfo("Descriptions stored successfully with contentId: " + prodContentResult.get("contentId"), MODULE);
+            Map<String, Object> prodContentResult = dctx.getDispatcher().runSync("createProductContent",
+                    productContentParams);
+            Debug.logInfo("Descriptions stored successfully with contentId: " + prodContentResult.get("contentId"),
+                    MODULE);
         }
 
         Debug.logInfo("Descriptions stored successfully for productId: " + productId, MODULE);
     }
 
-    public static String createProductPriceType(String priceTypeId, String description, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+    public static String createProductPriceType(String priceTypeId, String description, DispatchContext dctx,
+            GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         // Check if the ProductPriceType already exists
         GenericValue existingProductPriceType = EntityQuery.use(dctx.getDelegator())
                 .from("ProductPriceType")
@@ -196,10 +213,10 @@ public class ProcessPIESXMLService {
             Map<String, Object> productPriceTypeParams = UtilMisc.toMap(
                     "productPriceTypeId", priceTypeId,
                     "description", description,
-                    "userLogin", userLogin
-            );
+                    "userLogin", userLogin);
             Map<String, Object> result = dctx.getDispatcher().runSync("createProductPriceType", productPriceTypeParams);
-            Debug.logInfo("ProductPriceType created successfully with productPriceTypeId: " + result.get("productPriceTypeId"), MODULE);
+            Debug.logInfo("ProductPriceType created successfully with productPriceTypeId: "
+                    + result.get("productPriceTypeId"), MODULE);
             return (String) result.get("ProductPriceType");
         } else {
             Debug.logInfo("ProductPriceType already exists with productPriceTypeId: " + priceTypeId, MODULE);
@@ -207,17 +224,20 @@ public class ProcessPIESXMLService {
         return priceTypeId;
     }
 
-    public static void storePrices(String productId, NodeList pricingList, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-        if(pricingList.getLength()!=0) {
+    public static void storePrices(String productId, NodeList pricingList, DispatchContext dctx, GenericValue userLogin)
+            throws GenericEntityException, GenericServiceException {
+        if (pricingList.getLength() != 0) {
             for (int i = 0; i < pricingList.getLength(); i++) {
 
                 // Extract data from each Pricing element
                 Element pricingElement = (Element) pricingList.item(i);
                 String priceTypeId = pricingElement.getAttribute("PriceType");
-                String priceSheetNumber = pricingElement.getElementsByTagName("PriceSheetNumber").item(0).getTextContent();
+                String priceSheetNumber = pricingElement.getElementsByTagName("PriceSheetNumber").item(0)
+                        .getTextContent();
                 String currencyCode = pricingElement.getElementsByTagName("CurrencyCode").item(0).getTextContent();
                 String effectiveDateStr = pricingElement.getElementsByTagName("EffectiveDate").item(0).getTextContent();
-                String expirationDateStr = pricingElement.getElementsByTagName("ExpirationDate").item(0).getTextContent();
+                String expirationDateStr = pricingElement.getElementsByTagName("ExpirationDate").item(0)
+                        .getTextContent();
 
                 // Extract Price and UOM
                 Element priceUOMElement = (Element) pricingElement.getElementsByTagName("Price").item(0);
@@ -246,27 +266,30 @@ public class ProcessPIESXMLService {
                             "productId", productId,
                             "productPriceTypeId", priceTypeId,
                             "currencyUomId", currencyCode,
-                            "fromDate", UtilValidate.isNotEmpty(effectiveDateStr) ? effectiveDateStr : UtilDateTime.nowTimestamp(),
+                            "fromDate",
+                            UtilValidate.isNotEmpty(effectiveDateStr) ? effectiveDateStr : UtilDateTime.nowTimestamp(),
                             "thruDate", expirationDateStr,
                             "productPricePurposeId", "PURCHASE",
                             "productStoreGroupId", "_NA_",
                             "price", priceValue,
-                            "userLogin", userLogin
-                    );
+                            "userLogin", userLogin);
                     Map<String, Object> result = dctx.getDispatcher().runSync("createProductPrice", priceParams);
-                    Debug.logInfo("Price stored successfully with productId+(PriceTypeId): " + priceValue + ":" + priceTypeId + ", Success Message : " + result.get("successMessage"), MODULE);
+                    Debug.logInfo("Price stored successfully with productId+(PriceTypeId): " + priceValue + ":"
+                            + priceTypeId + ", Success Message : " + result.get("successMessage"), MODULE);
                 } else {
-                    Debug.logInfo("Price already exists for productId: " + productId + " with priceTypeId: " + priceTypeId + " and currencyUomId: " + currencyCode, MODULE);
+                    Debug.logInfo("Price already exists for productId: " + productId + " with priceTypeId: "
+                            + priceTypeId + " and currencyUomId: " + currencyCode, MODULE);
                 }
             }
-        }
-        else{
+        } else {
             Debug.logInfo("No Pricing Element Exist", MODULE);
         }
     }
 
-    public static void storeExtendedProductInformation( String productId, NodeList extendedInfoList, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-        // Check if the ProductFeatureType "EXPI" exists, if not, create it , also we  can comment it if making manually
+    public static void storeExtendedProductInformation(String productId, NodeList extendedInfoList,
+            DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+        // Check if the ProductFeatureType "EXPI" exists, if not, create it , also we
+        // can comment it if making manually
         boolean productFeatureTypeEntityExist = EntityQuery.use(dctx.getDelegator())
                 .from("ProductFeatureType")
                 .where("productFeatureTypeId", "EXPI")
@@ -276,10 +299,11 @@ public class ProcessPIESXMLService {
             Map<String, Object> productFeatureTypeParams = UtilMisc.toMap(
                     "productFeatureTypeId", "EXPI",
                     "description", "Extended Product Information",
-                    "userLogin", userLogin
-            );
-            Map<String, Object> result = dctx.getDispatcher().runSync("createProductFeatureType", productFeatureTypeParams);
-            Debug.logInfo("ProductFeatureType 'EXPI' created with description: Extended Product Information | " + result.get("successMessage"), MODULE);
+                    "userLogin", userLogin);
+            Map<String, Object> result = dctx.getDispatcher().runSync("createProductFeatureType",
+                    productFeatureTypeParams);
+            Debug.logInfo("ProductFeatureType 'EXPI' created with description: Extended Product Information | "
+                    + result.get("successMessage"), MODULE);
         }
 
         for (int i = 0; i < extendedInfoList.getLength(); i++) {
@@ -293,8 +317,7 @@ public class ProcessPIESXMLService {
                     "productFeatureTypeId", "EXPI",
                     "idCode", expiCode,
                     "description", description,
-                    "userLogin", userLogin
-            );
+                    "userLogin", userLogin);
 
             Map<String, Object> result = dctx.getDispatcher().runSync("createProductFeature", productFeatureParams);
 
@@ -307,18 +330,21 @@ public class ProcessPIESXMLService {
                     "productFeatureId", productFeatureId,
                     "productFeatureApplTypeId", "STANDARD_FEATURE",
                     "fromDate", UtilDateTime.nowTimestamp(),
-                    "userLogin", userLogin
-            );
+                    "userLogin", userLogin);
             dctx.getDispatcher().runSync("applyFeatureToProduct", addFeatureToProdParams);
-            Debug.logInfo("Associated: " + productId + "<==to==>" + productFeatureId + " | Stored with productFeatureId: " + result.get("productFeatureId") + ", expiCode: " + expiCode, MODULE);
+            Debug.logInfo("Associated: " + productId + "<==to==>" + productFeatureId
+                    + " | Stored with productFeatureId: " + result.get("productFeatureId") + ", expiCode: " + expiCode,
+                    MODULE);
         }
         Debug.logInfo("Extended Product Information stored successfully for productId: " + productId, MODULE);
     }
 
-    private static void storeProductAttributes(String partNumber, Element productAttributesElement, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+    private static void storeProductAttributes(String partNumber, Element productAttributesElement,
+            DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
 
         if (productAttributesElement != null) {
-            List<? extends Element> productAttributeList = UtilXml.childElementList(productAttributesElement, "ProductAttribute");
+            List<? extends Element> productAttributeList = UtilXml.childElementList(productAttributesElement,
+                    "ProductAttribute");
 
             for (Element productAttributeElement : productAttributeList) {
                 String maintenanceType = productAttributeElement.getAttribute("MaintenanceType");
@@ -337,8 +363,7 @@ public class ProcessPIESXMLService {
                         "attrName", attributeId,
                         "attrValue", attributeValue,
                         "attrType", attributeUom,
-                        "attrDescription", attributeDescr
-                );
+                        "attrDescription", attributeDescr);
 
                 // Check if the attribute already exists in the ProductAttribute table
                 GenericValue existingProductAttribute = dctx.getDelegator().findOne("ProductAttribute",
@@ -351,7 +376,8 @@ public class ProcessPIESXMLService {
                     fields.remove("userLogin");
                     Debug.log("Created new ProductAttribute: " + fields, MODULE);
                 } else {
-                    Debug.log("ProductAttribute already exists: " + attributeId + " for productId: " + partNumber, MODULE);
+                    Debug.log("ProductAttribute already exists: " + attributeId + " for productId: " + partNumber,
+                            MODULE);
                 }
             }
         } else {
@@ -359,10 +385,11 @@ public class ProcessPIESXMLService {
         }
     }
 
-
-    private static void storeDigitalAssets(String partNumber, Element digitalAssetsElement, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+    private static void storeDigitalAssets(String partNumber, Element digitalAssetsElement, DispatchContext dctx,
+            GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         if (digitalAssetsElement != null) {
-            List<? extends Element> digitalFileInfoList = UtilXml.childElementList(digitalAssetsElement, "DigitalFileInformation");
+            List<? extends Element> digitalFileInfoList = UtilXml.childElementList(digitalAssetsElement,
+                    "DigitalFileInformation");
 
             for (Element digitalFileInfoElement : digitalFileInfoList) {
 
@@ -389,12 +416,17 @@ public class ProcessPIESXMLService {
                 String plunge = UtilXml.childElementValue(digitalFileInfoElement, "Plunge", null);
                 String totalPlanes = UtilXml.childElementValue(digitalFileInfoElement, "TotalPlanes", null);
 
-
                 // Dimensions
                 Element assetDimensionsElement = UtilXml.firstChildElement(digitalFileInfoElement, "AssetDimensions");
-                String assetHeight = (assetDimensionsElement != null) ? UtilXml.childElementValue(assetDimensionsElement, "AssetHeight", null) : null;
-                String assetWidth = (assetDimensionsElement != null) ? UtilXml.childElementValue(assetDimensionsElement, "AssetWidth", null) : null;
-                String uom = UtilValidate.isNotEmpty(assetDimensionsElement) ? assetDimensionsElement.getAttribute("UOM") : null;
+                String assetHeight = (assetDimensionsElement != null)
+                        ? UtilXml.childElementValue(assetDimensionsElement, "AssetHeight", null)
+                        : null;
+                String assetWidth = (assetDimensionsElement != null)
+                        ? UtilXml.childElementValue(assetDimensionsElement, "AssetWidth", null)
+                        : null;
+                String uom = UtilValidate.isNotEmpty(assetDimensionsElement)
+                        ? assetDimensionsElement.getAttribute("UOM")
+                        : null;
 
                 // Asset Date
                 Element assetDatesElement = UtilXml.firstChildElement(digitalFileInfoElement, "AssetDates");
@@ -406,10 +438,10 @@ public class ProcessPIESXMLService {
                         "mimeTypeId", fileType,
                         "objectInfo", filePath,
                         "dataResourceName", fileName,
-                        "userLogin", userLogin
-                );
+                        "userLogin", userLogin);
 
-                Map<String, Object> createDataResourceResult = dctx.getDispatcher().runSync("createDataResource", dataResourceFields);
+                Map<String, Object> createDataResourceResult = dctx.getDispatcher().runSync("createDataResource",
+                        dataResourceFields);
 
                 // Create Content
                 Map<String, Object> contentFields = UtilMisc.toMap(
@@ -420,8 +452,7 @@ public class ProcessPIESXMLService {
                         "serviceName", assetId,
                         "localeString", languageCode,
                         "dataResourceId", createDataResourceResult.get("dataResourceId"),
-                        "userLogin", userLogin
-                );
+                        "userLogin", userLogin);
 
                 Map<String, Object> createContentResult = dctx.getDispatcher().runSync("createContent", contentFields);
 
@@ -430,10 +461,10 @@ public class ProcessPIESXMLService {
                         "productId", partNumber,
                         "productContentTypeId", "DA", // Assuming "DA" as the product content type
                         "contentId", createContentResult.get("contentId"),
-                        "userLogin", userLogin
-                );
+                        "userLogin", userLogin);
 
-                Map<String, Object> createProductContentResult = dctx.getDispatcher().runSync("createProductContent", productContentFields);
+                Map<String, Object> createProductContentResult = dctx.getDispatcher().runSync("createProductContent",
+                        productContentFields);
 
                 // Create Content Attributes (Dimensions)
                 if (UtilValidate.isNotEmpty(assetHeight) && UtilValidate.isNotEmpty(assetWidth)) {
@@ -442,8 +473,7 @@ public class ProcessPIESXMLService {
                             "attrName", "AssetHeight",
                             "attrValue", assetHeight,
                             "attrDescription", uom,
-                            "userLogin", userLogin
-                    );
+                            "userLogin", userLogin);
 
                     dctx.getDispatcher().runSync("createContentAttribute", contentAttrHeightFields);
 
@@ -452,8 +482,7 @@ public class ProcessPIESXMLService {
                             "attrName", "AssetWidth",
                             "attrValue", assetWidth,
                             "attrDescription", uom,
-                            "userLogin", userLogin
-                    );
+                            "userLogin", userLogin);
 
                     dctx.getDispatcher().runSync("createContentAttribute", contentAttrWidthFields);
 
@@ -515,12 +544,13 @@ public class ProcessPIESXMLService {
 
                     if (UtilValidate.isNotEmpty(metaDataPredicateId) && UtilValidate.isNotEmpty(metaDataValue)) {
                         Map<String, Object> dataResourceMetaFields = UtilMisc.toMap(
-                                "dataResourceId", createDataResourceResult.get("dataResourceId"), // Use of generated dataResourceId
+                                "dataResourceId", createDataResourceResult.get("dataResourceId"), // Use of generated
+                                                                                                  // dataResourceId
                                 "metaDataPredicateId", metaDataPredicateId,
                                 "metaDataValue", metaDataValue,
-                                "userLogin", userLogin
-                        );
-                        Map<String, Object> createDataResourceMetaDataResult = dctx.getDispatcher().runSync("createDataResourceMetaData", dataResourceMetaFields);
+                                "userLogin", userLogin);
+                        Map<String, Object> createDataResourceMetaDataResult = dctx.getDispatcher()
+                                .runSync("createDataResourceMetaData", dataResourceMetaFields);
                     }
                 }
 
@@ -528,9 +558,12 @@ public class ProcessPIESXMLService {
         }
     }
 
-    private static void createProductCategory(String productCategoryId, String productCategoryTypeId, String description, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+    private static void createProductCategory(String productCategoryId, String productCategoryTypeId,
+            String description, DispatchContext dctx, GenericValue userLogin)
+            throws GenericEntityException, GenericServiceException {
         // Check if the product category already exists
-        GenericValue existingCategory = dctx.getDelegator().findOne("ProductCategory", UtilMisc.toMap("productCategoryId", productCategoryId), false);
+        GenericValue existingCategory = dctx.getDelegator().findOne("ProductCategory",
+                UtilMisc.toMap("productCategoryId", productCategoryId), false);
         if (UtilValidate.isNotEmpty(existingCategory)) {
             // Log that the category already exists
             Debug.log("Product category with ID " + productCategoryId + " already exists. Skipping creation.", MODULE);
@@ -542,39 +575,42 @@ public class ProcessPIESXMLService {
                 "productCategoryId", productCategoryId,
                 "productCategoryTypeId", productCategoryTypeId,
                 "description", description,
-                "userLogin", userLogin
-        );
-        Map<String, Object> createProductCategoryResult = dctx.getDispatcher().runSync("createProductCategory", categoryMap);
+                "userLogin", userLogin);
+        Map<String, Object> createProductCategoryResult = dctx.getDispatcher().runSync("createProductCategory",
+                categoryMap);
     }
 
-
     // Helper method to link a product to a category (ProductCategoryMember)
-    private static void linkProductToCategory(String productId, String productCategoryId, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+    private static void linkProductToCategory(String productId, String productCategoryId, DispatchContext dctx,
+            GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         Map<String, Object> categoryMemberMap = UtilMisc.toMap(
                 "fromDate", UtilDateTime.nowTimestamp(),
                 "productCategoryId", productCategoryId,
                 "productId", productId,
-                "userLogin", userLogin
-        );
+                "userLogin", userLogin);
 
-        Map<String, Object> addProductToCategoryResult = dctx.getDispatcher().runSync("addProductToCategory", categoryMemberMap);
+        Map<String, Object> addProductToCategoryResult = dctx.getDispatcher().runSync("addProductToCategory",
+                categoryMemberMap);
     }
 
     // Helper method to add or update a ProductAttribute
-    private static void createOrUpdateProductAttribute( String productId, String attrName, String attrValue, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-        GenericValue productAttr = dctx.getDelegator().findOne("ProductAttribute", UtilMisc.toMap("productId", productId, "attrName", attrName), false);
+    private static void createOrUpdateProductAttribute(String productId, String attrName, String attrValue,
+            DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+        GenericValue productAttr = dctx.getDelegator().findOne("ProductAttribute",
+                UtilMisc.toMap("productId", productId, "attrName", attrName), false);
         if (UtilValidate.isEmpty(productAttr)) {
             Map<String, Object> attrMap = UtilMisc.toMap(
                     "productId", productId,
                     "attrName", attrName,
                     "attrValue", attrValue,
-                    "userLogin", userLogin
-            );
-            Map<String, Object> createProductAttributeResult = dctx.getDispatcher().runSync("createProductAttribute", attrMap);
+                    "userLogin", userLogin);
+            Map<String, Object> createProductAttributeResult = dctx.getDispatcher().runSync("createProductAttribute",
+                    attrMap);
         }
     }
 
-    private static void createIdentifiers( Element itemElement, String productId, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+    private static void createIdentifiers(Element itemElement, String productId, DispatchContext dctx,
+            GenericValue userLogin) throws GenericEntityException, GenericServiceException {
 
         String brandAAIAID = getElementTextContent(itemElement, "BrandAAIAID");
         String brandLabel = getElementTextContent(itemElement, "BrandLabel");
@@ -590,7 +626,7 @@ public class ProcessPIESXMLService {
         if (UtilValidate.isNotEmpty(brandAAIAID)) {
             createProductCategory(brandAAIAID, "BRAND", brandLabel, dctx, userLogin); // Using BrandLabel as description
             // Link the product to the BrandAAIAID category
-            linkProductToCategory( productId, brandAAIAID, dctx, userLogin);
+            linkProductToCategory(productId, brandAAIAID, dctx, userLogin);
         }
 
         // Always create the product category for VMRSBrandID
@@ -609,7 +645,7 @@ public class ProcessPIESXMLService {
 
         // Add VMRSCode as a Product Attribute, if vmrsCode is not null or empty
         if (UtilValidate.isNotEmpty(vmrsCode)) {
-            createOrUpdateProductAttribute( productId, "VMRSCode", vmrsCode, dctx, userLogin);
+            createOrUpdateProductAttribute(productId, "VMRSCode", vmrsCode, dctx, userLogin);
         }
 
         // Add UNSPSC as a Product Attribute, if UNSPSC is not null or empty
@@ -617,7 +653,8 @@ public class ProcessPIESXMLService {
             createOrUpdateProductAttribute(productId, "UNSPSC", UNSPSC, dctx, userLogin);
         }
 
-        // Add Manufacturer Group and SubGroup as Product Attributes, if they are not null or empty
+        // Add Manufacturer Group and SubGroup as Product Attributes, if they are not
+        // null or empty
         if (UtilValidate.isNotEmpty(manufacturerGroup)) {
             createOrUpdateProductAttribute(productId, "ManufacturerGroup", manufacturerGroup, dctx, userLogin);
         }
@@ -629,12 +666,13 @@ public class ProcessPIESXMLService {
         if (UtilValidate.isNotEmpty(partTerminologyId)) {
             createOrUpdateProductAttribute(productId, "PartTerminologyID", partTerminologyId, dctx, userLogin);
         }
-        Debug.log(brandAAIAID, brandLabel, vmrsBrandId, UNSPSC, vmrsCode, manufacturerGroup, manufacturerSubGroup, partTerminologyId, aaiaProductCategoryCode);
+        Debug.log(brandAAIAID, brandLabel, vmrsBrandId, UNSPSC, vmrsCode, manufacturerGroup, manufacturerSubGroup,
+                partTerminologyId, aaiaProductCategoryCode);
     }
 
-
-    /*=======  END ======== */
-    public static void extractDataFromXML(DispatchContext dctx, Document document, Map<String, Object> context) throws GenericServiceException {
+    /* ======= END ======== */
+    public static void extractDataFromXML(DispatchContext dctx, Document document, Map<String, Object> context)
+            throws GenericServiceException {
         if (document != null) {
             Element rootElement = document.getDocumentElement();
             NodeList itemList = rootElement.getElementsByTagName("Item");
@@ -655,17 +693,21 @@ public class ProcessPIESXMLService {
                 String quantityPerApplication = getElementTextContent(itemElement, "QuantityPerApplication");
                 String minimumOrderQuantity = getElementTextContent(itemElement, "MinimumOrderQuantity");
 
-                minimumOrderQuantity = (minimumOrderQuantity != null && minimumOrderQuantity.length() > 255) ? minimumOrderQuantity.substring(0, 255) : minimumOrderQuantity;
+                minimumOrderQuantity = (minimumOrderQuantity != null && minimumOrderQuantity.length() > 255)
+                        ? minimumOrderQuantity.substring(0, 255)
+                        : minimumOrderQuantity;
 
                 // Parsing dates to the correct format
-                Timestamp introductionDate = itemEffectiveDate.isEmpty() ? UtilDateTime.nowTimestamp() : Timestamp.valueOf(itemEffectiveDate + " 00:00:00");
+                Timestamp introductionDate = itemEffectiveDate.isEmpty() ? UtilDateTime.nowTimestamp()
+                        : Timestamp.valueOf(itemEffectiveDate + " 00:00:00");
                 Timestamp releaseDate = availableDate.isEmpty() ? null : Timestamp.valueOf(availableDate + " 00:00:00");
 
                 // Data injections starts from here..
 
-                //product
+                // product
                 try {
-                    createItem(partNumber, introductionDate, releaseDate, quantityPerApplication, minimumOrderQuantity, baseItemId, dctx, userLogin);
+                    createItem(partNumber, introductionDate, releaseDate, quantityPerApplication, minimumOrderQuantity,
+                            baseItemId, dctx, userLogin);
                 } catch (GenericEntityException e) {
                     throw new RuntimeException(e);
                 }
@@ -711,13 +753,12 @@ public class ProcessPIESXMLService {
                 // EXPI
                 try {
                     NodeList extendedInfoList = itemElement.getElementsByTagName("ExtendedProductInformation");
-                    storeExtendedProductInformation( partNumber, extendedInfoList, dctx, userLogin);
+                    storeExtendedProductInformation(partNumber, extendedInfoList, dctx, userLogin);
                 } catch (GenericEntityException | GenericServiceException e) {
                     throw new RuntimeException(e);
                 }
 
-
-//                 Product Attributes
+                // Product Attributes
                 try {
                     // Assuming itemElement contains the <ProductAttributes> element
                     Element productAttributesElement = UtilXml.firstChildElement(itemElement, "ProductAttributes");
@@ -739,40 +780,139 @@ public class ProcessPIESXMLService {
         }
     }
 
-    public static Map<String, Object> processPIESXML(DispatchContext dctx, Map<String, Object> context) throws GenericServiceException {
-        Debug.log("========Started processing the ByteBuffer==================", MODULE);
+    static class ItemHandler extends DefaultHandler {
+        private boolean insideDescriptionElement = false; // Flag to know when you're inside the <Description> element
+        private String currentDescription = null;
+        private StringBuilder characterBuffer = new StringBuilder();
+        private StringBuilder content = new StringBuilder();
+        private Item currentItem;
+        private List<Item> items = new ArrayList<>();
 
-            ByteBuffer fileBuffer = (ByteBuffer) context.get("fileName");
+        // Inner class to represent Item data
+        class Item {
+            String maintenanceType;
+            String hazardousMaterialCode;
+            String baseItemID;
+            String itemLevelGTIN;
+            String partNumber;
+            String brandAAIAID;
+            String brandLabel;
+            String vmrsBrandID;
+            String quantityPerApplication;
+            String itemEffectiveDate;
+            String availableDate;
+            String minimumOrderQuantity;
+            List<Description> descriptions = new ArrayList<>();
+            List<Price> prices = new ArrayList<>();
+            List<ProductAttribute> productAttributes = new ArrayList<>();
+            List<PartInterchange> partInterchanges = new ArrayList<>();
+            List<DigitalAsset> digitalAssets = new ArrayList<>();
+        }
 
-            if (fileBuffer.remaining() == 0) {
-                return ServiceUtil.returnError("No file passed or the file is Empty ! ");
+        // Inner classes for nested structures
+        public class Description {
+            String languageCode;
+            String maintenanceType;
+            String descriptionCode;
+            int sequence;
+            String descriptionText; // This will store the actual content
+
+            @Override
+            public String toString() {
+                return "Description [languageCode=" + languageCode + ", maintenanceType=" + maintenanceType
+                        + ", descriptionCode=" + descriptionCode + ", sequence=" + sequence + ", descriptionText="
+                        + descriptionText + "]";
+            }
+        }
+
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes)
+                throws SAXException {
+            content.setLength(0); // Reset content buffer
+            if (qName.equals("Item")) {
+                currentItem = new Item();
+                currentItem.maintenanceType = attributes.getValue("MaintenanceType");
+                System.out.println("Item MaintenanceType: " + currentItem.maintenanceType);
             }
 
-            String successMessage = "Successfully parsed the XML";
+            if (qName.equals("Description")) {
+                Description desc = new Description();
+                desc.languageCode = attributes.getValue("LanguageCode");
+                desc.maintenanceType = attributes.getValue("MaintenanceType");
+                desc.descriptionCode = attributes.getValue("DescriptionCode");
+                desc.sequence = Integer.parseInt(attributes.getValue("Sequence"));
+                // Set the flag to true indicating you're inside a <Description> element
+                insideDescriptionElement = true;
+                // Clear the buffer in case there was any previous text
+                characterBuffer.setLength(0);
+                currentItem.descriptions.add(desc);
+            }
 
-            Debug.log("========Creating a new read-only copy for XML parsing==================", MODULE);
+            if (qName.equals("ItemLevelGTIN")) {
+                System.out.println("ItemLevelGTIN element found");
+            }
 
-            ByteBuffer parseBuffer = fileBuffer.asReadOnlyBuffer();
+            if (qName.equals("Prices")) {
+                System.out.println("Prices element found");
+            }
+        }
 
-            Debug.log("========Creating Input Stream==================", MODULE);
+        @Override
+        public void endElement(String uri, String localName, String qName) throws SAXException {
+            if (qName.equals("Description")) {
+                // Assign the accumulated text to descriptionText for the last added Description
+                // object
+                Description lastDesc = currentItem.descriptions.get(currentItem.descriptions.size() - 1);
+                lastDesc.descriptionText = characterBuffer.toString().trim(); // Assign the accumulated content
 
-            InputStream inputStream = byteBufferToInputStream(parseBuffer);
+                System.out.println("Completed Description Element: " + lastDesc);
 
-            Debug.log("========XML parsing using DocumentBuilderFactory and DocumentBuilder==================", MODULE);
+                // Reset the flag as we've exited the <Description> element
+                insideDescriptionElement = false;
+            }
+        }
 
-            Document document = parseXML(inputStream);
+        @Override
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            if (insideDescriptionElement) {
+                // Append characters to the buffer while inside <Description>
+                characterBuffer.append(new String(ch, start, length));
+            }
+            content.append(ch, start, length);
+        }
 
-            Debug.log("========Extracting Data from the XML==================", MODULE);
+        public List<Item> getItems() {
+            return items;
+        }
+    }
 
-            extractDataFromXML(dctx, document, context);
+    public static Map<String, Object> processPIESXML(DispatchContext dctx, Map<String, Object> context)
+            throws GenericServiceException, ParserConfigurationException, IOException, SAXException {
+        Debug.log("========Started processing the ByteBuffer==================", MODULE);
 
-        Debug.log("========Returned success message==================", MODULE);
+        String successMessage = "Successfully parsed the XML";
+
+        // String filePath =
+        // "/home/hardik/Desktop/OFBiz_Training/ofbiz-framework/plugins/HotWax-Systems-Training/src/main/java/com/companyname/HotWax_Systems_Training/services/ZF_Sachs_Drivetrain_PIES_2024-09-27_FULL_2024-09-30_17_15_59.848.xml";
+        // String filePath =
+        // "/home/hardik/Desktop/OFBiz_Training/ofbiz-framework/plugins/HotWax-Systems-Training/src/main/java/com/companyname/HotWax_Systems_Training/services/testXMLFile004.xml";
+        String filePath = "/home/hardik/Desktop/OFBiz_Training/ofbiz-framework/plugins/HotWax-Systems-Training/src/main/java/com/companyname/HotWax_Systems_Training/services/Items.xml";
+
+        Debug.log("========...Using SAX Parser...==================", MODULE);
+
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser saxParser = factory.newSAXParser();
+            ItemHandler handler = new ItemHandler();
+            saxParser.parse(filePath, handler);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Debug.log("========...Comepleted Parsing... :()|< ==================", MODULE);
 
         return ServiceUtil.returnSuccess(successMessage);
 
     }
 
 }
-
-// The buffer get's depleted (or "Consumed" ) when you read from it.
-// when trying to delete the content  I first need to delete it's 3 reference in contenKeyword table.

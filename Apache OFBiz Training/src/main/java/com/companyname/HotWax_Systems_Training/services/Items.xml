@@ -1,0 +1,118 @@
+<Items>
+        <Item MaintenanceType="A">
+            <HazardousMaterialCode>Y</HazardousMaterialCode>
+            <BaseItemID>AB123YG</BaseItemID>
+            <ItemLevelGTIN GTINQualifier="UP">00123456789101</ItemLevelGTIN>
+            <PartNumber>AB12389</PartNumber>
+            <BrandAAIAID>BBBB</BrandAAIAID>
+            <BrandLabel>Wonderhose</BrandLabel>
+            <VMRSBrandID>FELPR</VMRSBrandID>
+            <QuantityPerApplication UOM="EA">2</QuantityPerApplication>
+            <ItemEffectiveDate>2006-08-13</ItemEffectiveDate>
+            <AvailableDate>2006-09-13</AvailableDate>
+            <MinimumOrderQuantity UOM="EA">2</MinimumOrderQuantity>
+            <ManufacturerProductCodes>
+                <Group>W12</Group>
+                <SubGroup>W123</SubGroup>
+            </ManufacturerProductCodes>
+            <AAIAProductCategoryCode>330102</AAIAProductCategoryCode>
+            <UNSPSC>11223344</UNSPSC>
+            <PartTerminologyID>55555</PartTerminologyID>
+            <VMRSCode>010456789</VMRSCode>
+            <Descriptions>
+                <Description LanguageCode="EN" MaintenanceType="A" DescriptionCode="ABR" Sequence="1">String</Description>
+                <Description LanguageCode="EN" MaintenanceType="A" DescriptionCode="DES" Sequence="2">String</Description>
+                <Description LanguageCode="EN" MaintenanceType="A" DescriptionCode="DES" Sequence="3">String</Description>
+                <Description LanguageCode="EN" MaintenanceType="A" DescriptionCode="FAB" Sequence="4">String</Description>
+            </Descriptions>
+            <Prices>
+                <Pricing MaintenanceType="A" PriceType="AC1">
+                    <PriceSheetNumber>2007WD</PriceSheetNumber>
+                    <CurrencyCode>USD</CurrencyCode>
+                    <EffectiveDate>2007-08-13</EffectiveDate>
+                    <ExpirationDate>2008-08-13</ExpirationDate>
+                    <Price UOM="EA">3.1415</Price>
+                    <PriceBreak UOM="EA">String</PriceBreak>
+                </Pricing>
+            </Prices>
+            <ExtendedInformation>
+                <ExtendedProductInformation MaintenanceType="A" LanguageCode="EN" EXPICode="CTO">US</ExtendedProductInformation>
+                <ExtendedProductInformation MaintenanceType="A" LanguageCode="EN" EXPICode="LIF">3</ExtendedProductInformation>
+            </ExtendedInformation>
+            <ProductAttributes>
+                <ProductAttribute MaintenanceType="A" AttributeID="Length" PADBAttribute="N" AttributeUOM="IN" RecordNumber="1">12.5</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="Width" PADBAttribute="N" AttributeUOM="IN" RecordNumber="2">4.25</ProductAttribute>
+                <ProductAttribute MaintenanceType="A" AttributeID="Height" PADBAttribute="N" AttributeUOM="IN" RecordNumber="3">3.5</ProductAttribute>
+            </ProductAttributes>
+            <Packages>
+                <Package MaintenanceType="A">
+                    <PackageLevelGTIN>50055555000001</PackageLevelGTIN>
+                    <PackageBarCodeCharacters>00555550000P10</PackageBarCodeCharacters>
+                    <PackageUOM>EA</PackageUOM>
+                    <QuantityofEaches>1</QuantityofEaches>
+                    <Dimensions UOM="IN">
+                        <MerchandisingHeight>3.9999</MerchandisingHeight>
+                        <MerchandisingWidth>3.9999</MerchandisingWidth>
+                        <MerchandisingLength>3.9999</MerchandisingLength>
+                        <ShippingHeight>10</ShippingHeight>
+                        <ShippingWidth>7</ShippingWidth>
+                        <ShippingLength>5.25</ShippingLength>
+                    </Dimensions>
+                    <Weights UOM="PG">
+                        <Weight>8.9999</Weight>
+                        <DimensionalWeight>0.33</DimensionalWeight>
+                    </Weights>
+                    <WeightVariance>2.5</WeightVariance>
+                </Package>
+            </Packages>
+            <PartInterchangeInfo>
+                <PartInterchange MaintenanceType="A" LanguageCode="EN" BrandAAIAID="CCCC" BrandLabel="Acme Parts" SubBrandAAIAID="CCCD" SubBrandLabel="Acme Extra" QualityGradeLevel="P" ItemEquivalentUOM="EA" InternalNotes="Internal Note">
+                    <PartNumber InterchangeQuantity="1" UOM="EA" InterchangeNotes="Part Note">CC2000</PartNumber>
+                </PartInterchange>
+                <PartInterchange MaintenanceType="A" LanguageCode="EN" VMRSBrandID="FELPR" QualityGradeLevel="P" ItemEquivalentUOM="EA" InternalNotes="Internal Note">
+                    <PartNumber InterchangeQuantity="1" UOM="EA" InterchangeNotes="Part Note">FEL100</PartNumber>
+                </PartInterchange>
+            </PartInterchangeInfo>
+            <DigitalAssets>
+                <DigitalFileInformation MaintenanceType="A" AssetID="xyz_BRO" LanguageCode="EN">
+                    <FileName>xyz.jpg</FileName>
+                    <AssetType>BRO</AssetType>
+                    <FileType>JPG</FileType>
+                    <Representation>A</Representation>
+                    <FileSize>123456</FileSize>
+                    <Resolution>72</Resolution>
+                    <ColorMode>RGB</ColorMode>
+                    <Background>WHI</Background>
+                    <OrientationView>ANG</OrientationView>
+                    <AssetDimensions UOM="PX">
+                        <AssetHeight>250</AssetHeight>
+                        <AssetWidth>250</AssetWidth>
+                    </AssetDimensions>
+                    <FilePath>\Mfg\xyz.jpg</FilePath>
+                    <URI>http://www.mfg.com/Images/xyz.jpg</URI>
+                    <AssetDates>
+                        <AssetDate assetDateType="MOD">2016-07-15</AssetDate>
+                    </AssetDates>
+                    <Country>US</Country>
+                </DigitalFileInformation>
+                <DigitalFileInformation MaintenanceType="A" AssetID="360_ACME" LanguageCode="EN">
+                    <FileName>360_ACME_PART.zip</FileName>
+                    <AssetType>360</AssetType>
+                    <FileType>ZIP</FileType>
+                    <Representation>A</Representation>
+                    <FilePath>360\360_acme_part.zip</FilePath>
+                    <URI>360\360_acme_part.zip</URI>
+                    <Frame>1</Frame>
+                    <TotalFrames>2</TotalFrames>
+                    <Plane>1</Plane>
+                    <Hemisphere>N</Hemisphere>
+                    <Plunge>0</Plunge>
+                    <TotalPlanes>2</TotalPlanes>
+                    <AssetDates>
+                        <AssetDate assetDateType="MOD">2016-01-15</AssetDate>
+                    </AssetDates>
+                    <Country>US</Country>
+                </DigitalFileInformation>
+            </DigitalAssets>
+        </Item>
+</Items>
