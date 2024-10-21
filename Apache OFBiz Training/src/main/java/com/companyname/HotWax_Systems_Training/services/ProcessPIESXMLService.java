@@ -311,129 +311,129 @@ public class ProcessPIESXMLService {
 
 
     private static void storeDigitalAssets(String partNumber, String assetId, String languageCode, String fileName, String fileType, String representation, String fileSize, String resolution, String colorMode, String background, String orientationView, String filePath, String uri, String country, String frame, String totalFrames, String plane, String plunge, String totalPlanes, String assetHeight, String assetWidth, String uom, String assetDate, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-            Debug.logInfo(filePath, MODULE);
-            // Create DataResource
-            Map<String, Object> dataResourceFields = UtilMisc.toMap(
-                    "mimeTypeId", fileType,
-                    "objectInfo", filePath,
-                    "dataResourceName", fileName,
-                    "userLogin", userLogin
-            );
+        Debug.logInfo(filePath, MODULE);
+        // Create DataResource
+        Map<String, Object> dataResourceFields = UtilMisc.toMap(
+                "mimeTypeId", fileType,
+                "objectInfo", filePath,
+                "dataResourceName", fileName,
+                "userLogin", userLogin
+        );
 
-            Map<String, Object> createDataResourceResult = dctx.getDispatcher().runSync("createDataResource", dataResourceFields);
+        Map<String, Object> createDataResourceResult = dctx.getDispatcher().runSync("createDataResource", dataResourceFields);
 
-            // Create Content
-            Map<String, Object> contentFields = UtilMisc.toMap(
-                    "contentTypeId", "DFI", // Assuming "DFI" as the content type
-                    "mimeTypeId", fileType,
-                    "contentName", fileName,
-                    "description", uri,
-                    "serviceName", assetId,
-                    "localeString", languageCode,
-                    "dataResourceId", createDataResourceResult.get("dataResourceId"),
-                    "userLogin", userLogin
-            );
+        // Create Content
+        Map<String, Object> contentFields = UtilMisc.toMap(
+                "contentTypeId", "DFI", // Assuming "DFI" as the content type
+                "mimeTypeId", fileType,
+                "contentName", fileName,
+                "description", uri,
+                "serviceName", assetId,
+                "localeString", languageCode,
+                "dataResourceId", createDataResourceResult.get("dataResourceId"),
+                "userLogin", userLogin
+        );
 
-            Map<String, Object> createContentResult = dctx.getDispatcher().runSync("createContent", contentFields);
+        Map<String, Object> createContentResult = dctx.getDispatcher().runSync("createContent", contentFields);
 
-            // Create ProductContent
-            Map<String, Object> productContentFields = UtilMisc.toMap(
-                    "productId", partNumber,
-                    "productContentTypeId", "DA", // Assuming "DA" as the product content type
+        // Create ProductContent
+        Map<String, Object> productContentFields = UtilMisc.toMap(
+                "productId", partNumber,
+                "productContentTypeId", "DA", // Assuming "DA" as the product content type
+                "contentId", createContentResult.get("contentId"),
+                "userLogin", userLogin
+        );
+
+        Map<String, Object> createProductContentResult = dctx.getDispatcher().runSync("createProductContent", productContentFields);
+
+        // Create Content Attributes (Dimensions)
+        if (UtilValidate.isNotEmpty(assetHeight) && UtilValidate.isNotEmpty(assetWidth)) {
+            Map<String, Object> contentAttrHeightFields = UtilMisc.toMap(
                     "contentId", createContentResult.get("contentId"),
+                    "attrName", "AssetHeight",
+                    "attrValue", assetHeight,
+                    "attrDescription", uom,
                     "userLogin", userLogin
             );
 
-            Map<String, Object> createProductContentResult = dctx.getDispatcher().runSync("createProductContent", productContentFields);
+            dctx.getDispatcher().runSync("createContentAttribute", contentAttrHeightFields);
 
-            // Create Content Attributes (Dimensions)
-            if (UtilValidate.isNotEmpty(assetHeight) && UtilValidate.isNotEmpty(assetWidth)) {
-                Map<String, Object> contentAttrHeightFields = UtilMisc.toMap(
-                        "contentId", createContentResult.get("contentId"),
-                        "attrName", "AssetHeight",
-                        "attrValue", assetHeight,
-                        "attrDescription", uom,
+            Map<String, Object> contentAttrWidthFields = UtilMisc.toMap(
+                    "contentId", createContentResult.get("contentId"),
+                    "attrName", "AssetWidth",
+                    "attrValue", assetWidth,
+                    "attrDescription", uom,
+                    "userLogin", userLogin
+            );
+
+            dctx.getDispatcher().runSync("createContentAttribute", contentAttrWidthFields);
+
+        }
+
+        // Create DataResourceMetadata for additional fields
+        List<Map<String, String>> metadataEntries = new ArrayList<>();
+
+        if (UtilValidate.isNotEmpty(representation)) {
+            metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "REP", "metaDataValue", representation));
+        }
+
+        if (UtilValidate.isNotEmpty(fileSize)) {
+            metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "FS", "metaDataValue", fileSize));
+        }
+
+        if (UtilValidate.isNotEmpty(resolution)) {
+            metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "RES", "metaDataValue", resolution));
+        }
+
+        if (UtilValidate.isNotEmpty(colorMode)) {
+            metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "COM", "metaDataValue", colorMode));
+        }
+
+        if (UtilValidate.isNotEmpty(background)) {
+            metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "BG", "metaDataValue", background));
+        }
+
+        if (UtilValidate.isNotEmpty(orientationView)) {
+            metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "OV", "metaDataValue", orientationView));
+        }
+
+        // Add new fields to metadata entries
+        if (UtilValidate.isNotEmpty(frame)) {
+            metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "FR", "metaDataValue", frame));
+        }
+
+        if (UtilValidate.isNotEmpty(totalFrames)) {
+            metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "TF", "metaDataValue", totalFrames));
+        }
+
+        if (UtilValidate.isNotEmpty(plane)) {
+            metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "PL", "metaDataValue", plane));
+        }
+
+        if (UtilValidate.isNotEmpty(plunge)) {
+            metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "PU", "metaDataValue", plunge));
+        }
+
+        if (UtilValidate.isNotEmpty(totalPlanes)) {
+            metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "TP", "metaDataValue", totalPlanes));
+        }
+
+        // Create all DataResourceMetadata entries
+        for (Map<String, String> entry : metadataEntries) {
+            // Checking for null values before creating the entry
+            String metaDataPredicateId = entry.get("metaDataPredicateId");
+            String metaDataValue = entry.get("metaDataValue");
+
+            if (UtilValidate.isNotEmpty(metaDataPredicateId) && UtilValidate.isNotEmpty(metaDataValue)) {
+                Map<String, Object> dataResourceMetaFields = UtilMisc.toMap(
+                        "dataResourceId", createDataResourceResult.get("dataResourceId"), // Use of generated dataResourceId
+                        "metaDataPredicateId", metaDataPredicateId,
+                        "metaDataValue", metaDataValue,
                         "userLogin", userLogin
                 );
-
-                dctx.getDispatcher().runSync("createContentAttribute", contentAttrHeightFields);
-
-                Map<String, Object> contentAttrWidthFields = UtilMisc.toMap(
-                        "contentId", createContentResult.get("contentId"),
-                        "attrName", "AssetWidth",
-                        "attrValue", assetWidth,
-                        "attrDescription", uom,
-                        "userLogin", userLogin
-                );
-
-                dctx.getDispatcher().runSync("createContentAttribute", contentAttrWidthFields);
-
+                Map<String, Object> createDataResourceMetaDataResult = dctx.getDispatcher().runSync("createDataResourceMetaData", dataResourceMetaFields);
             }
-
-            // Create DataResourceMetadata for additional fields
-            List<Map<String, String>> metadataEntries = new ArrayList<>();
-
-            if (UtilValidate.isNotEmpty(representation)) {
-                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "REP", "metaDataValue", representation));
-            }
-
-            if (UtilValidate.isNotEmpty(fileSize)) {
-                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "FS", "metaDataValue", fileSize));
-            }
-
-            if (UtilValidate.isNotEmpty(resolution)) {
-                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "RES", "metaDataValue", resolution));
-            }
-
-            if (UtilValidate.isNotEmpty(colorMode)) {
-                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "COM", "metaDataValue", colorMode));
-            }
-
-            if (UtilValidate.isNotEmpty(background)) {
-                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "BG", "metaDataValue", background));
-            }
-
-            if (UtilValidate.isNotEmpty(orientationView)) {
-                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "OV", "metaDataValue", orientationView));
-            }
-
-            // Add new fields to metadata entries
-            if (UtilValidate.isNotEmpty(frame)) {
-                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "FR", "metaDataValue", frame));
-            }
-
-            if (UtilValidate.isNotEmpty(totalFrames)) {
-                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "TF", "metaDataValue", totalFrames));
-            }
-
-            if (UtilValidate.isNotEmpty(plane)) {
-                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "PL", "metaDataValue", plane));
-            }
-
-            if (UtilValidate.isNotEmpty(plunge)) {
-                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "PU", "metaDataValue", plunge));
-            }
-
-            if (UtilValidate.isNotEmpty(totalPlanes)) {
-                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "TP", "metaDataValue", totalPlanes));
-            }
-
-            // Create all DataResourceMetadata entries
-            for (Map<String, String> entry : metadataEntries) {
-                // Checking for null values before creating the entry
-                String metaDataPredicateId = entry.get("metaDataPredicateId");
-                String metaDataValue = entry.get("metaDataValue");
-
-                if (UtilValidate.isNotEmpty(metaDataPredicateId) && UtilValidate.isNotEmpty(metaDataValue)) {
-                    Map<String, Object> dataResourceMetaFields = UtilMisc.toMap(
-                            "dataResourceId", createDataResourceResult.get("dataResourceId"), // Use of generated dataResourceId
-                            "metaDataPredicateId", metaDataPredicateId,
-                            "metaDataValue", metaDataValue,
-                            "userLogin", userLogin
-                    );
-                    Map<String, Object> createDataResourceMetaDataResult = dctx.getDispatcher().runSync("createDataResourceMetaData", dataResourceMetaFields);
-                }
-            }
+        }
     }
 
     private static void createProductCategory(String productCategoryId, String productCategoryTypeId, String description, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
@@ -1228,8 +1228,12 @@ public class ProcessPIESXMLService {
                     throw new RuntimeException(e);
                 }
                 try {
-                    ItemLevelGTIN itemLevelGTINElement = currentItem.gtin;
-                    saveItemLevelGTIN(itemLevelGTINElement.GTINQualifier, itemLevelGTINElement.value, currentItem.partNumber, userLogin, dctx);
+                    if (UtilValidate.isNotEmpty(currentItem.gtin)) {
+                        ItemLevelGTIN itemLevelGTINElement = currentItem.gtin;
+                        saveItemLevelGTIN(itemLevelGTINElement.GTINQualifier, itemLevelGTINElement.value, currentItem.partNumber, userLogin, dctx);
+                    } else {
+                        Debug.logWarning("Item Level GTIN Element not found", MODULE);
+                    }
                 } catch (GenericEntityException | GenericServiceException e) {
                     throw new RuntimeException(e);
                 }
@@ -1283,11 +1287,10 @@ public class ProcessPIESXMLService {
 
                 // Digital Asset
                 try {
-                    if(currentItem.digitalAssets.size()>0){
-                    DigitalFileInformation dfi = currentItem.digitalAssets.get(0);
-                    storeDigitalAssets(currentItem.partNumber, dfi.assetID, dfi.languageCode, dfi.fileName, dfi.fileType, dfi.representation, dfi.fileSize, dfi.resolution, dfi.colorMode, dfi.background, dfi.orientationView, dfi.filePath, dfi.uri, dfi.country, dfi.frame, dfi.totalFrames, dfi.plane, dfi.plunge, dfi.totalPlanes, dfi.assetHeight, dfi.assetWidth, dfi.uom, dfi.assetDate, dctx, userLogin);
-                    }
-                    else{
+                    if (currentItem.digitalAssets.size() > 0) {
+                        DigitalFileInformation dfi = currentItem.digitalAssets.get(0);
+                        storeDigitalAssets(currentItem.partNumber, dfi.assetID, dfi.languageCode, dfi.fileName, dfi.fileType, dfi.representation, dfi.fileSize, dfi.resolution, dfi.colorMode, dfi.background, dfi.orientationView, dfi.filePath, dfi.uri, dfi.country, dfi.frame, dfi.totalFrames, dfi.plane, dfi.plunge, dfi.totalPlanes, dfi.assetHeight, dfi.assetWidth, dfi.uom, dfi.assetDate, dctx, userLogin);
+                    } else {
                         Debug.logWarning("No digital assets found for productId : " + currentItem.partNumber, MODULE);
                     }
                 } catch (GenericEntityException | GenericServiceException e) {
