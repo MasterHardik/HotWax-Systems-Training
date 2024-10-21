@@ -206,43 +206,39 @@ public class ProcessPIESXMLService {
     }
 
     public static void storePrices(String productId, String priceTypeId, String currencyCode, String effectiveDateStr, String expirationDateStr, String priceValue, String priceBreakUOM, String priceBreakValue, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-        if (UtilValidate.isNotEmpty(priceTypeId)) {
-            // Check if the ProductPrice already exists
-            boolean priceExists = EntityQuery.use(dctx.getDelegator())
-                    .from("ProductPrice")
-                    .where("productId", productId,
-                            "productPriceTypeId", priceTypeId,
-                            "currencyUomId", currencyCode,
-                            "productPricePurposeId", "PURCHASE")
-                    .queryCount() > 0;
-
-            if (!priceExists) {
-
-                priceTypeId = createProductPriceType(priceTypeId, "", dctx, userLogin);
-
-                Map<String, Object> priceParams = UtilMisc.toMap(
-                        "productId", productId,
+        // Check if the ProductPrice already exists
+        boolean priceExists = EntityQuery.use(dctx.getDelegator())
+                .from("ProductPrice")
+                .where("productId", productId,
                         "productPriceTypeId", priceTypeId,
                         "currencyUomId", currencyCode,
-                        "fromDate", UtilValidate.isNotEmpty(effectiveDateStr) ? effectiveDateStr : UtilDateTime.nowTimestamp(),
-                        "thruDate", expirationDateStr,
-                        "productPricePurposeId", "PURCHASE",
-                        "productStoreGroupId", "_NA_",
-                        "price", priceValue,
-                        "userLogin", userLogin
-                );
-                Map<String, Object> result = dctx.getDispatcher().runSync("createProductPrice", priceParams);
-                Debug.logInfo("Price stored successfully with productId+(PriceTypeId): " + priceValue + ":" + priceTypeId + ", Success Message : " + result.get("successMessage"), MODULE);
-            } else {
-                Debug.logInfo("Price already exists for productId: " + productId + " with priceTypeId: " + priceTypeId + " and currencyUomId: " + currencyCode, MODULE);
-            }
-//            }
+                        "productPricePurposeId", "PURCHASE")
+                .queryCount() > 0;
+
+        if (!priceExists) {
+
+            priceTypeId = createProductPriceType(priceTypeId, "", dctx, userLogin);
+
+            Map<String, Object> priceParams = UtilMisc.toMap(
+                    "productId", productId,
+                    "productPriceTypeId", priceTypeId,
+                    "currencyUomId", currencyCode,
+                    "fromDate", UtilValidate.isNotEmpty(effectiveDateStr) ? effectiveDateStr : UtilDateTime.nowTimestamp(),
+                    "thruDate", expirationDateStr,
+                    "productPricePurposeId", "PURCHASE",
+                    "productStoreGroupId", "_NA_",
+                    "price", priceValue,
+                    "userLogin", userLogin
+            );
+            Map<String, Object> result = dctx.getDispatcher().runSync("createProductPrice", priceParams);
+            Debug.logInfo("Price stored successfully with productId+(PriceTypeId): " + priceValue + ":" + priceTypeId + ", Success Message : " + result.get("successMessage"), MODULE);
         } else {
-            Debug.logInfo("No Pricing Element Exist", MODULE);
+            Debug.logInfo("Price already exists for productId: " + productId + " with priceTypeId: " + priceTypeId + " and currencyUomId: " + currencyCode, MODULE);
         }
+
     }
 
-    public static void storeExtendedProductInformation(String productId, NodeList extendedInfoList, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+    public static void storeExtendedProductInformation(String productId, String expiCode, String languageCode, String description, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         // Check if the ProductFeatureType "EXPI" exists, if not, create it , also we  can comment it if making manually
         boolean productFeatureTypeEntityExist = EntityQuery.use(dctx.getDelegator())
                 .from("ProductFeatureType")
@@ -258,251 +254,186 @@ public class ProcessPIESXMLService {
             Map<String, Object> result = dctx.getDispatcher().runSync("createProductFeatureType", productFeatureTypeParams);
             Debug.logInfo("ProductFeatureType 'EXPI' created with description: Extended Product Information | " + result.get("successMessage"), MODULE);
         }
+        Map<String, Object> productFeatureParams = UtilMisc.toMap(
+                "productFeatureTypeId", "EXPI",
+                "idCode", expiCode,
+                "description", description,
+                "userLogin", userLogin
+        );
 
-        for (int i = 0; i < extendedInfoList.getLength(); i++) {
-            // Extract data from each ExtendedProductInformation element
-            Element extendedInfoElement = (Element) extendedInfoList.item(i);
-            String expiCode = extendedInfoElement.getAttribute("EXPICode");
-            String languageCode = extendedInfoElement.getAttribute("LanguageCode");
-            String description = extendedInfoElement.getTextContent();
+        Map<String, Object> result = dctx.getDispatcher().runSync("createProductFeature", productFeatureParams);
 
-            Map<String, Object> productFeatureParams = UtilMisc.toMap(
-                    "productFeatureTypeId", "EXPI",
-                    "idCode", expiCode,
-                    "description", description,
-                    "userLogin", userLogin
-            );
+        String productFeatureId = (String) result.get("productFeatureId");
 
-            Map<String, Object> result = dctx.getDispatcher().runSync("createProductFeature", productFeatureParams);
+        // Create a new record in the ProductFeatureAppl table
 
-            String productFeatureId = (String) result.get("productFeatureId");
-
-            // Create a new record in the ProductFeatureAppl table
-
-            Map<String, Object> addFeatureToProdParams = UtilMisc.toMap(
-                    "productId", productId,
-                    "productFeatureId", productFeatureId,
-                    "productFeatureApplTypeId", "STANDARD_FEATURE",
-                    "fromDate", UtilDateTime.nowTimestamp(),
-                    "userLogin", userLogin
-            );
-            dctx.getDispatcher().runSync("applyFeatureToProduct", addFeatureToProdParams);
-            Debug.logInfo("Associated: " + productId + "<==to==>" + productFeatureId + " | Stored with productFeatureId: " + result.get("productFeatureId") + ", expiCode: " + expiCode, MODULE);
-        }
+        Map<String, Object> addFeatureToProdParams = UtilMisc.toMap(
+                "productId", productId,
+                "productFeatureId", productFeatureId,
+                "productFeatureApplTypeId", "STANDARD_FEATURE",
+                "fromDate", UtilDateTime.nowTimestamp(),
+                "userLogin", userLogin
+        );
+        dctx.getDispatcher().runSync("applyFeatureToProduct", addFeatureToProdParams);
+        Debug.logInfo("Associated: " + productId + "<==to==>" + productFeatureId + " | Stored with productFeatureId: " + result.get("productFeatureId") + ", expiCode: " + expiCode, MODULE);
+//        }
         Debug.logInfo("Extended Product Information stored successfully for productId: " + productId, MODULE);
     }
 
-    private static void storeProductAttributes(String partNumber, Element productAttributesElement, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+    private static void storeProductAttributes(String partNumber, String attributeId, String padbAttribute, String attributeUom, String recordNumber, String attributeValue, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
 
-        if (productAttributesElement != null) {
-            List<? extends Element> productAttributeList = UtilXml.childElementList(productAttributesElement, "ProductAttribute");
+        // Build the description using RecordNumber
+        String attributeDescr = "RecordNumber_" + recordNumber;
 
-            for (Element productAttributeElement : productAttributeList) {
-                String maintenanceType = productAttributeElement.getAttribute("MaintenanceType");
-                String attributeId = productAttributeElement.getAttribute("AttributeID");
-                String padbAttribute = productAttributeElement.getAttribute("PADBAttribute");
-                String attributeUom = productAttributeElement.getAttribute("AttributeUOM");
-                String recordNumber = productAttributeElement.getAttribute("RecordNumber");
-                String attributeValue = productAttributeElement.getTextContent(); // The value inside <ProductAttribute>
+        // Prepare the fields for insertion into the ProductAttribute table
+        Map<String, Object> fields = UtilMisc.toMap(
+                "productId", partNumber,
+                "attrName", attributeId,
+                "attrValue", attributeValue,
+                "attrType", attributeUom,
+                "attrDescription", attributeDescr
+        );
 
-                // Build the description using RecordNumber
-                String attributeDescr = "RecordNumber_" + recordNumber;
+        // Check if the attribute already exists in the ProductAttribute table
+        GenericValue existingProductAttribute = dctx.getDelegator().findOne("ProductAttribute",
+                UtilMisc.toMap("productId", partNumber, "attrName", attributeId), false);
 
-                // Prepare the fields for insertion into the ProductAttribute table
-                Map<String, Object> fields = UtilMisc.toMap(
-                        "productId", partNumber,
-                        "attrName", attributeId,
-                        "attrValue", attributeValue,
-                        "attrType", attributeUom,
-                        "attrDescription", attributeDescr
-                );
+        fields.put("userLogin", userLogin);
 
-                // Check if the attribute already exists in the ProductAttribute table
-                GenericValue existingProductAttribute = dctx.getDelegator().findOne("ProductAttribute",
-                        UtilMisc.toMap("productId", partNumber, "attrName", attributeId), false);
-
-                fields.put("userLogin", userLogin);
-
-                if (UtilValidate.isEmpty(existingProductAttribute)) {
-                    Map<String, Object> result = dctx.getDispatcher().runSync("createProductAttribute", fields);
-                    fields.remove("userLogin");
-                    Debug.log("Created new ProductAttribute: " + fields, MODULE);
-                } else {
-                    Debug.log("ProductAttribute already exists: " + attributeId + " for productId: " + partNumber, MODULE);
-                }
-            }
+        if (UtilValidate.isEmpty(existingProductAttribute)) {
+            Map<String, Object> result = dctx.getDispatcher().runSync("createProductAttribute", fields);
+            fields.remove("userLogin");
+            Debug.log("Created new ProductAttribute: " + fields, MODULE);
         } else {
-            Debug.logWarning("No ProductAttributes found for partNumber: " + partNumber, MODULE);
+            Debug.log("ProductAttribute already exists: " + attributeId + " for productId: " + partNumber, MODULE);
         }
     }
 
 
-    private static void storeDigitalAssets(String partNumber, Element digitalAssetsElement, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-        if (digitalAssetsElement != null) {
-            List<? extends Element> digitalFileInfoList = UtilXml.childElementList(digitalAssetsElement, "DigitalFileInformation");
+    private static void storeDigitalAssets(String partNumber, String assetId, String languageCode, String fileName, String fileType, String representation, String fileSize, String resolution, String colorMode, String background, String orientationView, String filePath, String uri, String country, String frame, String totalFrames, String plane, String plunge, String totalPlanes, String assetHeight, String assetWidth, String uom, String assetDate, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
+            Debug.logInfo(filePath, MODULE);
+            // Create DataResource
+            Map<String, Object> dataResourceFields = UtilMisc.toMap(
+                    "mimeTypeId", fileType,
+                    "objectInfo", filePath,
+                    "dataResourceName", fileName,
+                    "userLogin", userLogin
+            );
 
-            for (Element digitalFileInfoElement : digitalFileInfoList) {
+            Map<String, Object> createDataResourceResult = dctx.getDispatcher().runSync("createDataResource", dataResourceFields);
 
-                // Extract values from XML
-                String assetId = digitalFileInfoElement.getAttribute("AssetID");
-                String maintenanceType = digitalFileInfoElement.getAttribute("MaintenanceType");
-                String languageCode = digitalFileInfoElement.getAttribute("LanguageCode");
+            // Create Content
+            Map<String, Object> contentFields = UtilMisc.toMap(
+                    "contentTypeId", "DFI", // Assuming "DFI" as the content type
+                    "mimeTypeId", fileType,
+                    "contentName", fileName,
+                    "description", uri,
+                    "serviceName", assetId,
+                    "localeString", languageCode,
+                    "dataResourceId", createDataResourceResult.get("dataResourceId"),
+                    "userLogin", userLogin
+            );
 
-                String fileName = UtilXml.childElementValue(digitalFileInfoElement, "FileName", null);
-                String assetType = UtilXml.childElementValue(digitalFileInfoElement, "AssetType", null);
-                String fileType = UtilXml.childElementValue(digitalFileInfoElement, "FileType", null);
-                String representation = UtilXml.childElementValue(digitalFileInfoElement, "Representation", null);
-                String fileSize = UtilXml.childElementValue(digitalFileInfoElement, "FileSize", null);
-                String resolution = UtilXml.childElementValue(digitalFileInfoElement, "Resolution", null);
-                String colorMode = UtilXml.childElementValue(digitalFileInfoElement, "ColorMode", null);
-                String background = UtilXml.childElementValue(digitalFileInfoElement, "Background", null);
-                String orientationView = UtilXml.childElementValue(digitalFileInfoElement, "OrientationView", null);
-                String filePath = UtilXml.childElementValue(digitalFileInfoElement, "FilePath", null);
-                String uri = UtilXml.childElementValue(digitalFileInfoElement, "URI", null);
-                String country = UtilXml.childElementValue(digitalFileInfoElement, "Country", null);
-                String frame = UtilXml.childElementValue(digitalFileInfoElement, "Frame", null);
-                String totalFrames = UtilXml.childElementValue(digitalFileInfoElement, "TotalFrames", null);
-                String plane = UtilXml.childElementValue(digitalFileInfoElement, "Plane", null);
-                String plunge = UtilXml.childElementValue(digitalFileInfoElement, "Plunge", null);
-                String totalPlanes = UtilXml.childElementValue(digitalFileInfoElement, "TotalPlanes", null);
+            Map<String, Object> createContentResult = dctx.getDispatcher().runSync("createContent", contentFields);
 
+            // Create ProductContent
+            Map<String, Object> productContentFields = UtilMisc.toMap(
+                    "productId", partNumber,
+                    "productContentTypeId", "DA", // Assuming "DA" as the product content type
+                    "contentId", createContentResult.get("contentId"),
+                    "userLogin", userLogin
+            );
 
-                // Dimensions
-                Element assetDimensionsElement = UtilXml.firstChildElement(digitalFileInfoElement, "AssetDimensions");
-                String assetHeight = (assetDimensionsElement != null) ? UtilXml.childElementValue(assetDimensionsElement, "AssetHeight", null) : null;
-                String assetWidth = (assetDimensionsElement != null) ? UtilXml.childElementValue(assetDimensionsElement, "AssetWidth", null) : null;
-                String uom = UtilValidate.isNotEmpty(assetDimensionsElement) ? assetDimensionsElement.getAttribute("UOM") : null;
+            Map<String, Object> createProductContentResult = dctx.getDispatcher().runSync("createProductContent", productContentFields);
 
-                // Asset Date
-                Element assetDatesElement = UtilXml.firstChildElement(digitalFileInfoElement, "AssetDates");
-                Element assetDateElement = UtilXml.firstChildElement(assetDatesElement, "AssetDate");
-                String assetDate = UtilValidate.isNotEmpty(assetDateElement) ? assetDateElement.getTextContent() : "";
-                Debug.logInfo(filePath, MODULE);
-                // Create DataResource
-                Map<String, Object> dataResourceFields = UtilMisc.toMap(
-                        "mimeTypeId", fileType,
-                        "objectInfo", filePath,
-                        "dataResourceName", fileName,
-                        "userLogin", userLogin
-                );
-
-                Map<String, Object> createDataResourceResult = dctx.getDispatcher().runSync("createDataResource", dataResourceFields);
-
-                // Create Content
-                Map<String, Object> contentFields = UtilMisc.toMap(
-                        "contentTypeId", "DFI", // Assuming "DFI" as the content type
-                        "mimeTypeId", fileType,
-                        "contentName", fileName,
-                        "description", uri,
-                        "serviceName", assetId,
-                        "localeString", languageCode,
-                        "dataResourceId", createDataResourceResult.get("dataResourceId"),
-                        "userLogin", userLogin
-                );
-
-                Map<String, Object> createContentResult = dctx.getDispatcher().runSync("createContent", contentFields);
-
-                // Create ProductContent
-                Map<String, Object> productContentFields = UtilMisc.toMap(
-                        "productId", partNumber,
-                        "productContentTypeId", "DA", // Assuming "DA" as the product content type
+            // Create Content Attributes (Dimensions)
+            if (UtilValidate.isNotEmpty(assetHeight) && UtilValidate.isNotEmpty(assetWidth)) {
+                Map<String, Object> contentAttrHeightFields = UtilMisc.toMap(
                         "contentId", createContentResult.get("contentId"),
+                        "attrName", "AssetHeight",
+                        "attrValue", assetHeight,
+                        "attrDescription", uom,
                         "userLogin", userLogin
                 );
 
-                Map<String, Object> createProductContentResult = dctx.getDispatcher().runSync("createProductContent", productContentFields);
+                dctx.getDispatcher().runSync("createContentAttribute", contentAttrHeightFields);
 
-                // Create Content Attributes (Dimensions)
-                if (UtilValidate.isNotEmpty(assetHeight) && UtilValidate.isNotEmpty(assetWidth)) {
-                    Map<String, Object> contentAttrHeightFields = UtilMisc.toMap(
-                            "contentId", createContentResult.get("contentId"),
-                            "attrName", "AssetHeight",
-                            "attrValue", assetHeight,
-                            "attrDescription", uom,
-                            "userLogin", userLogin
-                    );
+                Map<String, Object> contentAttrWidthFields = UtilMisc.toMap(
+                        "contentId", createContentResult.get("contentId"),
+                        "attrName", "AssetWidth",
+                        "attrValue", assetWidth,
+                        "attrDescription", uom,
+                        "userLogin", userLogin
+                );
 
-                    dctx.getDispatcher().runSync("createContentAttribute", contentAttrHeightFields);
-
-                    Map<String, Object> contentAttrWidthFields = UtilMisc.toMap(
-                            "contentId", createContentResult.get("contentId"),
-                            "attrName", "AssetWidth",
-                            "attrValue", assetWidth,
-                            "attrDescription", uom,
-                            "userLogin", userLogin
-                    );
-
-                    dctx.getDispatcher().runSync("createContentAttribute", contentAttrWidthFields);
-
-                }
-
-                // Create DataResourceMetadata for additional fields
-                List<Map<String, String>> metadataEntries = new ArrayList<>();
-
-                if (UtilValidate.isNotEmpty(representation)) {
-                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "REP", "metaDataValue", representation));
-                }
-
-                if (UtilValidate.isNotEmpty(fileSize)) {
-                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "FS", "metaDataValue", fileSize));
-                }
-
-                if (UtilValidate.isNotEmpty(resolution)) {
-                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "RES", "metaDataValue", resolution));
-                }
-
-                if (UtilValidate.isNotEmpty(colorMode)) {
-                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "COM", "metaDataValue", colorMode));
-                }
-
-                if (UtilValidate.isNotEmpty(background)) {
-                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "BG", "metaDataValue", background));
-                }
-
-                if (UtilValidate.isNotEmpty(orientationView)) {
-                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "OV", "metaDataValue", orientationView));
-                }
-
-                // Add new fields to metadata entries
-                if (UtilValidate.isNotEmpty(frame)) {
-                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "FR", "metaDataValue", frame));
-                }
-
-                if (UtilValidate.isNotEmpty(totalFrames)) {
-                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "TF", "metaDataValue", totalFrames));
-                }
-
-                if (UtilValidate.isNotEmpty(plane)) {
-                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "PL", "metaDataValue", plane));
-                }
-
-                if (UtilValidate.isNotEmpty(plunge)) {
-                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "PU", "metaDataValue", plunge));
-                }
-
-                if (UtilValidate.isNotEmpty(totalPlanes)) {
-                    metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "TP", "metaDataValue", totalPlanes));
-                }
-
-                // Create all DataResourceMetadata entries
-                for (Map<String, String> entry : metadataEntries) {
-                    // Checking for null values before creating the entry
-                    String metaDataPredicateId = entry.get("metaDataPredicateId");
-                    String metaDataValue = entry.get("metaDataValue");
-
-                    if (UtilValidate.isNotEmpty(metaDataPredicateId) && UtilValidate.isNotEmpty(metaDataValue)) {
-                        Map<String, Object> dataResourceMetaFields = UtilMisc.toMap(
-                                "dataResourceId", createDataResourceResult.get("dataResourceId"), // Use of generated dataResourceId
-                                "metaDataPredicateId", metaDataPredicateId,
-                                "metaDataValue", metaDataValue,
-                                "userLogin", userLogin
-                        );
-                        Map<String, Object> createDataResourceMetaDataResult = dctx.getDispatcher().runSync("createDataResourceMetaData", dataResourceMetaFields);
-                    }
-                }
+                dctx.getDispatcher().runSync("createContentAttribute", contentAttrWidthFields);
 
             }
-        }
+
+            // Create DataResourceMetadata for additional fields
+            List<Map<String, String>> metadataEntries = new ArrayList<>();
+
+            if (UtilValidate.isNotEmpty(representation)) {
+                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "REP", "metaDataValue", representation));
+            }
+
+            if (UtilValidate.isNotEmpty(fileSize)) {
+                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "FS", "metaDataValue", fileSize));
+            }
+
+            if (UtilValidate.isNotEmpty(resolution)) {
+                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "RES", "metaDataValue", resolution));
+            }
+
+            if (UtilValidate.isNotEmpty(colorMode)) {
+                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "COM", "metaDataValue", colorMode));
+            }
+
+            if (UtilValidate.isNotEmpty(background)) {
+                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "BG", "metaDataValue", background));
+            }
+
+            if (UtilValidate.isNotEmpty(orientationView)) {
+                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "OV", "metaDataValue", orientationView));
+            }
+
+            // Add new fields to metadata entries
+            if (UtilValidate.isNotEmpty(frame)) {
+                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "FR", "metaDataValue", frame));
+            }
+
+            if (UtilValidate.isNotEmpty(totalFrames)) {
+                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "TF", "metaDataValue", totalFrames));
+            }
+
+            if (UtilValidate.isNotEmpty(plane)) {
+                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "PL", "metaDataValue", plane));
+            }
+
+            if (UtilValidate.isNotEmpty(plunge)) {
+                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "PU", "metaDataValue", plunge));
+            }
+
+            if (UtilValidate.isNotEmpty(totalPlanes)) {
+                metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "TP", "metaDataValue", totalPlanes));
+            }
+
+            // Create all DataResourceMetadata entries
+            for (Map<String, String> entry : metadataEntries) {
+                // Checking for null values before creating the entry
+                String metaDataPredicateId = entry.get("metaDataPredicateId");
+                String metaDataValue = entry.get("metaDataValue");
+
+                if (UtilValidate.isNotEmpty(metaDataPredicateId) && UtilValidate.isNotEmpty(metaDataValue)) {
+                    Map<String, Object> dataResourceMetaFields = UtilMisc.toMap(
+                            "dataResourceId", createDataResourceResult.get("dataResourceId"), // Use of generated dataResourceId
+                            "metaDataPredicateId", metaDataPredicateId,
+                            "metaDataValue", metaDataValue,
+                            "userLogin", userLogin
+                    );
+                    Map<String, Object> createDataResourceMetaDataResult = dctx.getDispatcher().runSync("createDataResourceMetaData", dataResourceMetaFields);
+                }
+            }
     }
 
     private static void createProductCategory(String productCategoryId, String productCategoryTypeId, String description, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
@@ -603,111 +534,6 @@ public class ProcessPIESXMLService {
 
 
     /*=======  END ======== */
-    public static void extractDataFromXML(DispatchContext dctx, Document document, Map<String, Object> context) throws GenericServiceException {
-        if (document != null) {
-            Element rootElement = document.getDocumentElement();
-            NodeList itemList = rootElement.getElementsByTagName("Item");
-
-            GenericValue userLogin = (GenericValue) context.get("userLogin");
-
-            for (int i = 0; i < itemList.getLength(); i++) {
-                Element itemElement = (Element) itemList.item(i);
-                Debug.logInfo("======== Processing Item No. : " + i + "==================", MODULE);
-                // Extracting data from the XML
-                // Assuming you have the getElementTextContent method defined as before
-
-                String baseItemId = getElementTextContent(itemElement, "BaseItemID");
-                String partNumber = getElementTextContent(itemElement, "PartNumber");
-                String hazardousMaterialCode = getElementTextContent(itemElement, "HazardousMaterialCode");
-                String itemEffectiveDate = getElementTextContent(itemElement, "ItemEffectiveDate");
-                String availableDate = getElementTextContent(itemElement, "AvailableDate");
-                String quantityPerApplication = getElementTextContent(itemElement, "QuantityPerApplication");
-                String minimumOrderQuantity = getElementTextContent(itemElement, "MinimumOrderQuantity");
-
-                minimumOrderQuantity = (minimumOrderQuantity != null && minimumOrderQuantity.length() > 255) ? minimumOrderQuantity.substring(0, 255) : minimumOrderQuantity;
-
-                // Parsing dates to the correct format
-                Timestamp introductionDate = itemEffectiveDate.isEmpty() ? UtilDateTime.nowTimestamp() : Timestamp.valueOf(itemEffectiveDate + " 00:00:00");
-                Timestamp releaseDate = availableDate.isEmpty() ? null : Timestamp.valueOf(availableDate + " 00:00:00");
-
-                // Data injections starts from here..
-
-//                //product
-//                try {
-//                    createItem(partNumber, introductionDate, releaseDate, quantityPerApplication, minimumOrderQuantity, baseItemId, dctx, userLogin);
-//                } catch (GenericEntityException e) {
-//                    throw new RuntimeException(e);
-//                }
-
-//                // ID's , Code's and Identifier's
-//
-//                try {
-//                    createIdentifiers(itemElement, partNumber, dctx, userLogin);
-//                } catch (GenericEntityException e) {
-//                    throw new RuntimeException(e);
-//                }
-
-//                // Feature
-//                try {
-//                    createHazmatFeature(hazardousMaterialCode, partNumber, dctx, userLogin);
-//                } catch (GenericEntityException e) {
-//                    throw new RuntimeException(e);
-//                } catch (GenericServiceException e) {
-//                    throw new RuntimeException(e);
-//                }
-//                try {
-//                    Element itemLevelGTINElement = (Element) itemElement.getElementsByTagName("ItemLevelGTIN").item(0);
-//                    saveItemLevelGTIN(itemLevelGTINElement, partNumber, userLogin, dctx);
-//                } catch (GenericEntityException e) {
-//                    throw new RuntimeException(e);
-//                }
-//                // Description
-//                try {
-//                    NodeList descriptionList = itemElement.getElementsByTagName("Description");
-//                    storeProductDescriptions(partNumber, descriptionList, dctx, userLogin);
-//                } catch (GenericEntityException e) {
-//                    throw new RuntimeException(e);
-//                }
-
-//                // Price
-//                try {
-//                    NodeList pricingList = itemElement.getElementsByTagName("Pricing");
-//                    storePrices(partNumber, pricingList, dctx, userLogin);
-//                } catch (GenericEntityException e) {
-//                    throw new RuntimeException(e);
-//                }
-
-                // EXPI
-                try {
-                    NodeList extendedInfoList = itemElement.getElementsByTagName("ExtendedProductInformation");
-                    storeExtendedProductInformation(partNumber, extendedInfoList, dctx, userLogin);
-                } catch (GenericEntityException | GenericServiceException e) {
-                    throw new RuntimeException(e);
-                }
-
-
-//                 Product Attributes
-                try {
-                    // Assuming itemElement contains the <ProductAttributes> element
-                    Element productAttributesElement = UtilXml.firstChildElement(itemElement, "ProductAttributes");
-                    storeProductAttributes(partNumber, productAttributesElement, dctx, userLogin);
-                } catch (GenericEntityException e) {
-                    throw new RuntimeException(e);
-                }
-
-                // Digital Asset
-                try {
-                    Element digitalAssetsElement = UtilXml.firstChildElement(itemElement, "DigitalAssets");
-                    storeDigitalAssets(partNumber, digitalAssetsElement, dctx, userLogin);
-                } catch (GenericEntityException e) {
-                    throw new RuntimeException(e);
-                }
-                itemElement = null;
-                System.gc();
-            }
-        }
-    }
-
     static class ItemHandler extends DefaultHandler {
 
         private int ItemNumberTrack = 0;
@@ -783,7 +609,7 @@ public class ProcessPIESXMLService {
         private String assetType;
         private String fileType;
         private String representation;
-        private int fileSize;
+        private String fileSize;
         private String country;
         private String plane;
         private String frame;
@@ -931,7 +757,7 @@ public class ProcessPIESXMLService {
             private String assetType;
             private String fileType;
             private String representation;
-            private int fileSize;
+            private String fileSize;
             private String resolution;
             private String colorMode;
             private String background;
@@ -1410,20 +1236,63 @@ public class ProcessPIESXMLService {
 
                 // Description
                 try {
-                    Description d = currentItem.descriptions.get(0);
-                    storeProductDescriptions(d.languageCode, d.descriptionCode, d.sequence, d.descriptionText, currentItem.partNumber, dctx, userLogin);
+                    if (currentItem.descriptions.size() > 0) {
+                        Description d = currentItem.descriptions.get(0);
+                        Debug.logInfo("Total descp's found :  " + currentItem.descriptions.size(), MODULE);
+                        storeProductDescriptions(d.languageCode, d.descriptionCode, d.sequence, d.descriptionText, currentItem.partNumber, dctx, userLogin);
+                    } else {
+                        Debug.logInfo("No Descriptions Exist", MODULE);
+                    }
                 } catch (GenericEntityException | GenericServiceException e) {
                     throw new RuntimeException(e);
                 }
 
                 // Price
                 try {
-                    Price p = currentItem.prices.get(0);
-                    storePrices(currentItem.partNumber, p.priceType, p.currencyCode, p.effectiveDate, p.expirationDate, p.priceValue, p.uom, p.priceBreak, dctx, userLogin);
+                    if (currentItem.prices.size() > 0) {
+                        Price p = currentItem.prices.get(0);
+                        Debug.logInfo("Total descp's found :  " + currentItem.prices.size(), MODULE);
+                        storePrices(currentItem.partNumber, p.priceType, p.currencyCode, p.effectiveDate, p.expirationDate, p.priceValue, p.uom, p.priceBreak, dctx, userLogin);
+                    } else {
+                        Debug.logInfo("No Pricing Element Exist", MODULE);
+                    }
                 } catch (GenericEntityException | GenericServiceException e) {
                     throw new RuntimeException(e);
                 }
 
+
+                // EXPI
+                try {
+                    ExtendedProductInformation epi = currentItem.ExtendedInformation.get(0);
+                    storeExtendedProductInformation(currentItem.partNumber, epi.expiCode, epi.languageCode, epi.content, dctx, userLogin);
+                } catch (GenericEntityException | GenericServiceException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // Product Attributes
+                try {
+                    if (currentItem.productAttributes.size() > 0) {
+                        ProductAttribute pa = currentItem.productAttributes.get(0);
+                        storeProductAttributes(currentItem.partNumber, pa.attributeID, pa.PADBAttribute, pa.attributeUOM, pa.RecordNumber, pa.value, dctx, userLogin);
+                    } else {
+                        Debug.logWarning("No ProductAttributes found for partNumber: " + currentItem.partNumber, MODULE);
+                    }
+                } catch (GenericEntityException | GenericServiceException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // Digital Asset
+                try {
+                    if(currentItem.digitalAssets.size()>0){
+                    DigitalFileInformation dfi = currentItem.digitalAssets.get(0);
+                    storeDigitalAssets(currentItem.partNumber, dfi.assetID, dfi.languageCode, dfi.fileName, dfi.fileType, dfi.representation, dfi.fileSize, dfi.resolution, dfi.colorMode, dfi.background, dfi.orientationView, dfi.filePath, dfi.uri, dfi.country, dfi.frame, dfi.totalFrames, dfi.plane, dfi.plunge, dfi.totalPlanes, dfi.assetHeight, dfi.assetWidth, dfi.uom, dfi.assetDate, dctx, userLogin);
+                    }
+                    else{
+                        Debug.logWarning("No digital assets found for productId : " + currentItem.partNumber, MODULE);
+                    }
+                } catch (GenericEntityException | GenericServiceException e) {
+                    throw new RuntimeException(e);
+                }
 
                 Debug.logInfo("======== END Processing Item No. : " + ItemNumberTrack + "==================", MODULE);
             }
@@ -1518,7 +1387,7 @@ public class ProcessPIESXMLService {
                 isRepresentation = false;
             }
             if (isFileSize) {
-                fileSize = Integer.parseInt(value);
+                fileSize = value;
                 isFileSize = false;
             }
             if (isResolution) {
@@ -1623,8 +1492,6 @@ public class ProcessPIESXMLService {
         }
 
         Debug.log(context + "======== Parsing XML using SAX Parser ==================", MODULE);
-
-//        extractDataFromXML(dctx, document, context);
 
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
