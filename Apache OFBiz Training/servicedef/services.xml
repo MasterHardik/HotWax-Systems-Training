@@ -25,21 +25,24 @@ under the License.
     <version>1.0</version>
     <service name="noSyntaxError" engine="interface">
         <description>
-            Dummy service to prevent empty files and syntax error - Remove when the 1st real service will be added here 
+            Dummy service to prevent empty files and syntax error - Remove when the 1st real service will be added here
         </description>
     </service>
 
 
-    <service name="createMasterTable" default-entity-name="masterTable" engine="entity-auto" invoke="create" auth="true" >
-    <description>This is service to create MasterTable Entity</description>
-    <auto-attributes include="pk" mode="OUT" optional="false" />
-    <auto-attributes include="nonpk" mode="IN" optional="false"/>
-    <!--    Custom service practice here -->
-        <override name="comments" optional="true" />
+    <service name="createMasterTable" default-entity-name="masterTable" engine="entity-auto" invoke="create"
+             auth="true">
+        <description>This is service to create MasterTable Entity</description>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="false"/>
+        <!--    Custom service practice here -->
+        <override name="comments" optional="true"/>
     </service>
 
 
-    <service name="createMasterTableByJavaService" default-entity-name="masterTable" engine="java" location="com.companyname.HotWax_Systems_Training.services.MasterTableServices"  invoke="createMasterTable" auth="true">
+    <service name="createMasterTableByJavaService" default-entity-name="masterTable" engine="java"
+             location="com.companyname.HotWax_Systems_Training.services.MasterTableServices" invoke="createMasterTable"
+             auth="true">
         <description>Create a Master Table record using a service in Java</description>
         <auto-attributes include="pk" mode="OUT" optional="false"/>
         <auto-attributes include="nonpk" mode="IN" optional="false"/>
@@ -47,7 +50,8 @@ under the License.
     </service>
 
     <service name="createMasterTableByGroovyService" default-entity-name="masterTable" engine="groovy"
-             location="component://HotWax-Systems-Training/groovyScripts/ofbizdemo/OfbizDemoServices.groovy" invoke="createMasterTable" auth="true">
+             location="component://HotWax-Systems-Training/groovyScripts/ofbizdemo/OfbizDemoServices.groovy"
+             invoke="createMasterTable" auth="true">
         <description>Create an Ofbiz Demo record using a service in Groovy</description>
         <auto-attributes include="pk" mode="OUT" optional="false"/>
         <auto-attributes include="nonpk" mode="IN" optional="false"/>
@@ -56,13 +60,17 @@ under the License.
 
     <!--    my custom XML Data import logic -->
     <service name="processXMLService" engine="java"
-             location="com.companyname.HotWax_Systems_Training.services.ProcessPIESXMLService" transaction-timeout="5500" invoke="processPIESXML" auth="true">
+             location="com.companyname.HotWax_Systems_Training.services.ProcessPIESXMLService"
+             transaction-timeout="10000" invoke="processPIESXML" auth="true">
         <description>Imports a xml file data or text string and print it on console</description>
-        <attribute name="fileName" type="java.nio.ByteBuffer" mode="IN" optional="false" allow-html="any"/>
+        <attribute name="fileName" type="java.nio.ByteBuffer" mode="IN" optional="true" allow-html="any"/>
+        <attribute name="filePath" type="String" mode="IN" optional="false" allow-html="any"/>
     </service>
     <!-- END of Custom XML Import logic    -->
 
-    <service name="processCSVService" engine="java" transaction-timeout="1500" location="com.companyname.HotWax_Systems_Training.services.ProcessCSVServices" invoke="updateProductPrice" auth="true">
+    <service name="processCSVService" engine="java" transaction-timeout="10000"
+             location="com.companyname.HotWax_Systems_Training.services.ProcessCSVServices" invoke="updateProductPrice"
+             auth="true">
         <description>This service will updateProductPrice</description>
         <attribute name="fileName" type="java.nio.ByteBuffer" mode="IN" optional="false" allow-html="any"/>
     </service>

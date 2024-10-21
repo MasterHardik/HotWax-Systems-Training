@@ -44,27 +44,6 @@
                 <ProductAttribute MaintenanceType="A" AttributeID="Width" PADBAttribute="N" AttributeUOM="IN" RecordNumber="2">4.25</ProductAttribute>
                 <ProductAttribute MaintenanceType="A" AttributeID="Height" PADBAttribute="N" AttributeUOM="IN" RecordNumber="3">3.5</ProductAttribute>
             </ProductAttributes>
-            <Packages>
-                <Package MaintenanceType="A">
-                    <PackageLevelGTIN>50055555000001</PackageLevelGTIN>
-                    <PackageBarCodeCharacters>00555550000P10</PackageBarCodeCharacters>
-                    <PackageUOM>EA</PackageUOM>
-                    <QuantityofEaches>1</QuantityofEaches>
-                    <Dimensions UOM="IN">
-                        <MerchandisingHeight>3.9999</MerchandisingHeight>
-                        <MerchandisingWidth>3.9999</MerchandisingWidth>
-                        <MerchandisingLength>3.9999</MerchandisingLength>
-                        <ShippingHeight>10</ShippingHeight>
-                        <ShippingWidth>7</ShippingWidth>
-                        <ShippingLength>5.25</ShippingLength>
-                    </Dimensions>
-                    <Weights UOM="PG">
-                        <Weight>8.9999</Weight>
-                        <DimensionalWeight>0.33</DimensionalWeight>
-                    </Weights>
-                    <WeightVariance>2.5</WeightVariance>
-                </Package>
-            </Packages>
             <PartInterchangeInfo>
                 <PartInterchange MaintenanceType="A" LanguageCode="EN" BrandAAIAID="CCCC" BrandLabel="Acme Parts" SubBrandAAIAID="CCCD" SubBrandLabel="Acme Extra" QualityGradeLevel="P" ItemEquivalentUOM="EA" InternalNotes="Internal Note">
                     <PartNumber InterchangeQuantity="1" UOM="EA" InterchangeNotes="Part Note">CC2000</PartNumber>
