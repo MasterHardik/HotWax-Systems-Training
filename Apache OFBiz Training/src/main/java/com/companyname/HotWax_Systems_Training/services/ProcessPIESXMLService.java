@@ -157,8 +157,6 @@ public class ProcessPIESXMLService {
     public static void storeProductDescriptions(String languageCode, String descriptionCode, String sequenceAttr, String descriptionText, String productId, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         String contentId = dctx.getDelegator().getNextSeqId("contentId");
         descriptionText = (descriptionText != null && descriptionText.length() > 255) ? descriptionText.substring(0, 255) : descriptionText;
-
-        Debug.logInfo("=========" + descriptionText + "=============", MODULE);
         Map<String, Object> contentParams = UtilMisc.toMap(
                 "contentId", contentId,
                 "contentName", descriptionCode,
@@ -1241,9 +1239,10 @@ public class ProcessPIESXMLService {
                 // Description
                 try {
                     if (currentItem.descriptions.size() > 0) {
-                        Description d = currentItem.descriptions.get(0);
-                        Debug.logInfo("Total descp's found :  " + currentItem.descriptions.size(), MODULE);
-                        storeProductDescriptions(d.languageCode, d.descriptionCode, d.sequence, d.descriptionText, currentItem.partNumber, dctx, userLogin);
+                        for (int i = 0; i < currentItem.descriptions.size(); i++) {
+                            Description d = currentItem.descriptions.get(i);
+                            storeProductDescriptions(d.languageCode, d.descriptionCode, d.sequence, d.descriptionText, currentItem.partNumber, dctx, userLogin);
+                        }
                     } else {
                         Debug.logInfo("No Descriptions Exist", MODULE);
                     }
@@ -1254,9 +1253,10 @@ public class ProcessPIESXMLService {
                 // Price
                 try {
                     if (currentItem.prices.size() > 0) {
-                        Price p = currentItem.prices.get(0);
-                        Debug.logInfo("Total descp's found :  " + currentItem.prices.size(), MODULE);
-                        storePrices(currentItem.partNumber, p.priceType, p.currencyCode, p.effectiveDate, p.expirationDate, p.priceValue, p.uom, p.priceBreak, dctx, userLogin);
+                        for (int i = 0; i < currentItem.prices.size(); i++) {
+                            Price p = currentItem.prices.get(i);
+                            storePrices(currentItem.partNumber, p.priceType, p.currencyCode, p.effectiveDate, p.expirationDate, p.priceValue, p.uom, p.priceBreak, dctx, userLogin);
+                        }
                     } else {
                         Debug.logInfo("No Pricing Element Exist", MODULE);
                     }
@@ -1267,8 +1267,10 @@ public class ProcessPIESXMLService {
 
                 // EXPI
                 try {
-                    ExtendedProductInformation epi = currentItem.ExtendedInformation.get(0);
-                    storeExtendedProductInformation(currentItem.partNumber, epi.expiCode, epi.languageCode, epi.content, dctx, userLogin);
+                    for (int i = 0; i < currentItem.ExtendedInformation.size(); i++) {
+                        ExtendedProductInformation epi = currentItem.ExtendedInformation.get(i);
+                        storeExtendedProductInformation(currentItem.partNumber, epi.expiCode, epi.languageCode, epi.content, dctx, userLogin);
+                    }
                 } catch (GenericEntityException | GenericServiceException e) {
                     throw new RuntimeException(e);
                 }
@@ -1276,8 +1278,10 @@ public class ProcessPIESXMLService {
                 // Product Attributes
                 try {
                     if (currentItem.productAttributes.size() > 0) {
-                        ProductAttribute pa = currentItem.productAttributes.get(0);
-                        storeProductAttributes(currentItem.partNumber, pa.attributeID, pa.PADBAttribute, pa.attributeUOM, pa.RecordNumber, pa.value, dctx, userLogin);
+                        for (int i = 0; i < currentItem.productAttributes.size(); i++) {
+                            ProductAttribute pa = currentItem.productAttributes.get(i);
+                            storeProductAttributes(currentItem.partNumber, pa.attributeID, pa.PADBAttribute, pa.attributeUOM, pa.RecordNumber, pa.value, dctx, userLogin);
+                        }
                     } else {
                         Debug.logWarning("No ProductAttributes found for partNumber: " + currentItem.partNumber, MODULE);
                     }
@@ -1288,8 +1292,10 @@ public class ProcessPIESXMLService {
                 // Digital Asset
                 try {
                     if (currentItem.digitalAssets.size() > 0) {
-                        DigitalFileInformation dfi = currentItem.digitalAssets.get(0);
-                        storeDigitalAssets(currentItem.partNumber, dfi.assetID, dfi.languageCode, dfi.fileName, dfi.fileType, dfi.representation, dfi.fileSize, dfi.resolution, dfi.colorMode, dfi.background, dfi.orientationView, dfi.filePath, dfi.uri, dfi.country, dfi.frame, dfi.totalFrames, dfi.plane, dfi.plunge, dfi.totalPlanes, dfi.assetHeight, dfi.assetWidth, dfi.uom, dfi.assetDate, dctx, userLogin);
+                        for (int i = 0; i < currentItem.digitalAssets.size(); i++) {
+                            DigitalFileInformation dfi = currentItem.digitalAssets.get(0);
+                            storeDigitalAssets(currentItem.partNumber, dfi.assetID, dfi.languageCode, dfi.fileName, dfi.fileType, dfi.representation, dfi.fileSize, dfi.resolution, dfi.colorMode, dfi.background, dfi.orientationView, dfi.filePath, dfi.uri, dfi.country, dfi.frame, dfi.totalFrames, dfi.plane, dfi.plunge, dfi.totalPlanes, dfi.assetHeight, dfi.assetWidth, dfi.uom, dfi.assetDate, dctx, userLogin);
+                        }
                     } else {
                         Debug.logWarning("No digital assets found for productId : " + currentItem.partNumber, MODULE);
                     }
