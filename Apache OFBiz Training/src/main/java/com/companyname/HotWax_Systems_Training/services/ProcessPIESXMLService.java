@@ -15,7 +15,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -25,13 +24,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.ofbiz.entity.GenericEntityException;
 import org.apache.ofbiz.entity.util.EntityQuery;
@@ -783,6 +778,8 @@ public class ProcessPIESXMLService {
     }
 
     static class ItemHandler extends DefaultHandler {
+
+        private static int ItemNumberTrack = 0;
         private boolean insideDescriptionElement = false; // Flag to know when you're inside the <Description> element
 
         private boolean insideEXPIElement = false; // Flag to know when you're inside the <Description> element
@@ -796,22 +793,84 @@ public class ProcessPIESXMLService {
         private boolean insideVMRSBrandID = false; // Flag for <VMRSBrandID>
         private boolean insideQuantityPerApplication = false; // Flag for <QuantityPerApplication>
 
-        private boolean insideAvailableDate = false; // Flag for <AvailableDate>
-        private boolean insideMinimumOrderQuantity = false; // Flag for <MinimumOrderQuantity>
-        private boolean isGroup = false;
-        private boolean isSubGroup = false;
-        private boolean isAAIAProductCategoryCode = false;
-        private boolean isUNSPSC = false;
-        private boolean isPartTerminologyID = false;
-        private boolean isVMRSCode = false;
-        private String minOrderUOM = ""; // To store UOM for <MinimumOrderQuantity>
+        private boolean insideAvailableDate = false; // Flag to know <AvailableDate>
+        private boolean insideMinimumOrderQuantity = false; // Flag to know <MinimumOrderQuantity>
+        private boolean isGroup = false; // Flag to know <Group>
+        private boolean isSubGroup = false; // Flag to know <SubGroup>
+        private boolean isAAIAProductCategoryCode = false; // Flag to know <AAIAProductCategoryCode>
+        private boolean isUNSPSC = false; // Flag to know <UNSPSC>
+        private boolean isPartTerminologyID = false; // Flag to know <PartTerminologyID>
+        private boolean isVMRSCode = false; // Flag to know <VMRSCode>
+        private String minOrderUOM; // To store UOM for <MinimumOrderQuantity>
 
         private StringBuilder characterBuffer = new StringBuilder();
         private StringBuilder content = new StringBuilder();
         private Item currentItem;
         private List<Item> items = new ArrayList<>();
-        private String uomValue = "";
+        private String uomValue;
         private boolean insideItemEffectiveDate = false;
+        private String currencyCodeValue;
+        private boolean isPriceBreak = false;
+        private String priceValue;
+        private String priceBreakValue;
+        private String effectiveDate;
+        private String expirationDate;
+        private boolean isCurrencycode = false;
+        private boolean isEffectiveDate = false;
+        private boolean isExpirationDate = false;
+        private boolean isCurrencyCode = false;
+        private boolean insidePriceValue = false;
+        private String priceType;
+        private boolean isPrice;
+        private String uom;
+        private String currencyCode;
+        private String maintenanceType;
+        private String assetID;
+        private String languageCode;
+        private String assetDateType;
+        private boolean isFileName;
+        private boolean isAssetType;
+        private boolean isFileType;
+        private boolean isRepresentation;
+        private boolean isFileSize;
+        private boolean isColorMode;
+        private boolean isOrientationView;
+        private boolean isAssetHeight;
+        private boolean isAssetWidth;
+        private boolean isFilePath;
+        private boolean isBackground;
+        private boolean isResolution;
+        private boolean isCountry;
+        private boolean isTotalFrames;
+        private boolean isFrame;
+        private boolean isPlane;
+        private boolean isHemisphere;
+        private boolean isTotalPlanes;
+        private boolean isPlunge;
+        private List<DigitalFileInformation> digitalFiles;
+        private String fileName;
+        private String assetType;
+        private String fileType;
+        private String representation;
+        private int fileSize;
+        private String country;
+        private String plane;
+        private String frame;
+        private String hemisphere;
+        private String plunge;
+        private String resolution;
+        private String colorMode;
+        private String totalFrames;
+        private String background;
+        private String orientationView;
+        private String assetHeight;
+        private String assetDate;
+
+        private String totalPlanes;
+        private String assetWidth;
+        private String filePath;
+        private String uri;
+        private boolean isURI;
 
         // Inner class to represent Item data
         class Item {
@@ -835,11 +894,11 @@ public class ProcessPIESXMLService {
             List<ExtendedProductInformation> ExtendedInformation = new ArrayList<>();
             List<Price> prices = new ArrayList<>();
             List<ProductAttribute> productAttributes = new ArrayList<>();
-            List<PartInterchange> partInterchanges = new ArrayList<>();
-            List<DigitalAsset> digitalAssets = new ArrayList<>();
+            List<DigitalFileInformation> digitalAssets = new ArrayList<>();
+
         }
 
-        // Inner classes for nested structures
+        // Inner classes for nested structures of <Description> tag
         public class Description {
             String languageCode;
             String maintenanceType;
@@ -870,9 +929,23 @@ public class ProcessPIESXMLService {
             String currencyCode;
             String effectiveDate;
             String expirationDate;
-            String price;
+            String priceValue;
+            String priceBreak; // Added for PriceBreak
+            String uom;
 
-            // Constructor, getters, and setters
+            // Override toString for logging
+            @Override
+            public String toString() {
+                return "Price{" +
+                        "priceType='" + priceType + '\'' +
+                        ", currencyCode='" + currencyCode + '\'' +
+                        ", effectiveDate='" + effectiveDate + '\'' +
+                        ", expirationDate='" + expirationDate + '\'' +
+                        ", price='" + priceValue + '\'' +
+                        ", priceBreak='" + priceBreak + '\'' +
+                        ", uom='" + uom + '\'' +
+                        '}';
+            }
         }
 
         public class ProductAttribute {
@@ -889,15 +962,6 @@ public class ProcessPIESXMLService {
             }
         }
 
-        class PartInterchange {
-            String brandAAIAID;
-            String brandLabel;
-            String qualityGradeLevel;
-            String partNumber;
-
-            // Constructor, getters, and setters
-        }
-
         public class ExtendedProductInformation {
             String maintenanceType;
             String languageCode;
@@ -912,12 +976,67 @@ public class ProcessPIESXMLService {
             }
         }
 
-        class DigitalAsset {
-            String assetID;
-            String fileName;
-            // Add other digital asset properties
+        public class DigitalFileInformation {
+            private String maintenanceType;
+            private String assetID;
+            private String languageCode;
+            private String fileName;
+            private String assetType;
+            private String fileType;
+            private String representation;
+            private int fileSize;
+            private String resolution;
+            private String colorMode;
+            private String background;
+            private String orientationView;
+            private String uom;
+            private String assetHeight;
+            private String assetWidth;
+            private String filePath;
+            private String uri;
+            private String assetDateType;
+            private String assetDate;
+            private String country;
 
-            // Constructor, getters, and setters
+            // Other fields for 360-specific assets
+            private String frame;
+            private String totalFrames;
+            private String plane;
+            private String hemisphere;
+            private String plunge;
+            private String totalPlanes;
+
+            @Override
+            public String toString() {
+                return "DigitalFileInformation{" +
+                        "maintenanceType='" + maintenanceType + '\'' +
+                        ", assetID='" + assetID + '\'' +
+                        ", languageCode='" + languageCode + '\'' +
+                        ", fileName='" + fileName + '\'' +
+                        ", assetType='" + assetType + '\'' +
+                        ", fileType='" + fileType + '\'' +
+                        ", representation='" + representation + '\'' +
+                        ", fileSize=" + fileSize +
+                        ", resolution=" + resolution +
+                        ", colorMode='" + colorMode + '\'' +
+                        ", background='" + background + '\'' +
+                        ", orientationView='" + orientationView + '\'' +
+                        ", uom='" + uom + '\'' +
+                        ", assetHeight=" + assetHeight +
+                        ", assetWidth=" + assetWidth +
+                        ", filePath='" + filePath + '\'' +
+                        ", uri='" + uri + '\'' +
+                        ", assetDateType='" + assetDateType + '\'' +
+                        ", assetDate='" + assetDate + '\'' +
+                        ", country='" + country + '\'' +
+                        ", frame=" + frame +
+                        ", totalFrames=" + totalFrames +
+                        ", plane=" + plane +
+                        ", hemisphere='" + hemisphere + '\'' +
+                        ", plunge=" + plunge +
+                        ", totalPlanes=" + totalPlanes +
+                        '}';
+            }
         }
 
         @Override
@@ -928,9 +1047,10 @@ public class ProcessPIESXMLService {
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes)
                 throws SAXException {
-            // System.out.println("==>" + qName);
             content.setLength(0); // Reset content buffer
             if (qName.equals("Item")) {
+                Debug.logInfo("======== Processing Item No. : " + (ItemNumberTrack = ItemNumberTrack + 1)
+                        + "==================", MODULE);
                 currentItem = new Item();
                 currentItem.maintenanceType = attributes.getValue("MaintenanceType");
                 System.out.println("Item MaintenanceType: " + currentItem.maintenanceType);
@@ -1029,6 +1149,7 @@ public class ProcessPIESXMLService {
                 minOrderUOM = attributes.getValue("UOM"); // Capture UOM attribute
                 characterBuffer.setLength(0); // Clear buffer for quantity value
             }
+
             if (qName.equalsIgnoreCase("Group")) {
                 isGroup = true;
             } else if (qName.equalsIgnoreCase("SubGroup")) {
@@ -1041,6 +1162,108 @@ public class ProcessPIESXMLService {
                 isPartTerminologyID = true;
             } else if (qName.equalsIgnoreCase("VMRSCode")) {
                 isVMRSCode = true;
+            }
+
+            if (qName.equalsIgnoreCase("Pricing")) {
+                priceType = attributes.getValue("PriceType"); // Get PriceType
+            }
+
+            if (qName.equalsIgnoreCase("Price")) {
+                isPrice = true;
+                uom = attributes.getValue("UOM"); // Get Price UOM
+            }
+
+            if (qName.equalsIgnoreCase("PriceBreak")) {
+                isPriceBreak = true;
+            }
+
+            if (qName.equalsIgnoreCase("CurrencyCode")) {
+                isCurrencyCode = true; // Set flag for capturing CurrencyCode
+            }
+
+            if (qName.equalsIgnoreCase("EffectiveDate")) {
+                isEffectiveDate = true; // Set flag for capturing EffectiveDate
+            }
+
+            if (qName.equalsIgnoreCase("ExpirationDate")) {
+                isExpirationDate = true; // Set flag for capturing ExpirationDate
+            }
+
+            if (qName.equalsIgnoreCase("DigitalFileInformation")) {
+                maintenanceType = attributes.getValue("MaintenanceType");
+                assetID = attributes.getValue("AssetID");
+                languageCode = attributes.getValue("LanguageCode");
+            }
+
+            if (qName.equalsIgnoreCase("AssetDimensions")) {
+                uom = attributes.getValue("UOM");
+            }
+
+            if (qName.equalsIgnoreCase("AssetDate")) {
+                assetDateType = attributes.getValue("assetDateType");
+            }
+
+            // Set flags for other tags
+            if (qName.equalsIgnoreCase("FileName")) {
+                isFileName = true;
+            }
+            if (qName.equalsIgnoreCase("AssetType")) {
+                isAssetType = true;
+            }
+            if (qName.equalsIgnoreCase("FileType")) {
+                isFileType = true;
+            }
+            if (qName.equalsIgnoreCase("Representation")) {
+                isRepresentation = true;
+            }
+            if (qName.equalsIgnoreCase("FileSize")) {
+                isFileSize = true;
+            }
+            if (qName.equalsIgnoreCase("Resolution")) {
+                isResolution = true;
+            }
+            if (qName.equalsIgnoreCase("ColorMode")) {
+                isColorMode = true;
+            }
+            if (qName.equalsIgnoreCase("Background")) {
+                isBackground = true;
+            }
+            if (qName.equalsIgnoreCase("OrientationView")) {
+                isOrientationView = true;
+            }
+            if (qName.equalsIgnoreCase("AssetHeight")) {
+                isAssetHeight = true;
+            }
+            if (qName.equalsIgnoreCase("AssetWidth")) {
+                isAssetWidth = true;
+            }
+            if (qName.equalsIgnoreCase("FilePath")) {
+                isFilePath = true;
+            }
+            if (qName.equalsIgnoreCase("URI")) {
+                isURI = true;
+            }
+            if (qName.equalsIgnoreCase("Country")) {
+                isCountry = true;
+            }
+            // Handle 360-specific elements
+            if (qName.equalsIgnoreCase("Frame")) {
+                isFrame = true;
+            }
+            if (qName.equalsIgnoreCase("TotalFrames")) {
+                isTotalFrames = true;
+            }
+            if (qName.equalsIgnoreCase("Plane")) {
+                isPlane = true;
+            }
+            if (qName.equalsIgnoreCase("Hemisphere")) {
+                isHemisphere = true;
+            }
+            if (qName.equalsIgnoreCase("Plunge")) {
+                isPlunge = true;
+            }
+            if (qName.equalsIgnoreCase("TotalPlanes")) {
+                isTotalPlanes = true;
             }
 
         }
@@ -1149,6 +1372,54 @@ public class ProcessPIESXMLService {
                         + currentItem.minOrderUOM);
                 insideMinimumOrderQuantity = false;
             }
+
+            if (qName.equals("Pricing")) {
+                Price p = new Price();
+                p.priceValue = priceValue;
+                p.priceType = priceType;
+                p.priceBreak = priceBreakValue;
+                p.uom = uomValue;
+                p.currencyCode = currencyCode;
+                p.effectiveDate = effectiveDate;
+                p.expirationDate = expirationDate;
+                currentItem.prices.add(p);
+                System.out.println(p);
+            }
+
+            if (qName.equals("DigitalFileInformation")) {
+                DigitalFileInformation digitalFile = new DigitalFileInformation();
+                digitalFile.maintenanceType = maintenanceType;
+                digitalFile.assetID = assetID;
+                digitalFile.languageCode = languageCode;
+                digitalFile.fileName = fileName;
+                digitalFile.assetType = assetType;
+                digitalFile.fileType = fileType;
+                digitalFile.representation = representation;
+                digitalFile.fileSize = fileSize;
+                digitalFile.resolution = resolution;
+                digitalFile.colorMode = colorMode;
+                digitalFile.background = background;
+                digitalFile.orientationView = orientationView;
+                digitalFile.uom = uom;
+                digitalFile.assetHeight = assetHeight;
+                digitalFile.assetWidth = assetWidth;
+                digitalFile.filePath = filePath;
+                digitalFile.uri = uri;
+                digitalFile.assetDateType = assetDateType;
+                digitalFile.assetDate = assetDate;
+                digitalFile.country = country;
+                digitalFile.frame = frame;
+                digitalFile.totalFrames = totalFrames;
+                digitalFile.plane = plane;
+                digitalFile.hemisphere = hemisphere;
+                digitalFile.plunge = plunge;
+                digitalFile.totalPlanes = totalPlanes;
+
+                // Add the digitalFile to the list or process it as needed
+                currentItem.digitalAssets.add(digitalFile);
+                System.out.println(digitalFile);
+            }
+
         }
 
         @Override
@@ -1156,7 +1427,8 @@ public class ProcessPIESXMLService {
             if (insideDescriptionElement || insideEXPIElement || insidePAElement || insideItemLevelGTIN
                     || insideHazardousMaterialCode || insideBaseItemID || insidePartNumber || insideBrandAAIAID
                     || insideBrandLabel || insideVMRSBrandID || insideQuantityPerApplication || insideItemEffectiveDate
-                    || insideAvailableDate || insideMinimumOrderQuantity) {
+                    || insideAvailableDate || insideMinimumOrderQuantity || isExpirationDate || isEffectiveDate
+                    || isCurrencycode) {
                 // Append characters to the buffer while inside <Description>
                 characterBuffer.append(new String(ch, start, length));
             }
@@ -1190,6 +1462,117 @@ public class ProcessPIESXMLService {
                 System.out.println("VMRS Code: " + new String(ch, start, length));
                 isVMRSCode = false;
             }
+
+            String value = new String(ch, start, length).trim(); // Get trimmed value
+
+            if (isCurrencyCode) {
+                currencyCode = value;
+                isCurrencyCode = false;
+            }
+
+            if (isEffectiveDate) {
+                effectiveDate = value;
+                isEffectiveDate = false;
+            }
+
+            if (isExpirationDate) {
+                expirationDate = value;
+                isExpirationDate = false;
+            }
+
+            if (isPrice) {
+                priceValue = value;
+                isPrice = false;
+            }
+
+            if (isPriceBreak) {
+                priceBreakValue = value;
+                isPriceBreak = false;
+            }
+
+            if (isFileName) {
+                fileName = value;
+                isFileName = false;
+            }
+            if (isAssetType) {
+                assetType = value;
+                isAssetType = false;
+            }
+            if (isFileType) {
+                fileType = value;
+                isFileType = false;
+            }
+            if (isRepresentation) {
+                representation = value;
+                isRepresentation = false;
+            }
+            if (isFileSize) {
+                fileSize = Integer.parseInt(value);
+                isFileSize = false;
+            }
+            if (isResolution) {
+                resolution = value;
+                isResolution = false;
+            }
+            if (isColorMode) {
+                colorMode = value;
+                isColorMode = false;
+            }
+            if (isBackground) {
+                background = value;
+                isBackground = false;
+            }
+            if (isOrientationView) {
+                orientationView = value;
+                isOrientationView = false;
+            }
+            if (isAssetHeight) {
+                assetHeight = value;
+                isAssetHeight = false;
+            }
+            if (isAssetWidth) {
+                assetWidth = value;
+                isAssetWidth = false;
+            }
+            if (isFilePath) {
+                filePath = value;
+                isFilePath = false;
+            }
+            if (isURI) {
+                uri = value;
+                isURI = false;
+            }
+            if (isCountry) {
+                country = value;
+                isCountry = false;
+            }
+
+            // 360-specific elements
+            if (isFrame) {
+                frame = value;
+                isFrame = false;
+            }
+            if (isTotalFrames) {
+                totalFrames = value;
+                isTotalFrames = false;
+            }
+            if (isPlane) {
+                plane = value;
+                isPlane = false;
+            }
+            if (isHemisphere) {
+                hemisphere = value;
+                isHemisphere = false;
+            }
+            if (isPlunge) {
+                plunge = value;
+                isPlunge = false;
+            }
+            if (isTotalPlanes) {
+                totalPlanes = value;
+                isTotalPlanes = false;
+            }
+
             content.append(ch, start, length);
         }
 
@@ -1208,11 +1591,11 @@ public class ProcessPIESXMLService {
 
         Debug.log("======== Inside processPIESXML service ==================", MODULE);
 
-        // String filePath =
-        // "/home/hardik/Desktop/OFBiz_Training/ofbiz-framework/plugins/HotWax-Systems-Training/src/main/java/com/companyname/HotWax_Systems_Training/services/ZF_Sachs_Drivetrain_PIES_2024-09-27_FULL_2024-09-30_17_15_59.848.xml";
+        String filePath = "/home/hardik/Desktop/OFBiz_Training/ofbiz-framework/plugins/HotWax-Systems-Training/src/main/java/com/companyname/HotWax_Systems_Training/services/ZF_Sachs_Drivetrain_PIES_2024-09-27_FULL_2024-09-30_17_15_59.848.xml";
         // String filePath =
         // "/home/hardik/Desktop/OFBiz_Training/ofbiz-framework/plugins/HotWax-Systems-Training/src/main/java/com/companyname/HotWax_Systems_Training/services/testXMLFile004.xml";
-        String filePath = "/home/hardik/Desktop/OFBiz_Training/ofbiz-framework/plugins/HotWax-Systems-Training/src/main/java/com/companyname/HotWax_Systems_Training/services/Items.xml";
+        // String filePath =
+        // "/home/hardik/Desktop/OFBiz_Training/ofbiz-framework/plugins/HotWax-Systems-Training/src/main/java/com/companyname/HotWax_Systems_Training/services/Items.xml";
 
         Debug.log("======== Parsing XML using SAX Parser ==================", MODULE);
 
@@ -1234,7 +1617,3 @@ public class ProcessPIESXMLService {
     }
 
 }
-
-// The buffer get's depleted (or "Consumed" ) when you read from it.
-// when trying to delete the content I first need to delete it's 3 reference in
-// contenKeyword table.
