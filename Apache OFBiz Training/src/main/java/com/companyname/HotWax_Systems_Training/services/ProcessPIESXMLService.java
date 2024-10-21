@@ -1,5 +1,6 @@
 package com.companyname.HotWax_Systems_Training.services;
 
+import clojure.lang.Obj;
 import org.apache.ofbiz.base.util.*;
 import org.apache.ofbiz.entity.GenericValue;
 import org.apache.ofbiz.service.DispatchContext;
@@ -15,6 +16,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -779,7 +781,7 @@ public class ProcessPIESXMLService {
 
     static class ItemHandler extends DefaultHandler {
 
-        private static int ItemNumberTrack = 0;
+        private int ItemNumberTrack = 0;
         private boolean insideDescriptionElement = false; // Flag to know when you're inside the <Description> element
 
         private boolean insideEXPIElement = false; // Flag to know when you're inside the <Description> element
@@ -793,25 +795,25 @@ public class ProcessPIESXMLService {
         private boolean insideVMRSBrandID = false; // Flag for <VMRSBrandID>
         private boolean insideQuantityPerApplication = false; // Flag for <QuantityPerApplication>
 
-        private boolean insideAvailableDate = false; // Flag to know <AvailableDate>
-        private boolean insideMinimumOrderQuantity = false; // Flag to know <MinimumOrderQuantity>
-        private boolean isGroup = false; // Flag to know <Group>
-        private boolean isSubGroup = false; // Flag to know <SubGroup>
-        private boolean isAAIAProductCategoryCode = false; // Flag to know <AAIAProductCategoryCode>
-        private boolean isUNSPSC = false; // Flag to know <UNSPSC>
-        private boolean isPartTerminologyID = false; // Flag to know <PartTerminologyID>
-        private boolean isVMRSCode = false; // Flag to know <VMRSCode>
-        private String minOrderUOM; // To store UOM for <MinimumOrderQuantity>
+        private boolean insideAvailableDate = false; // Flag for <AvailableDate>
+        private boolean insideMinimumOrderQuantity = false; // Flag for <MinimumOrderQuantity>
+        private boolean isGroup = false;
+        private boolean isSubGroup = false;
+        private boolean isAAIAProductCategoryCode = false;
+        private boolean isUNSPSC = false;
+        private boolean isPartTerminologyID = false;
+        private boolean isVMRSCode = false;
+        private String minOrderUOM = ""; // To store UOM for <MinimumOrderQuantity>
 
         private StringBuilder characterBuffer = new StringBuilder();
         private StringBuilder content = new StringBuilder();
         private Item currentItem;
         private List<Item> items = new ArrayList<>();
-        private String uomValue;
+        private String uomValue = "";
         private boolean insideItemEffectiveDate = false;
-        private String currencyCodeValue;
+        private String currencyCodeValue = "";
         private boolean isPriceBreak = false;
-        private String priceValue;
+        private String priceValue = "";
         private String priceBreakValue;
         private String effectiveDate;
         private String expirationDate;
@@ -872,6 +874,15 @@ public class ProcessPIESXMLService {
         private String uri;
         private boolean isURI;
 
+        private DispatchContext dctx;
+
+        Map<String, Object> context;
+
+        public ItemHandler(DispatchContext dctx, Map<String, Object> context) {
+            this.dctx = dctx;
+            this.context = context;
+        }
+
         // Inner class to represent Item data
         class Item {
             public String uom;
@@ -895,10 +906,9 @@ public class ProcessPIESXMLService {
             List<Price> prices = new ArrayList<>();
             List<ProductAttribute> productAttributes = new ArrayList<>();
             List<DigitalFileInformation> digitalAssets = new ArrayList<>();
-
         }
 
-        // Inner classes for nested structures of <Description> tag
+        // Inner classes for nested structures
         public class Description {
             String languageCode;
             String maintenanceType;
@@ -1049,8 +1059,9 @@ public class ProcessPIESXMLService {
                 throws SAXException {
             content.setLength(0); // Reset content buffer
             if (qName.equals("Item")) {
-                Debug.logInfo("======== Processing Item No. : " + (ItemNumberTrack = ItemNumberTrack + 1)
-                        + "==================", MODULE);
+                ItemNumberTrack++; // Increment the item number first
+                System.out.println("======== Processing Item No. : " + ItemNumberTrack + " =================="); // Debug
+                                                                                                                 // output
                 currentItem = new Item();
                 currentItem.maintenanceType = attributes.getValue("MaintenanceType");
                 System.out.println("Item MaintenanceType: " + currentItem.maintenanceType);
@@ -1152,15 +1163,21 @@ public class ProcessPIESXMLService {
 
             if (qName.equalsIgnoreCase("Group")) {
                 isGroup = true;
-            } else if (qName.equalsIgnoreCase("SubGroup")) {
+            }
+
+            if (qName.equalsIgnoreCase("SubGroup")) {
                 isSubGroup = true;
-            } else if (qName.equalsIgnoreCase("AAIAProductCategoryCode")) {
+            }
+            if (qName.equalsIgnoreCase("AAIAProductCategoryCode")) {
                 isAAIAProductCategoryCode = true;
-            } else if (qName.equalsIgnoreCase("UNSPSC")) {
+            }
+            if (qName.equalsIgnoreCase("UNSPSC")) {
                 isUNSPSC = true;
-            } else if (qName.equalsIgnoreCase("PartTerminologyID")) {
+            }
+            if (qName.equalsIgnoreCase("PartTerminologyID")) {
                 isPartTerminologyID = true;
-            } else if (qName.equalsIgnoreCase("VMRSCode")) {
+            }
+            if (qName.equalsIgnoreCase("VMRSCode")) {
                 isVMRSCode = true;
             }
 
@@ -1420,6 +1437,11 @@ public class ProcessPIESXMLService {
                 System.out.println(digitalFile);
             }
 
+            if (qName.equals("Item")) {
+                characterBuffer.setLength(0);
+                Debug.logInfo("======== END Processing Item No. : " + ItemNumberTrack + "==================", MODULE);
+            }
+
         }
 
         @Override
@@ -1591,23 +1613,41 @@ public class ProcessPIESXMLService {
 
         Debug.log("======== Inside processPIESXML service ==================", MODULE);
 
-        String filePath = "/home/hardik/Desktop/OFBiz_Training/ofbiz-framework/plugins/HotWax-Systems-Training/src/main/java/com/companyname/HotWax_Systems_Training/services/ZF_Sachs_Drivetrain_PIES_2024-09-27_FULL_2024-09-30_17_15_59.848.xml";
-        // String filePath =
-        // "/home/hardik/Desktop/OFBiz_Training/ofbiz-framework/plugins/HotWax-Systems-Training/src/main/java/com/companyname/HotWax_Systems_Training/services/testXMLFile004.xml";
-        // String filePath =
-        // "/home/hardik/Desktop/OFBiz_Training/ofbiz-framework/plugins/HotWax-Systems-Training/src/main/java/com/companyname/HotWax_Systems_Training/services/Items.xml";
+        // Get the input file path from the context
+        String InputFilePath = String.valueOf(context.get("filePath"));
 
-        Debug.log("======== Parsing XML using SAX Parser ==================", MODULE);
+        // Check if the file path ends with .xml (case-insensitive) and append if
+        // necessary
+        if (!InputFilePath.toLowerCase().endsWith(".xml")) {
+            InputFilePath += ".xml";
+        }
+
+        // Construct the full file path
+        String filePath = "/home/hardik/Desktop/OFBiz_Training/ofbiz-framework/plugins/HotWax-Systems-Training/src/main/java/com/companyname/HotWax_Systems_Training/services/InputXMLFiles/"
+                + InputFilePath;
+
+        // Create a File object to check if the file exists
+        File file = new File(filePath);
+
+        // Validate if the file exists
+        if (!file.exists()) {
+            // Return error if the file is not found
+            return ServiceUtil.returnError("File not found: " + InputFilePath);
+        }
+
+        Debug.log(context + "======== Parsing XML using SAX Parser ==================", MODULE);
 
         // extractDataFromXML(dctx, document, context);
 
         try {
+
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
-            ItemHandler handler = new ItemHandler();
+            ItemHandler handler = new ItemHandler(dctx, context);
             saxParser.parse(filePath, handler);
         } catch (Exception e) {
             e.printStackTrace();
+            return ServiceUtil.returnError(e.getMessage());
         }
 
         Debug.log("======== Successfully Parsed XML ==================", MODULE);

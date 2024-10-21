@@ -79,6 +79,20 @@
                         <AssetWidth>1500</AssetWidth>
                     </AssetDimensions>
                 </DigitalFileInformation>
+                <DigitalFileInformation MaintenanceType="A" LanguageCode="EN">
+                <FileName>K0016-01.jpg</FileName>
+                <AssetType>P04</AssetType>
+                <FileType>JPG</FileType>
+                <Representation>A</Representation>
+                <Resolution>300</Resolution>
+                <ColorMode>RGB</ColorMode>
+                <Background>WHI</Background>
+                <OrientationView>ANG</OrientationView>
+                <AssetDimensions UOM="PX">
+                    <AssetHeight>1500</AssetHeight>
+                    <AssetWidth>1500</AssetWidth>
+                </AssetDimensions>
+            </DigitalFileInformation>
             </DigitalAssets>
         </Item>
         <Item MaintenanceType="A">

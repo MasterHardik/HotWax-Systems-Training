@@ -1,0 +1,351 @@
+[33mcommit c5b7ecf5be91cf7a5ef4dde3e79adebf02c91418[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Mon Oct 21 10:53:22 2024 +0530
+
+    Implemented complete code to retrieve all the values from the PIES XML properly
+
+[33mcommit f7db8f2984a4e21d3ba77b47faa3fc0213d28eda[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Fri Oct 18 20:13:46 2024 +0530
+
+    Augmented code for few other elements including gtin , product attribute , codes..
+
+[33mcommit 3f164592b742256491e209c146ba92413fa2f02c[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Fri Oct 18 13:02:56 2024 +0530
+
+    Implemented SAX Parser for Item Description
+
+[33mcommit 12821bfcd400c3741228685c8dadad30ba8c830d[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Wed Oct 16 20:02:32 2024 +0530
+
+    Few Optimizations
+
+[33mcommit f324e9cc5a3efcf15cd3d20525620759f0adb5a5[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Mon Oct 14 20:52:46 2024 +0530
+
+    removed .getNextSeqId() coz it's generated in services as well.
+
+[33mcommit 6cf3bed3e2abb0bb980779347a0e8cfd35cca974[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Fri Oct 11 13:15:07 2024 +0530
+
+    Few Changes and code optimization passing required data in params instead of whole itemElement , remove java.util.*
+
+[33mcommit 08b76894551442260a3b182dd44d5d5985747df0[m[33m ([m[1;33mtag: v2.0[m[33m)[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Thu Oct 10 20:16:12 2024 +0530
+
+    Udpated methods and all delegator.create([GenericEntity_Name]) with pre-defined framework's services
+
+[33mcommit bed54bbc5ea6b789d7c8cdeede9b98331eea6ce6[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Thu Oct 10 15:37:17 2024 +0530
+
+    Updated code with more frameworks services like createProduct , createProductPrice , createProductFeature
+
+[33mcommit c33cfcd2959618732196dc9ca39f2e251d26a3fc[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Thu Oct 10 13:10:52 2024 +0530
+
+    Replaced few methods with pre-defined services of OFBiz framework
+
+[33mcommit 4d13b9604a2e869b7c0416e36bc98737caf91b8b[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Wed Oct 9 20:29:07 2024 +0530
+
+    updated CSV Import service, using predefined framwork services
+
+[33mcommit ddeae7e58dd287b5b3732250d08313473a085500[m[33m ([m[1;33mtag: v1.0[m[33m)[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Wed Oct 9 11:11:40 2024 +0530
+
+    Refactor ProcessPIESXMLService to implement multithreading for XML item processing
+    
+    - Introduced ExecutorService to enable concurrent processing of XML items.
+    - Extracted item processing logic into a separate method for better organization.
+    - Improved overall execution speed by parallelizing item processing, while maintaining the existing workflow.
+
+[33mcommit 11eaf146d6fcd265cd6257cdce9fcbaf10ab5f55[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Wed Oct 9 10:05:31 2024 +0530
+
+    Shopify API documentation
+
+[33mcommit e901e0e2b23a5fa144838aa5f7ea5ebb7d2e1020[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Tue Oct 8 18:42:47 2024 +0530
+
+    created functions for  VMRS & BRAND code's and ID's
+
+[33mcommit af80de1397077184838d3713874d9a35b8f37861[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Mon Oct 7 15:56:28 2024 +0530
+
+    created storeDigitalAsset() for the Digitial File Information type of xml detail
+
+[33mcommit 765d37e3bd53e23b8ef140190dc3da67ed48bf52[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Mon Oct 7 11:58:52 2024 +0530
+
+    implmented method for productAttribute detail
+
+[33mcommit 71b44fbd15c55ca0e215f92835bad128c70786c5[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Tue Oct 1 17:21:49 2024 +0530
+
+    Implement processCSVService with parallel processing
+    
+    - Added transaction timeout to processCSVService for better handling of long-running operations.
+    - Refactored the CSV processing logic to use parallel streams, improving performance.
+    - Included error handling for individual line processing to log issues without stopping the entire process.
+
+[33mcommit 84a879779eaf4c811784656cd8726cd23f25ef13[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Fri Sep 27 18:42:23 2024 +0530
+
+    Fixed: Update uiLabels, Groovy logic, and ListMasterTable.ftl for naming conventions and structural improvements.
+
+[33mcommit eeadbfa14401e3c54b43d1f7056f01fd4d1fbebe[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Fri Sep 27 15:22:45 2024 +0530
+
+    Update ListMasterTable form structure
+    
+    - Adjusted ListMasterTable to align with ListFindSurvey format.
+    - Changed service mapping to utilize parameters for input fields.
+    - Enhanced hyperlink for masterTableId field for better navigation.
+    - Improved comments for clarity.
+
+[33mcommit e9e5b642ae6dd0f3e934d870fd413f13a8b6357e[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Thu Sep 26 12:55:43 2024 +0530
+
+    Refactor entity definition and update CSV processing services
+    
+    - Updated entity model to include a new column
+    - Adjusted ProcessCSVServices to align with the updated entity structure
+
+[33mcommit f6073472a8a4011a9ed4b7b477050f7c830443f3[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Wed Sep 25 20:16:19 2024 +0530
+
+    Corrected few issues in the Process CSV & method parameter
+
+[33mcommit 39400bf8ea54389ceb5bd050f1f82d945cb6108a[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Wed Sep 25 18:53:39 2024 +0530
+
+    Import & parse CSV logc + Created product price upsert service
+
+[33mcommit 3ffc0ef9888ab10dc9ad83783fdf07e60d299581[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Thu Sep 19 19:36:35 2024 +0530
+
+    created createProductPriceType() , storePrices() , storeExtendedProductInformation() methods
+
+[33mcommit c5777ed4de9bfba401f7c97b77a67e891b9e6715[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Thu Sep 19 11:59:52 2024 +0530
+
+    created method to save the description
+
+[33mcommit b30ab3031934fdecbc675d1a6e831b6f5c3615ec[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Wed Sep 18 20:36:52 2024 +0530
+
+    created methods to inject the xml data into the entities using delegator object
+
+[33mcommit d70c8e36aa81d1b07f6464040a5742d3eb0fe0a4[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Wed Sep 18 12:13:24 2024 +0530
+
+    Updated: ProcessPIESXMLService.java InputStream from ByteStream > Document > Extracting Data from it + Removed: Extra test files
+
+[33mcommit 52155dbdf735f87e55fdf1d1a16f3971a3fc5f84[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Tue Sep 17 19:50:07 2024 +0530
+
+    updated the service.xml for the processXML Service
+
+[33mcommit 37ebe603cb6291e232ec500f59ec91c14f3e6a25[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Tue Sep 17 19:12:17 2024 +0530
+
+    XML File Parsing v0.1 + Login Ftl page practice code
+
+[33mcommit 309b29d7ca21714af00d445201ee8beee0b40dae[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Fri Aug 30 21:01:15 2024 +0530
+
+    Introduced: userLogin()
+
+[33mcommit b8df428d36d412318cc98169d943cf96aae60fc4[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Tue Aug 27 11:47:03 2024 +0530
+
+    Created Custom Decorator + custom login page adding to menu-item and making a masterLogin.java simpleLogin() method and using inbuild uesrLogin service in it
+
+[33mcommit 32a38c02d0792fb72f0da19b7b919cb59f1677f1[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Fri Aug 23 16:00:23 2024 +0530
+
+    create AddMasterTAble.ftl & ListMasterTable.ftl added in Menus
+
+[33mcommit 5ffe92e575502dbdc175f14d75d5f234a42ec769[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Thu Aug 22 20:18:50 2024 +0530
+
+    Created: MasterTableEvents.java changed the AddForm target to createMasterTableEvent
+
+[33mcommit 681544712ccc2371c082eec609205a7088c4118e[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Thu Aug 22 19:34:04 2024 +0530
+
+    removed: MAsterTableServies.java
+
+[33mcommit fcf9ddf51ea0b546c960fabe9f3e7c975a02f42c[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Thu Aug 22 19:33:09 2024 +0530
+
+    Updated: services.xml
+
+[33mcommit 765945ac380c33ad68894dfdea1cdf01d543612b[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Thu Aug 22 19:30:38 2024 +0530
+
+    Created groovy service
+
+[33mcommit 3612c134dd94023a43fd4e2b8916325f3e3db254[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Thu Aug 22 17:55:46 2024 +0530
+
+    Created java service (engine=java)
+
+[33mcommit 941448af527ecca5ee972da7bdb32a02d8567c87[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Thu Aug 22 15:39:08 2024 +0530
+
+    Updated: Forms & Added the find option in Menu item
+
+[33mcommit 0bbc4f1dcb4870d293d403e0fb7ddb96f5bd6a61[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Wed Aug 21 17:13:27 2024 +0530
+
+    Added: SingleFind & ListFind form +  added in Screens & made request and view mapping in controller
+
+[33mcommit 1d5135bf089e26b432b2865e10dc029d326c8c5b[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Tue Aug 20 19:43:16 2024 +0530
+
+    Added: request uri in Controller
+
+[33mcommit a95b0e0ebcfb48115ded77deecbf45670145f5e6[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Tue Aug 20 15:54:30 2024 +0530
+
+    Added: MasterTableCreate Form
+
+[33mcommit 6431209a5f4837fdb7ab33941091a83e816d4e97[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Tue Aug 20 14:43:22 2024 +0530
+
+    Created: Creat  service using  engine
+
+[33mcommit 6b15bd8426dbd07e1ff075a93b0336711821c9f8[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Tue Aug 20 14:42:07 2024 +0530
+
+    Updated: MasterTableTypeId attribute
+
+[33mcommit 76bffd84e3e0ff371ebdf15c095400c0c6e8e747[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Tue Aug 20 12:24:07 2024 +0530
+
+    Adding and loading demo data into the MasterTable
+
+[33mcommit c019925bd1971f8638f9a87449fdb69aadb008d2[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Tue Aug 20 12:06:46 2024 +0530
+
+    Updated: entitydef/entitymodel MasterTable Entity
+
+[33mcommit 7e9b60062ff8d7af31e407762e57b7619d5c55ee[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Thu Aug 8 13:08:00 2024 +0530
+
+    Renamed: FTL.md -> README.md
+
+[33mcommit 2d4c51b63a58e950a2d4c012278a9d5b05ecc360[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Thu Aug 8 13:06:00 2024 +0530
+
+    Added: Research & Learning folder & FTL.md file
+
+[33mcommit 670ac8231ada989e8b19696f81606e6ecccdfc0f[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Wed Aug 7 20:36:06 2024 +0530
+
+    Added: entityModel.xml file
+
+[33mcommit 3ffc03c9c59079d478b7731b8fd37b9a36960a9e[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Tue Aug 6 20:05:17 2024 +0530
+
+    prepare & <include-screen.. in commonScreens
+
+[33mcommit 184d75e5b6729a432ca9c47670532337694fe843[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Tue Aug 6 12:53:25 2024 +0530
+
+    Added: the initial plugin files
+
+[33mcommit 67d34a8c7ac506430aa4f52d07760a7c06945fc5[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Fri Aug 2 11:09:14 2024 +0530
+
+    Added: Apache OFBiz repo
+
+[33mcommit 16d71e5089db7582a03acf466eac691d4ebe6695[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Fri Aug 2 11:00:30 2024 +0530
+
+    Added: Apache OFBiz repo
+
+[33mcommit 0063933b6bad1a78a698b8cfefc369535fbeb539[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Mon Jul 8 15:57:39 2024 +0530
+
+    Uploaded all party.md images
+
+[33mcommit 52ddc3e55203a7457b3ef3c214ad9f6261ce208e[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Fri Jul 5 21:42:49 2024 +0530
+
+    Added Images for party.md
+
+[33mcommit 2fc76c9f9307ddba8f1b208db178e6bcc0305bc2[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Fri Jul 5 20:53:16 2024 +0530
+
+    added images for product.md
+
+[33mcommit 3bc803c689ab9eead7269af7052f265b18cd761a[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Fri Jul 5 19:04:20 2024 +0530
+
+    uploaded images for order.md
+
+[33mcommit 4c1a2cb29af1f778f222e70618e384459d74b6aa[m
+Author: MasterHardik <hardikchouhan1901@gmail.com>
+Date:   Fri Jul 5 12:35:07 2024 +0530
+
+    Added party,product,facility and order  Assignment .md files
+
+[33mcommit f2307898037cb8fbe8319c44d04f8d05aa44ef80[m
+Author: Hardik Chouhan <96509240+MasterHardik@users.noreply.github.com>
+Date:   Wed Jun 26 11:36:12 2024 +0530
+
+    Initial commit
