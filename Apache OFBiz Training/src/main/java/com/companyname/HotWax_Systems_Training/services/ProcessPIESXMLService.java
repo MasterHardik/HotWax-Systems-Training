@@ -36,29 +36,6 @@ public class ProcessPIESXMLService {
 
     private static final String MODULE = ProcessPIESXMLService.class.getName();
 
-    private static String getElementTextContent(Element parent, String tagName) {
-        NodeList nodeList = parent.getElementsByTagName(tagName);
-        return (nodeList.getLength() > 0) ? nodeList.item(0).getTextContent() : ""; // or return a default value
-    }
-
-    public static InputStream byteBufferToInputStream(ByteBuffer buffer) {
-        byte[] bytes = new byte[buffer.remaining()];
-        buffer.get(bytes);
-        return new ByteArrayInputStream(bytes);
-    }
-
-
-    public static Document parseXML(InputStream inputStream) {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        try {
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            return builder.parse(inputStream);
-        } catch (ParserConfigurationException | SAXException | IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     /* Small functions for the injecting the data into the fields for our PIES*/
 
     private static void createHazmatFeature(String hazardousMaterialCode, String productId, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
@@ -274,7 +251,6 @@ public class ProcessPIESXMLService {
         );
         dctx.getDispatcher().runSync("applyFeatureToProduct", addFeatureToProdParams);
         Debug.logInfo("Associated: " + productId + "<==to==>" + productFeatureId + " | Stored with productFeatureId: " + result.get("productFeatureId") + ", expiCode: " + expiCode, MODULE);
-//        }
         Debug.logInfo("Extended Product Information stored successfully for productId: " + productId, MODULE);
     }
 
@@ -306,7 +282,6 @@ public class ProcessPIESXMLService {
             Debug.log("ProductAttribute already exists: " + attributeId + " for productId: " + partNumber, MODULE);
         }
     }
-
 
     private static void storeDigitalAssets(String partNumber, String assetId, String languageCode, String fileName, String fileType, String representation, String fileSize, String resolution, String colorMode, String background, String orientationView, String filePath, String uri, String country, String frame, String totalFrames, String plane, String plunge, String totalPlanes, String assetHeight, String assetWidth, String uom, String assetDate, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         Debug.logInfo(filePath, MODULE);
@@ -440,7 +415,7 @@ public class ProcessPIESXMLService {
         if (UtilValidate.isNotEmpty(existingCategory)) {
             // Log that the category already exists
             Debug.log("Product category with ID " + productCategoryId + " already exists. Skipping creation.", MODULE);
-            return; // Skip creating the category
+            return;
         }
 
         // Create the new product category since it doesn't exist
@@ -452,7 +427,6 @@ public class ProcessPIESXMLService {
         );
         Map<String, Object> createProductCategoryResult = dctx.getDispatcher().runSync("createProductCategory", categoryMap);
     }
-
 
     // Helper method to link a product to a category (ProductCategoryMember)
     private static void linkProductToCategory(String productId, String productCategoryId, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
@@ -480,10 +454,7 @@ public class ProcessPIESXMLService {
         }
     }
 
-    private static void createIdentifiers(String brandAAIAID, String brandLabel, String vmrsBrandId, String UNSPSC, String vmrsCode, String manufacturerGroup, String manufacturerSubGroup, String partTerminologyId, String aaiaProductCategoryCode, String productId, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException,
-
-            GenericServiceException {
-
+    private static void createIdentifiers(String brandAAIAID, String brandLabel, String vmrsBrandId, String UNSPSC, String vmrsCode, String manufacturerGroup, String manufacturerSubGroup, String partTerminologyId, String aaiaProductCategoryCode, String productId, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
         // Create Product Category for BrandAAIAID
         if (UtilValidate.isNotEmpty(brandAAIAID)) {
             createProductCategory(brandAAIAID, "BRAND", brandLabel, dctx, userLogin); // Using BrandLabel as description
@@ -530,79 +501,26 @@ public class ProcessPIESXMLService {
         Debug.log(brandAAIAID, brandLabel, vmrsBrandId, UNSPSC, vmrsCode, manufacturerGroup, manufacturerSubGroup, partTerminologyId, aaiaProductCategoryCode);
     }
 
+    /*=======  END of Services Definition ======== */
 
-    /*=======  END ======== */
     static class ItemHandler extends DefaultHandler {
 
         private int ItemNumberTrack = 0;
-        private boolean insideDescriptionElement = false; // Flag to know when you're inside the <Description> element
-
-        private boolean insideEXPIElement = false; // Flag to know when you're inside the <Description> element
-        private boolean insidePAElement = false; // Flag to know when you're inside the <Description> element
-        private boolean insideItemLevelGTIN = false; // Flag to know when you're inside the <Description> element
-        private boolean insideHazardousMaterialCode = false; // Flag for <HazardousMaterialCode>
-        private boolean insideBaseItemID = false; // Flag for <BaseItemID>
-        private boolean insidePartNumber = false; // Flag for <PartNumber>
-        private boolean insideBrandAAIAID = false; // Flag for <BrandAAIAID>
-        private boolean insideBrandLabel = false; // Flag for <BrandLabel>
-        private boolean insideVMRSBrandID = false; // Flag for <VMRSBrandID>
-        private boolean insideQuantityPerApplication = false; // Flag for <QuantityPerApplication>
-
-        private boolean insideAvailableDate = false;  // Flag for <AvailableDate>
-        private boolean insideMinimumOrderQuantity = false;  // Flag for <MinimumOrderQuantity>
-        private boolean isGroup = false;
-        private boolean isSubGroup = false;
-        private boolean isAAIAProductCategoryCode = false;
-        private boolean isUNSPSC = false;
-        private boolean isPartTerminologyID = false;
-        private boolean isVMRSCode = false;
-        private String minOrderUOM = ""; // To store UOM for <MinimumOrderQuantity>
-
+        private String minOrderUOM;
         private StringBuilder characterBuffer = new StringBuilder();
-        private StringBuilder content = new StringBuilder();
         private Item currentItem;
-        private List<Item> items = new ArrayList<>();
-        private String uomValue = "";
-        private boolean insideItemEffectiveDate = false;
-        private String currencyCodeValue = "";
-        private boolean isPriceBreak = false;
-        private String priceValue = "";
+        private String uomValue;
+        private String priceValue;
         private String priceBreakValue;
         private String effectiveDate;
         private String expirationDate;
-        private boolean isCurrencycode = false;
-        private boolean isEffectiveDate = false;
-        private boolean isExpirationDate = false;
-        private boolean isCurrencyCode = false;
-        private boolean insidePriceValue = false;
         private String priceType;
-        private boolean isPrice;
         private String uom;
         private String currencyCode;
         private String maintenanceType;
         private String assetID;
         private String languageCode;
         private String assetDateType;
-        private boolean isFileName;
-        private boolean isAssetType;
-        private boolean isFileType;
-        private boolean isRepresentation;
-        private boolean isFileSize;
-        private boolean isColorMode;
-        private boolean isOrientationView;
-        private boolean isAssetHeight;
-        private boolean isAssetWidth;
-        private boolean isFilePath;
-        private boolean isBackground;
-        private boolean isResolution;
-        private boolean isCountry;
-        private boolean isTotalFrames;
-        private boolean isFrame;
-        private boolean isPlane;
-        private boolean isHemisphere;
-        private boolean isTotalPlanes;
-        private boolean isPlunge;
-        private List<DigitalFileInformation> digitalFiles;
         private String fileName;
         private String assetType;
         private String fileType;
@@ -619,17 +537,14 @@ public class ProcessPIESXMLService {
         private String background;
         private String orientationView;
         private String assetHeight;
-        private String assetDate;
-
         private String totalPlanes;
         private String assetWidth;
         private String filePath;
         private String uri;
-        private boolean isURI;
-
+        private String assetDate;
         private DispatchContext dctx;
-
         Map<String, Object> context;
+        private boolean readCharacter = false;
 
         public ItemHandler(DispatchContext dctx, Map<String, Object> context) {
             this.dctx = dctx;
@@ -657,11 +572,8 @@ public class ProcessPIESXMLService {
             String availableDate;
             String minimumOrderQuantity;
             String mfg;
-
             ItemLevelGTIN gtin;
-
             private boolean isFirstPN = true;
-
             List<Description> descriptions = new ArrayList<>();
             List<ExtendedProductInformation> ExtendedInformation = new ArrayList<>();
             List<Price> prices = new ArrayList<>();
@@ -702,7 +614,7 @@ public class ProcessPIESXMLService {
             String effectiveDate;
             String expirationDate;
             String priceValue;
-            String priceBreak; // Added for PriceBreak
+            String priceBreak;
             String uom;
 
             // Override toString for logging
@@ -730,7 +642,7 @@ public class ProcessPIESXMLService {
             @Override
             public String toString() {
                 return "ProductAttribute [attributeID=" + attributeID + ", attributeID=" + attributeUOM
-                        + ", RecordNumber=" + RecordNumber + " value=" + value + "PADBAttribute" + PADBAttribute + "]";
+                        + ", RecordNumber=" + RecordNumber + " value=" + value + ", PADBAttribute=" + PADBAttribute + "]";
             }
         }
 
@@ -818,10 +730,10 @@ public class ProcessPIESXMLService {
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-            content.setLength(0); // Reset content buffer
+            characterBuffer.setLength(0);
             if (qName.equals("Item")) {
                 ItemNumberTrack++; // Increment the item number first
-                System.out.println("======== Processing Item No. : " + ItemNumberTrack + " =================="); // Debug output
+                System.out.println("======== Processing Item No. : " + ItemNumberTrack + " ==================");
                 currentItem = new Item();
                 currentItem.maintenanceType = attributes.getValue("MaintenanceType");
                 System.out.println("Item MaintenanceType: " + currentItem.maintenanceType);
@@ -833,269 +745,309 @@ public class ProcessPIESXMLService {
                 desc.maintenanceType = attributes.getValue("MaintenanceType");
                 desc.descriptionCode = attributes.getValue("DescriptionCode");
                 desc.sequence = attributes.getValue("Sequence");
-                // Set the flag to true indicating you're inside a <Description> element
-                insideDescriptionElement = true;
+                readCharacter = true;
                 // Clear the buffer in case there was any previous text
                 characterBuffer.setLength(0);
                 currentItem.descriptions.add(desc);
             }
 
             if (qName.equals("ExtendedProductInformation")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
                 ExtendedProductInformation expi = new ExtendedProductInformation();
                 expi.maintenanceType = attributes.getValue("MaintenanceType");
                 expi.languageCode = attributes.getValue("LanguageCode");
                 expi.expiCode = attributes.getValue("EXPICode");
-                insideEXPIElement = true;
-                // Clear the buffer in case there was any previous text
-                characterBuffer.setLength(0);
                 currentItem.ExtendedInformation.add(expi);
             }
 
             if (qName.equals("ProductAttribute")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
                 ProductAttribute pa = new ProductAttribute();
                 pa.attributeID = attributes.getValue("AttributeID");
                 pa.attributeUOM = attributes.getValue("AttributeUOM");
                 pa.RecordNumber = attributes.getValue("RecordNumber");
                 pa.PADBAttribute = attributes.getValue("PADBAttribute");
-                insideEXPIElement = true;
-                characterBuffer.setLength(0);
                 currentItem.productAttributes.add(pa);
             }
 
             if (qName.equals("ItemLevelGTIN")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
                 currentItem.gtin = new ItemLevelGTIN();
                 currentItem.gtin.GTINQualifier = attributes.getValue("GTINQualifier");
-                insideItemLevelGTIN = true;
-                characterBuffer.setLength(0); // Clear buffer for GTIN value
             }
 
             if (qName.equals("HazardousMaterialCode")) {
-                insideHazardousMaterialCode = true;
-                characterBuffer.setLength(0); // Clear buffer for HazardousMaterialCode
+                readCharacter = true;
+                characterBuffer.setLength(0);
             }
 
             if (qName.equals("BaseItemID")) {
-                insideBaseItemID = true;
-                characterBuffer.setLength(0); // Clear buffer for BaseItemID
+                readCharacter = true;
+                characterBuffer.setLength(0);
             }
 
             if (qName.equals("PartNumber")) {
-                insidePartNumber = true;
-                characterBuffer.setLength(0); // Clear buffer for PartNumber
+                readCharacter = true;
+                characterBuffer.setLength(0);
             }
 
             if (qName.equals("BrandAAIAID")) {
-                insideBrandAAIAID = true;
-                characterBuffer.setLength(0); // Clear buffer for BrandAAIAID
+                readCharacter = true;
+                characterBuffer.setLength(0);
             }
 
             if (qName.equals("BrandLabel")) {
-                insideBrandLabel = true;
-                characterBuffer.setLength(0); // Clear buffer for BrandLabel
+                readCharacter = true;
+                characterBuffer.setLength(0);
             }
 
             if (qName.equals("VMRSBrandID")) {
-                insideVMRSBrandID = true;
-                characterBuffer.setLength(0); // Clear buffer for VMRSBrandID
+                readCharacter = true;
+                characterBuffer.setLength(0);
             }
 
             if (qName.equals("QuantityPerApplication")) {
-                insideQuantityPerApplication = true;
-                uomValue = attributes.getValue("UOM"); // Capture UOM attribute value
-                characterBuffer.setLength(0); // Clear buffer for QuantityPerApplication
+                readCharacter = true;
+                uomValue = attributes.getValue("UOM");
+                characterBuffer.setLength(0);
             }
 
             if (qName.equals("ItemEffectiveDate")) {
-                insideItemEffectiveDate = true;  // Set flag when entering <ItemEffectiveDate>
-                characterBuffer.setLength(0);    // Clear buffer for ItemEffectiveDate value
+                readCharacter = true;
+                characterBuffer.setLength(0);
             }
 
             if (qName.equals("AvailableDate")) {
-                insideAvailableDate = true;  // Set flag when entering <AvailableDate>
-                characterBuffer.setLength(0); // Clear buffer for AvailableDate value
+                readCharacter = true;
+                characterBuffer.setLength(0);
             }
 
             if (qName.equals("MinimumOrderQuantity")) {
-                insideMinimumOrderQuantity = true;  // Set flag for <MinimumOrderQuantity>
-                minOrderUOM = attributes.getValue("UOM");  // Capture UOM attribute
-                characterBuffer.setLength(0); // Clear buffer for quantity value
+                readCharacter = true;
+                minOrderUOM = attributes.getValue("UOM");
+                characterBuffer.setLength(0);
             }
 
-            if (qName.equalsIgnoreCase("Group")) {
-                isGroup = true;
+            if (qName.equals("Group")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
             }
 
             if (qName.equalsIgnoreCase("SubGroup")) {
-                isSubGroup = true;
+                characterBuffer.setLength(0);
+                readCharacter = true;
             }
             if (qName.equalsIgnoreCase("AAIAProductCategoryCode")) {
-                isAAIAProductCategoryCode = true;
+                characterBuffer.setLength(0);
+                readCharacter = true;
             }
             if (qName.equalsIgnoreCase("UNSPSC")) {
-                isUNSPSC = true;
+                characterBuffer.setLength(0);
+                readCharacter = true;
             }
             if (qName.equalsIgnoreCase("PartTerminologyID")) {
-                isPartTerminologyID = true;
+                characterBuffer.setLength(0);
+                readCharacter = true;
             }
             if (qName.equalsIgnoreCase("VMRSCode")) {
-                isVMRSCode = true;
+                characterBuffer.setLength(0);
+                readCharacter = true;
             }
 
             if (qName.equalsIgnoreCase("Pricing")) {
-                priceType = attributes.getValue("PriceType"); // Get PriceType
+                characterBuffer.setLength(0);
+                priceType = attributes.getValue("PriceType");
             }
 
             if (qName.equalsIgnoreCase("Price")) {
-                isPrice = true;
-                uom = attributes.getValue("UOM"); // Get Price UOM
+                characterBuffer.setLength(0);
+                readCharacter = true;
+                uom = attributes.getValue("UOM");
             }
 
             if (qName.equalsIgnoreCase("PriceBreak")) {
-                isPriceBreak = true;
+                characterBuffer.setLength(0);
+                readCharacter = true;
             }
 
             if (qName.equalsIgnoreCase("CurrencyCode")) {
-                isCurrencyCode = true; // Set flag for capturing CurrencyCode
+                characterBuffer.setLength(0);
+                readCharacter = true;
             }
 
             if (qName.equalsIgnoreCase("EffectiveDate")) {
-                isEffectiveDate = true; // Set flag for capturing EffectiveDate
+                characterBuffer.setLength(0);
+                readCharacter = true;
             }
 
             if (qName.equalsIgnoreCase("ExpirationDate")) {
-                isExpirationDate = true; // Set flag for capturing ExpirationDate
+                characterBuffer.setLength(0);
+                readCharacter = true;
             }
 
             if (qName.equalsIgnoreCase("DigitalFileInformation")) {
+                characterBuffer.setLength(0);
                 maintenanceType = attributes.getValue("MaintenanceType");
                 assetID = attributes.getValue("AssetID");
                 languageCode = attributes.getValue("LanguageCode");
             }
 
             if (qName.equalsIgnoreCase("AssetDimensions")) {
+                characterBuffer.setLength(0);
                 uom = attributes.getValue("UOM");
             }
 
             if (qName.equalsIgnoreCase("AssetDate")) {
+                characterBuffer.setLength(0);
                 assetDateType = attributes.getValue("assetDateType");
             }
 
-            // Set flags for other tags
             if (qName.equalsIgnoreCase("FileName")) {
-                isFileName = true;
-            }
-            if (qName.equalsIgnoreCase("AssetType")) {
-                isAssetType = true;
-            }
-            if (qName.equalsIgnoreCase("FileType")) {
-                isFileType = true;
-            }
-            if (qName.equalsIgnoreCase("Representation")) {
-                isRepresentation = true;
-            }
-            if (qName.equalsIgnoreCase("FileSize")) {
-                isFileSize = true;
-            }
-            if (qName.equalsIgnoreCase("Resolution")) {
-                isResolution = true;
-            }
-            if (qName.equalsIgnoreCase("ColorMode")) {
-                isColorMode = true;
-            }
-            if (qName.equalsIgnoreCase("Background")) {
-                isBackground = true;
-            }
-            if (qName.equalsIgnoreCase("OrientationView")) {
-                isOrientationView = true;
-            }
-            if (qName.equalsIgnoreCase("AssetHeight")) {
-                isAssetHeight = true;
-            }
-            if (qName.equalsIgnoreCase("AssetWidth")) {
-                isAssetWidth = true;
-            }
-            if (qName.equalsIgnoreCase("FilePath")) {
-                isFilePath = true;
-            }
-            if (qName.equalsIgnoreCase("URI")) {
-                isURI = true;
-            }
-            if (qName.equalsIgnoreCase("Country")) {
-                isCountry = true;
-            }
-            // Handle 360-specific elements
-            if (qName.equalsIgnoreCase("Frame")) {
-                isFrame = true;
-            }
-            if (qName.equalsIgnoreCase("TotalFrames")) {
-                isTotalFrames = true;
-            }
-            if (qName.equalsIgnoreCase("Plane")) {
-                isPlane = true;
-            }
-            if (qName.equalsIgnoreCase("Hemisphere")) {
-                isHemisphere = true;
-            }
-            if (qName.equalsIgnoreCase("Plunge")) {
-                isPlunge = true;
-            }
-            if (qName.equalsIgnoreCase("TotalPlanes")) {
-                isTotalPlanes = true;
+                characterBuffer.setLength(0);
+                readCharacter = true;
             }
 
+            if (qName.equalsIgnoreCase("AssetType")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("FileType")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("Representation")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("FileSize")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("Resolution")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("ColorMode")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("Background")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("OrientationView")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("AssetHeight")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("AssetWidth")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("FilePath")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("URI")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("Country")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            // Handle 360-specific elements
+            if (qName.equalsIgnoreCase("Frame")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("TotalFrames")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("Plane")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("Hemisphere")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("Plunge")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
+
+            if (qName.equalsIgnoreCase("TotalPlanes")) {
+                characterBuffer.setLength(0);
+                readCharacter = true;
+            }
         }
 
         @Override
-        public void endElement(String uri, String localName, String qName) throws SAXException {
+        public void endElement(String url, String localName, String qName) throws SAXException {
 
             if (qName.equals("Description")) {
-                // Assign the accumulated text to descriptionText for the last added Description object
                 Description lastDesc = currentItem.descriptions.get(currentItem.descriptions.size() - 1);
-                lastDesc.descriptionText = characterBuffer.toString().trim();  // Assign the accumulated content
-
+                lastDesc.descriptionText = characterBuffer.toString().trim();
                 System.out.println("Completed Description Element: " + lastDesc);
-
-                // Reset the flag as we've exited the <Description> element
-                insideDescriptionElement = false;
+                readCharacter = false;
             }
 
 
             if (qName.equals("ExtendedProductInformation")) {
                 ExtendedProductInformation expi = currentItem.ExtendedInformation.get(currentItem.ExtendedInformation.size() - 1);
                 expi.content = characterBuffer.toString().trim();
-
                 System.out.println("Completed ExtendedProductInformation Element: " + expi);
-
-                // Reset the current reference
-                insideEXPIElement = false;
+                readCharacter = false;
             }
 
             if (qName.equals("ProductAttribute")) {
                 ProductAttribute pa = currentItem.productAttributes.get(currentItem.productAttributes.size() - 1);
                 pa.value = characterBuffer.toString().trim();
-
-                System.out.println("Completed ExtendedProductInformation Element: " + pa);
-
-                // Reset the current reference
-                insidePAElement = false;
+                System.out.println("Completed ProductAttribute Element: " + pa);
+                readCharacter = false;
             }
 
             if (qName.equals("ItemLevelGTIN")) {
                 currentItem.gtin.value = characterBuffer.toString().trim();
                 System.out.println("ItemLevelGTIN: " + currentItem.gtin);
-                insideItemLevelGTIN = false;
+                readCharacter = false;
             }
 
             if (qName.equals("HazardousMaterialCode")) {
                 currentItem.hazardousMaterialCode = characterBuffer.toString().trim();
                 System.out.println("HazardousMaterialCode: " + currentItem.hazardousMaterialCode);
-                insideHazardousMaterialCode = false;
+                readCharacter = false;
             }
 
             if (qName.equals("BaseItemID")) {
                 currentItem.baseItemID = characterBuffer.toString().trim();
                 System.out.println("BaseItemID: " + currentItem.baseItemID);
-                insideBaseItemID = false;
+                readCharacter = false;
             }
             if (qName.equals("PartNumber")) {
                 if (currentItem.isFirstPN) {
@@ -1103,51 +1055,198 @@ public class ProcessPIESXMLService {
                     currentItem.isFirstPN = false;
                     System.out.println("PartNumber: " + currentItem.partNumber);
                 }
-                insidePartNumber = false;
+                readCharacter = false;
             }
 
             if (qName.equals("BrandAAIAID")) {
                 currentItem.brandAAIAID = characterBuffer.toString().trim();
                 System.out.println("BrandAAIAID: " + currentItem.brandAAIAID);
-                insideBrandAAIAID = false;
+                readCharacter = false;
             }
 
             if (qName.equals("BrandLabel")) {
                 currentItem.brandLabel = characterBuffer.toString().trim();
                 System.out.println("BrandLabel: " + currentItem.brandLabel);
-                insideBrandLabel = false;
+                readCharacter = false;
             }
 
             if (qName.equals("VMRSBrandID")) {
                 currentItem.vmrsBrandID = characterBuffer.toString().trim();
                 System.out.println("VMRSBrandID: " + currentItem.vmrsBrandID);
-                insideVMRSBrandID = false;
+                readCharacter = false;
             }
 
             if (qName.equals("QuantityPerApplication")) {
                 currentItem.quantityPerApplication = String.valueOf(Integer.parseInt(characterBuffer.toString().trim()));
                 currentItem.uom = uomValue; // Assign UOM attribute
                 System.out.println("QuantityPerApplication: " + currentItem.quantityPerApplication + " " + currentItem.uom);
-                insideQuantityPerApplication = false;
+                readCharacter = false;
             }
             if (qName.equals("ItemEffectiveDate")) {
                 currentItem.itemEffectiveDate = characterBuffer.toString().trim(); // Capture the date value
                 System.out.println("ItemEffectiveDate: " + currentItem.itemEffectiveDate);
-                insideItemEffectiveDate = false;
+                readCharacter = false;
             }
 
             if (qName.equals("AvailableDate")) {
-                currentItem.availableDate = characterBuffer.toString().trim(); // Capture AvailableDate value
+                currentItem.availableDate = characterBuffer.toString().trim();
                 System.out.println("AvailableDate: " + currentItem.availableDate);
-                insideAvailableDate = false;
+                readCharacter = false;
             }
 
             if (qName.equals("MinimumOrderQuantity")) {
-                currentItem.minimumOrderQuantity = characterBuffer.toString().trim();  // Capture quantity value
-                currentItem.minOrderUOM = minOrderUOM;  // Capture UOM value
+                currentItem.minimumOrderQuantity = characterBuffer.toString().trim();
+                currentItem.minOrderUOM = minOrderUOM;
                 System.out.println("MinimumOrderQuantity: " + currentItem.minimumOrderQuantity + " UOM: " + currentItem.minOrderUOM);
-                insideMinimumOrderQuantity = false;
+                readCharacter = false;
             }
+
+            if (qName.equals("Group")) {
+                currentItem.mfg = characterBuffer.toString().trim();
+                readCharacter = false;
+                System.out.println("Manufacturer Group: " + currentItem.mfg);
+            }
+
+            if (qName.equals("SubGroup")) {
+                currentItem.mfsg = characterBuffer.toString().trim();
+                readCharacter = false;
+                System.out.println("Manufacturer Sub Group: " + currentItem.mfsg);
+            }
+
+
+            if (qName.equals("UNSPSC")) {
+                currentItem.UNSPSC = characterBuffer.toString().trim();
+                System.out.println("UNSPSC: " + currentItem.UNSPSC);
+                readCharacter = false;
+            }
+
+            if (qName.equals("PartTerminologyID")) {
+                currentItem.partTerminologyId = characterBuffer.toString().trim();
+                System.out.println("Part Terminology ID: " + currentItem.partTerminologyId);
+                readCharacter = false;
+            }
+
+            if (qName.equals("VMRSCode")) {
+                currentItem.VMRSCode = characterBuffer.toString().trim();
+                System.out.println("VMRS Code: " + currentItem.VMRSCode);
+                readCharacter = false;
+            }
+
+            if (qName.equals("AAIAProductCategoryCode")) {
+                currentItem.AAIAProductCategoryCode = characterBuffer.toString().trim();
+                System.out.println("AAIA Product Category Code: " + currentItem.AAIAProductCategoryCode);
+                readCharacter = false;
+            }
+
+
+            if (qName.equals("CurrencyCode")) {
+                currencyCode = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+
+            if (qName.equals("EffectiveDate")) {
+                effectiveDate = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+
+            if (qName.equals("ExpirationDate")) {
+                expirationDate = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+
+            if (qName.equals("Price")) {
+                priceValue = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+
+            if (qName.equals("PriceBreak")) {
+                priceBreakValue = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+
+            if (qName.equals("FileName")) {
+                fileName = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("AssetType")) {
+                assetType = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("FileType")) {
+                fileType = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("Representation")) {
+                representation = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("FileSize")) {
+                fileSize = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("Resolution")) {
+                resolution = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("ColorMode")) {
+                colorMode = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("Background")) {
+                background = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("OrientationView")) {
+                orientationView = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("AssetHeight")) {
+                assetHeight = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("AssetWidth")) {
+                assetWidth = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("FilePath")) {
+                filePath = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("URI")) {
+                uri = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("Country")) {
+                country = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+
+            // 360-specific elements
+            if (qName.equals("Frame")) {
+                frame = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("TotalFrames")) {
+                totalFrames = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("Plane")) {
+                plane = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("Hemisphere")) {
+                hemisphere = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("Plunge")) {
+                plunge = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+            if (qName.equals("TotalPlanes")) {
+                totalPlanes = characterBuffer.toString().trim();
+                readCharacter = false;
+            }
+
 
             if (qName.equals("Pricing")) {
                 Price p = new Price();
@@ -1197,8 +1296,8 @@ public class ProcessPIESXMLService {
             }
 
             if (qName.equals("Item")) {
-                characterBuffer.setLength(0);
 
+                characterBuffer.setLength(0);
                 GenericValue userLogin = (GenericValue) context.get("userLogin");
 
                 //product
@@ -1310,163 +1409,10 @@ public class ProcessPIESXMLService {
 
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
-            if (insideDescriptionElement || insideEXPIElement || insidePAElement || insideItemLevelGTIN || insideHazardousMaterialCode || insideBaseItemID || insidePartNumber || insideBrandAAIAID || insideBrandLabel || insideVMRSBrandID || insideQuantityPerApplication || insideItemEffectiveDate || insideAvailableDate || insideMinimumOrderQuantity || isExpirationDate || isEffectiveDate || isCurrencycode) {
-                // Append characters to the buffer while inside <Description>
+
+            if (readCharacter) {
                 characterBuffer.append(new String(ch, start, length));
             }
-
-
-            if (isGroup) {
-                currentItem.mfg = new String(ch, start, length);
-                System.out.println("Manufacturer Group: " + currentItem.mfg);
-                isGroup = false;
-            }
-
-            if (isSubGroup) {
-                currentItem.mfsg = new String(ch, start, length);
-                System.out.println("Manufacturer SubGroup: " + currentItem.mfsg);
-                isSubGroup = false;
-            }
-
-            if (isAAIAProductCategoryCode) {
-                currentItem.AAIAProductCategoryCode = new String(ch, start, length);
-                System.out.println("AAIA Product Category Code: " + currentItem.AAIAProductCategoryCode);
-                isAAIAProductCategoryCode = false;
-            }
-
-            if (isUNSPSC) {
-                currentItem.UNSPSC = new String(ch, start, length);
-                System.out.println("UNSPSC: " + currentItem.UNSPSC);
-                isUNSPSC = false;
-            }
-
-            if (isPartTerminologyID) {
-                currentItem.partTerminologyId = new String(ch, start, length);
-                System.out.println("Part Terminology ID: " + currentItem.partTerminologyId);
-                isPartTerminologyID = false;
-            }
-
-            if (isVMRSCode) {
-                currentItem.VMRSCode = new String(ch, start, length);
-                System.out.println("VMRS Code: " + currentItem.VMRSCode);
-                isVMRSCode = false;
-            }
-
-            String value = new String(ch, start, length).trim(); // Get trimmed value
-
-            if (isCurrencyCode) {
-                currencyCode = value;
-                isCurrencyCode = false;
-            }
-
-            if (isEffectiveDate) {
-                effectiveDate = value;
-                isEffectiveDate = false;
-            }
-
-            if (isExpirationDate) {
-                expirationDate = value;
-                isExpirationDate = false;
-            }
-
-            if (isPrice) {
-                priceValue = value;
-                isPrice = false;
-            }
-
-            if (isPriceBreak) {
-                priceBreakValue = value;
-                isPriceBreak = false;
-            }
-
-            if (isFileName) {
-                fileName = value;
-                isFileName = false;
-            }
-            if (isAssetType) {
-                assetType = value;
-                isAssetType = false;
-            }
-            if (isFileType) {
-                fileType = value;
-                isFileType = false;
-            }
-            if (isRepresentation) {
-                representation = value;
-                isRepresentation = false;
-            }
-            if (isFileSize) {
-                fileSize = value;
-                isFileSize = false;
-            }
-            if (isResolution) {
-                resolution = value;
-                isResolution = false;
-            }
-            if (isColorMode) {
-                colorMode = value;
-                isColorMode = false;
-            }
-            if (isBackground) {
-                background = value;
-                isBackground = false;
-            }
-            if (isOrientationView) {
-                orientationView = value;
-                isOrientationView = false;
-            }
-            if (isAssetHeight) {
-                assetHeight = value;
-                isAssetHeight = false;
-            }
-            if (isAssetWidth) {
-                assetWidth = value;
-                isAssetWidth = false;
-            }
-            if (isFilePath) {
-                filePath = value;
-                isFilePath = false;
-            }
-            if (isURI) {
-                uri = value;
-                isURI = false;
-            }
-            if (isCountry) {
-                country = value;
-                isCountry = false;
-            }
-
-            // 360-specific elements
-            if (isFrame) {
-                frame = value;
-                isFrame = false;
-            }
-            if (isTotalFrames) {
-                totalFrames = value;
-                isTotalFrames = false;
-            }
-            if (isPlane) {
-                plane = value;
-                isPlane = false;
-            }
-            if (isHemisphere) {
-                hemisphere = value;
-                isHemisphere = false;
-            }
-            if (isPlunge) {
-                plunge = value;
-                isPlunge = false;
-            }
-            if (isTotalPlanes) {
-                totalPlanes = value;
-                isTotalPlanes = false;
-            }
-
-            content.append(ch, start, length);
-        }
-
-        public List<Item> getItems() {
-            return items;
         }
 
         @Override
@@ -1476,7 +1422,7 @@ public class ProcessPIESXMLService {
     }
 
 
-    public static Map<String, Object> processPIESXML(DispatchContext dctx, Map<String, Object> context) throws GenericServiceException, ParserConfigurationException, IOException, SAXException {
+    public static Map<String, Object> processPIESXML(DispatchContext dctx, Map<String, Object> context) {
 
         Debug.log("======== Inside processPIESXML service ==================", MODULE);
 
