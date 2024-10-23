@@ -132,10 +132,10 @@ public class ProcessPIESXMLService {
     }
 
     public static void storeProductDescriptions(String languageCode, String descriptionCode, String sequenceAttr, String descriptionText, String productId, DispatchContext dctx, GenericValue userLogin) throws GenericEntityException, GenericServiceException {
-        String contentId = dctx.getDelegator().getNextSeqId("contentId");
+//        String contentId = dctx.getDelegator().getNextSeqId("contentId");
         descriptionText = (descriptionText != null && descriptionText.length() > 255) ? descriptionText.substring(0, 255) : descriptionText;
         Map<String, Object> contentParams = UtilMisc.toMap(
-                "contentId", contentId,
+//                "contentId", contentId,
                 "contentName", descriptionCode,
                 "description", descriptionText,
                 "localeString", languageCode,
@@ -146,7 +146,7 @@ public class ProcessPIESXMLService {
 
         // Now associate this content with the product in the ProductContent table
         Map<String, Object> productContentParams = UtilMisc.toMap(
-                "contentId", contentId,
+                "contentId", result.get("contentId"),
                 "productContentTypeId", "DESCRIPTION",
                 "productId", productId,
                 "sequenceNum", sequenceAttr,
@@ -732,7 +732,7 @@ public class ProcessPIESXMLService {
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             characterBuffer.setLength(0);
             if (qName.equals("Item")) {
-                ItemNumberTrack++; // Increment the item number first
+                ++ItemNumberTrack;
                 System.out.println("======== Processing Item No. : " + ItemNumberTrack + " ==================");
                 currentItem = new Item();
                 currentItem.maintenanceType = attributes.getValue("MaintenanceType");
@@ -1402,6 +1402,9 @@ public class ProcessPIESXMLService {
                     throw new RuntimeException(e);
                 }
 
+                userLogin = null;
+                currentItem = null;
+
                 Debug.logInfo("======== END Processing Item No. : " + ItemNumberTrack + "==================", MODULE);
             }
 
@@ -1453,9 +1456,12 @@ public class ProcessPIESXMLService {
             SAXParser saxParser = factory.newSAXParser();
             ItemHandler handler = new ItemHandler(dctx, context);
             saxParser.parse(filePath, handler);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ServiceUtil.returnError(e.getMessage());
+        } catch (IOException e) {
+            return ServiceUtil.returnError("File I/O error: " + e.getMessage());
+        } catch (ParserConfigurationException e) {
+            return ServiceUtil.returnError("Parser configuration error: " + e.getMessage());
+        } catch (SAXException e) {
+            return ServiceUtil.returnError("SAX parsing error: " + e.getMessage());
         }
 
         Debug.log("======== Successfully Parsed XML ==================", MODULE);
