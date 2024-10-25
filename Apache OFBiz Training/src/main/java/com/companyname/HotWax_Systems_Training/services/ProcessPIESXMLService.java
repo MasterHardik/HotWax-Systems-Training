@@ -1449,7 +1449,7 @@ public class ProcessPIESXMLService {
             return ServiceUtil.returnError("File not found: " + InputFilePath);
         }
 
-        Debug.log(context + "======== Parsing XML using SAX Parser ==================", MODULE);
+        Debug.log("======== Parsing XML using SAX Parser ==================", MODULE);
 
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
