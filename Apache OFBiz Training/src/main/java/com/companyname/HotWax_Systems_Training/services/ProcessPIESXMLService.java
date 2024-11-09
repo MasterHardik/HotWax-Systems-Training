@@ -346,51 +346,50 @@ public class ProcessPIESXMLService {
         // Create DataResourceMetadata for additional fields
         List<Map<String, String>> metadataEntries = new ArrayList<>();
 
-        if (UtilValidate.isNotEmpty(representation)) {
+        if (UtilValidate.isEmpty(representation)) {
             metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "REP", "metaDataValue", representation));
         }
 
-        if (UtilValidate.isNotEmpty(fileSize)) {
+        if (UtilValidate.isEmpty(fileSize)) {
             metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "FS", "metaDataValue", fileSize));
         }
 
-        if (UtilValidate.isNotEmpty(resolution)) {
+        if (UtilValidate.isEmpty(resolution)) {
             metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "RES", "metaDataValue", resolution));
         }
 
-        if (UtilValidate.isNotEmpty(colorMode)) {
+        if (UtilValidate.isEmpty(colorMode)) {
             metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "COM", "metaDataValue", colorMode));
         }
 
-        if (UtilValidate.isNotEmpty(background)) {
+        if (UtilValidate.isEmpty(background)) {
             metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "BG", "metaDataValue", background));
         }
 
-        if (UtilValidate.isNotEmpty(orientationView)) {
+        if (UtilValidate.isEmpty(orientationView)) {
             metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "OV", "metaDataValue", orientationView));
         }
 
         // Add new fields to metadata entries
-        if (UtilValidate.isNotEmpty(frame)) {
+        if (UtilValidate.isEmpty(frame)) {
             metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "FR", "metaDataValue", frame));
         }
 
-        if (UtilValidate.isNotEmpty(totalFrames)) {
+        if (UtilValidate.isEmpty(totalFrames)) {
             metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "TF", "metaDataValue", totalFrames));
         }
 
-        if (UtilValidate.isNotEmpty(plane)) {
+        if (UtilValidate.isEmpty(plane)) {
             metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "PL", "metaDataValue", plane));
         }
 
-        if (UtilValidate.isNotEmpty(plunge)) {
+        if (UtilValidate.isEmpty(plunge)) {
             metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "PU", "metaDataValue", plunge));
         }
 
-        if (UtilValidate.isNotEmpty(totalPlanes)) {
+        if (UtilValidate.isEmpty(totalPlanes)) {
             metadataEntries.add(UtilMisc.toMap("metaDataPredicateId", "TP", "metaDataValue", totalPlanes));
         }
-
         // Create all DataResourceMetadata entries
         for (Map<String, String> entry : metadataEntries) {
             // Checking for null values before creating the entry
